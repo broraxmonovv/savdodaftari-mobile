@@ -111,25 +111,6 @@ class _PhoneScreenState extends ConsumerState<PhoneScreen> {
               isLoading: auth.isBusy,
               onPressed: _sendCode,
             ),
-            const SizedBox(height: AppSpacing.xl),
-            Row(
-              children: <Widget>[
-                const Expanded(child: Divider()),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-                  child: Text(s.orDivider, style: textTheme.labelSmall),
-                ),
-                const Expanded(child: Divider()),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.xl),
-            // Google orqali kirish keyingi bosqichda yoqiladi (TZ 4-bo'lim).
-            AppButton(
-              label: s.continueWithGoogle,
-              variant: AppButtonVariant.outline,
-              icon: Icons.g_mobiledata_rounded,
-              onPressed: null,
-            ),
           ],
         ),
       ),
