@@ -75,6 +75,28 @@ class ApiClient {
     return _send(() => _dio.post<dynamic>(path, data: body));
   }
 
+  /// Fayl yuklash (multipart/form-data): [filePath] — `fileField` nomi bilan.
+  Future<ApiResponse> postFile(
+    String path, {
+    required String fileField,
+    required String filePath,
+    Duration? receiveTimeout,
+  }) async {
+    final FormData form = FormData.fromMap(<String, dynamic>{
+      fileField: await MultipartFile.fromFile(
+        filePath,
+        filename: filePath.split('/').last,
+      ),
+    });
+    return _send(
+      () => _dio.post<dynamic>(
+        path,
+        data: form,
+        options: Options(receiveTimeout: receiveTimeout),
+      ),
+    );
+  }
+
   Future<ApiResponse> put(
     String path, {
     Map<String, dynamic>? body,

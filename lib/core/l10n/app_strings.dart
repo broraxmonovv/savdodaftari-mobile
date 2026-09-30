@@ -388,6 +388,20 @@ class AppStrings {
     required this.voiceUnavailable,
     required this.voiceTalkAgain,
     required this.reportsProRequired,
+    required this.ocrTitle,
+    required this.ocrIntro,
+    required this.ocrCamera,
+    required this.ocrGallery,
+    required this.ocrAnalyzing,
+    required this.ocrReviewHint,
+    required this.ocrUncertain,
+    required this.ocrExisting,
+    required this.ocrImportAction,
+    required this.ocrNothingFound,
+    required this.ocrImportedTemplate,
+    required this.ocrSelectedTemplate,
+    required this.ocrProBody,
+    required this.ocrTryAgain,
   });
 
   final String localeCode;
@@ -816,6 +830,28 @@ class AppStrings {
   final String voiceUnavailable;
   final String voiceTalkAgain;
   final String reportsProRequired;
+  final String ocrTitle;
+  final String ocrIntro;
+  final String ocrCamera;
+  final String ocrGallery;
+  final String ocrAnalyzing;
+  final String ocrReviewHint;
+  final String ocrUncertain;
+  final String ocrExisting;
+  final String ocrImportAction;
+  final String ocrNothingFound;
+  final String ocrImportedTemplate;
+  final String ocrSelectedTemplate;
+  final String ocrProBody;
+  final String ocrTryAgain;
+
+  String ocrImportedText(int customers, int debts) => ocrImportedTemplate
+      .replaceAll('{customers}', customers.toString())
+      .replaceAll('{debts}', debts.toString());
+
+  String ocrSelectedText(int count, String total) => ocrSelectedTemplate
+      .replaceAll('{count}', count.toString())
+      .replaceAll('{total}', total);
 
   String scanAddedText(String name) => scanAddedTemplate.replaceAll('{name}', name);
 
@@ -1454,6 +1490,20 @@ class AppStrings {
     voiceUnavailable: "Ovozni taniy olmadi. Buyruqni yozib yuboring.",
     voiceTalkAgain: "Qayta gapirish",
     reportsProRequired: "30 kunlik va ixtiyoriy oraliq hisobot Pro tarifida ochiladi.",
+    ocrTitle: "Eski daftarni ko'chirish",
+    ocrIntro: "Daftar sahifasini suratga oling — mijozlar va qarz summalari avtomatik ajratiladi. Import qilishdan oldin hammasini tekshirasiz.",
+    ocrCamera: "Kamera",
+    ocrGallery: "Galereya",
+    ocrAnalyzing: "Daftar o'qilmoqda…",
+    ocrReviewHint: "Ma'lumotlarni tekshiring: noto'g'rilarini tuzating yoki belgisini olib tashlang.",
+    ocrUncertain: "Tekshirish kerak",
+    ocrExisting: "Mavjud mijoz",
+    ocrImportAction: "Import qilish",
+    ocrNothingFound: "Hech narsa topilmadi. Rasmni aniqroq oling.",
+    ocrImportedTemplate: "{customers} ta yangi mijoz va {debts} ta qarz qo'shildi",
+    ocrSelectedTemplate: "{count} ta qator · {total}",
+    ocrProBody: "Eski daftarni ko'chirish Pro tarifda ishlaydi.",
+    ocrTryAgain: "Boshqa rasm",
   );
 
   static const AppStrings ru = AppStrings(
@@ -1847,6 +1897,20 @@ class AppStrings {
     voiceUnavailable: "Не удалось распознать речь. Введите команду текстом.",
     voiceTalkAgain: "Сказать снова",
     reportsProRequired: "Отчёты за 30 дней и за произвольный период доступны на тарифе Pro.",
+    ocrTitle: "Перенос старой тетради",
+    ocrIntro: "Сфотографируйте страницу тетради — клиенты и суммы долгов распознаются автоматически. Перед импортом вы всё проверите.",
+    ocrCamera: "Камера",
+    ocrGallery: "Галерея",
+    ocrAnalyzing: "Читаю тетрадь…",
+    ocrReviewHint: "Проверьте данные: исправьте ошибки или снимите отметку со строки.",
+    ocrUncertain: "Нужно проверить",
+    ocrExisting: "Существующий клиент",
+    ocrImportAction: "Импортировать",
+    ocrNothingFound: "Ничего не найдено. Сделайте снимок чётче.",
+    ocrImportedTemplate: "Добавлено новых клиентов: {customers}, долгов: {debts}",
+    ocrSelectedTemplate: "Строк: {count} · {total}",
+    ocrProBody: "Перенос старой тетради доступен на тарифе Pro.",
+    ocrTryAgain: "Другое фото",
   );
 }
 

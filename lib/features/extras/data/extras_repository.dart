@@ -126,4 +126,41 @@ class ExtrasRepository {
     );
     return VoiceResult.fromJson(response.dataMap);
   }
+
+  /// POST /ai/ocr-import — daftar rasmini tahlil qiladi (Pro). Hech narsa yozilmaydi.
+  Future<List<OcrItem>> ocrExtract(String imagePath) async {
+    final ApiResponse response = await _client.postFile(
+      '/ai/ocr-import',
+      fileField: 'image',
+      filePath: imagePath,
+      receiveTimeout: const Duration(seconds: 120),
+    );
+    final Object? items = response.dataMap['items'];
+    if (items is! List) {
+      return const <OcrItem>[];
+    }
+    return items
+        .whereType<Map<Object?, Object?>>()
+        .map((Map<Object?, Object?> e) =>
+            OcrItem.fromJson(e.cast<String, dynamic>()))
+        .toList();
+  }
+
+  /// POST /ai/ocr-import/confirm — foydalanuvchi tekshirgan qatorlarni yozadi.
+  Future<OcrImportSummary> ocrConfirm(List<OcrItem> items) async {
+    final ApiResponse response = await _client.post(
+      '/ai/ocr-import/confirm',
+      body: <String, dynamic>{
+        'items': items
+            .map((OcrItem it) => <String, dynamic>{
+                  'name': it.name,
+                  'amount': it.amount.round(),
+                  if (it.phone != null && it.phone!.isNotEmpty) 'phone': it.phone,
+                  if (it.note != null && it.note!.isNotEmpty) 'note': it.note,
+                })
+            .toList(),
+      },
+    );
+    return OcrImportSummary.fromJson(response.dataMap);
+  }
 }

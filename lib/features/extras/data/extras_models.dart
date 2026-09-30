@@ -345,3 +345,59 @@ class VoiceResult {
         : const <Map<String, dynamic>>[];
   }
 }
+
+/// Eski daftar OCR natijasidagi bitta qator (`POST /ai/ocr-import`).
+@immutable
+class OcrItem {
+  const OcrItem({
+    required this.name,
+    required this.amount,
+    this.phone,
+    this.note,
+    this.uncertain = false,
+    this.existingCustomerName,
+  });
+
+  factory OcrItem.fromJson(Map<String, dynamic> json) {
+    final Object? existing = json['existing_customer'];
+    return OcrItem(
+      name: json['name']?.toString() ?? '',
+      amount: _num(json['amount']).toDouble(),
+      phone: json['phone']?.toString(),
+      note: json['note']?.toString(),
+      uncertain: json['uncertain'] == true,
+      existingCustomerName: existing is Map ? existing['name']?.toString() : null,
+    );
+  }
+
+  final String name;
+  final double amount;
+  final String? phone;
+  final String? note;
+
+  /// Qo'l yozuvi noaniq — "Tekshirish kerak" belgisi (TZ 15).
+  final bool uncertain;
+
+  /// Bazada shu ismli/telefonli mijoz bor bo'lsa uning nomi.
+  final String? existingCustomerName;
+}
+
+@immutable
+class OcrImportSummary {
+  const OcrImportSummary({
+    required this.customersCreated,
+    required this.debtsCreated,
+    required this.total,
+  });
+
+  factory OcrImportSummary.fromJson(Map<String, dynamic> json) =>
+      OcrImportSummary(
+        customersCreated: _num(json['customers_created']).toInt(),
+        debtsCreated: _num(json['debts_created']).toInt(),
+        total: _num(json['total']).toDouble(),
+      );
+
+  final int customersCreated;
+  final int debtsCreated;
+  final double total;
+}

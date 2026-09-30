@@ -4,6 +4,8 @@
 <dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Kamera mahsulot barcode'ini skanerlash uchun kerak.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Eski daftar rasmini tanlash uchun kerak.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Mikrofon ovozli buyruqlar uchun kerak.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
