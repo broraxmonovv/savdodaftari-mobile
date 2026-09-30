@@ -33,3 +33,8 @@ final AutoDisposeFutureProvider<BonusSummary> bonusesProvider =
     FutureProvider.autoDispose<BonusSummary>(
   (Ref ref) => ref.watch(extrasRepositoryProvider).bonuses(),
 );
+
+final AutoDisposeFutureProvider<WithdrawalList> withdrawalsProvider =
+    FutureProvider.autoDispose<WithdrawalList>(
+  (Ref ref) => ref.watch(extrasRepositoryProvider).withdrawals(),
+);

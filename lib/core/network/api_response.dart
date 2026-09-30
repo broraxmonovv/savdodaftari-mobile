@@ -26,6 +26,10 @@ class ApiResponse {
   final Map<String, dynamic> meta;
 
   /// `meta.balance` (bonus balansi) — son sifatida.
+  /// `meta` dagi sonli qiymat (masalan `min_withdrawal`).
+  double metaNumber(String key) =>
+      double.tryParse(meta[key]?.toString() ?? '') ?? 0;
+
   double get balance => double.tryParse(meta['balance']?.toString() ?? '') ?? 0;
 
   /// `data` obyekt bo'lsa map qaytaradi, aks holda bo'sh map.

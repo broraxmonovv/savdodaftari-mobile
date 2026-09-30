@@ -14,9 +14,12 @@ import '../../core/utils/money.dart';
 import '../../core/widgets/widgets.dart';
 import '../auth/data/auth_models.dart';
 import '../auth/state/auth_providers.dart';
+import '../extras/state/extras_providers.dart';
 import 'data/billing_models.dart';
 import 'plan_text.dart';
 import 'state/billing_providers.dart';
+
+enum _PayMethod { payme, click, bonus }
 
 /// TZ 31, 35, 36: tariflar — Bepul, Standart (savdo + ombor) va Pro.
 ///
@@ -69,9 +72,10 @@ class _PlansScreenState extends ConsumerState<PlansScreen>
       ..showSnackBar(SnackBar(content: Text(text)));
   }
 
-  Future<PaymentProvider?> _chooseProvider() {
+  /// To'lov usuli: Payme, Click yoki (balans yetsa) bonus balansi.
+  Future<_PayMethod?> _chooseMethod({required double bonus, required int price}) {
     final AppStrings s = context.s;
-    return showModalBottomSheet<PaymentProvider>(
+    return showModalBottomSheet<_PayMethod>(
       context: context,
       showDragHandle: true,
       builder: (BuildContext sheetContext) {
@@ -96,7 +100,7 @@ class _PlansScreenState extends ConsumerState<PlansScreen>
                   label: s.payWithPayme,
                   icon: Icons.account_balance_wallet_rounded,
                   onPressed: () =>
-                      Navigator.of(sheetContext).pop(PaymentProvider.payme),
+                      Navigator.of(sheetContext).pop(_PayMethod.payme),
                 ),
                 const SizedBox(height: AppSpacing.md),
                 AppButton(
@@ -104,8 +108,19 @@ class _PlansScreenState extends ConsumerState<PlansScreen>
                   icon: Icons.touch_app_rounded,
                   variant: AppButtonVariant.secondary,
                   onPressed: () =>
-                      Navigator.of(sheetContext).pop(PaymentProvider.click),
+                      Navigator.of(sheetContext).pop(_PayMethod.click),
                 ),
+                if (bonus >= price) ...<Widget>[
+                  const SizedBox(height: AppSpacing.md),
+                  AppButton(
+                    label:
+                        '${s.payWithBonus} (${Money.format(bonus)})',
+                    icon: Icons.card_giftcard_rounded,
+                    variant: AppButtonVariant.outline,
+                    onPressed: () =>
+                        Navigator.of(sheetContext).pop(_PayMethod.bonus),
+                  ),
+                ],
               ],
             ),
           ),
@@ -115,15 +130,38 @@ class _PlansScreenState extends ConsumerState<PlansScreen>
   }
 
   /// Tarif tanlandi: provayder -> checkout -> brauzerda to'lov sahifasi.
-  Future<void> _start(UserPlan plan) async {
-    final PaymentProvider? provider = await _chooseProvider();
-    if (provider == null || !mounted) {
+  Future<void> _start(UserPlan plan, int price) async {
+    // Bonus balansi (yetsa uchinchi usul sifatida taklif qilinadi).
+    double bonus = 0;
+    try {
+      bonus = (await ref.read(bonusesProvider.future)).balance;
+    } on ApiException {
+      bonus = 0;
+    }
+    if (!mounted) {
+      return;
+    }
+
+    final _PayMethod? method = await _chooseMethod(bonus: bonus, price: price);
+    if (method == null || !mounted) {
       return;
     }
 
     final AppStrings s = context.s;
     setState(() => _busy = true);
     try {
+      if (method == _PayMethod.bonus) {
+        await ref.read(extrasRepositoryProvider).payPlanWithBonus(plan.apiValue);
+        await ref.read(authControllerProvider.notifier).refreshUser();
+        ref.invalidate(bonusesProvider);
+        ref.invalidate(billingPlansProvider);
+        _snack(s.planActivatedText(plan.label(s)));
+        return;
+      }
+
+      final PaymentProvider provider = method == _PayMethod.payme
+          ? PaymentProvider.payme
+          : PaymentProvider.click;
       final CheckoutResult result = await ref
           .read(billingRepositoryProvider)
           .checkout(plan: plan, provider: provider);
@@ -259,7 +297,7 @@ class _PlansScreenState extends ConsumerState<PlansScreen>
             actionLabel: s.planActivateAction,
             busy: _busy,
             onAction: current == UserPlan.free && _orderId == null
-                ? () => _start(UserPlan.standard)
+                ? () => _start(UserPlan.standard, standard.price)
                 : null,
           ),
         const SizedBox(height: AppSpacing.md),
@@ -281,7 +319,7 @@ class _PlansScreenState extends ConsumerState<PlansScreen>
                 : s.planActivateAction,
             busy: _busy,
             onAction: current != UserPlan.pro && _orderId == null
-                ? () => _start(UserPlan.pro)
+                ? () => _start(UserPlan.pro, pro.price)
                 : null,
           ),
       ],

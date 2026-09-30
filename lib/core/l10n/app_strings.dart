@@ -318,6 +318,29 @@ class AppStrings {
     required this.bonusReversal,
     required this.linkOpenFailed,
     required this.darkModeTitle,
+    required this.bonusPayPlan,
+    required this.bonusWithdraw,
+    required this.bonusPlanSheetTitle,
+    required this.payWithBonus,
+    required this.bonusNotEnough,
+    required this.withdrawTitle,
+    required this.withdrawAmountLabel,
+    required this.withdrawCardLabel,
+    required this.withdrawHolderLabel,
+    required this.withdrawSubmit,
+    required this.withdrawMinTemplate,
+    required this.withdrawAllAction,
+    required this.withdrawSentTitle,
+    required this.withdrawSentBody,
+    required this.withdrawalsHistoryTitle,
+    required this.withdrawStatusPending,
+    required this.withdrawStatusPaid,
+    required this.withdrawStatusRejected,
+    required this.validationCardInvalid,
+    required this.validationAmountRequired,
+    required this.bonusPlanPayment,
+    required this.bonusWithdrawal,
+    required this.bonusWithdrawalRefund,
   });
 
   final String localeCode;
@@ -676,6 +699,32 @@ class AppStrings {
   final String bonusReversal;
   final String linkOpenFailed;
   final String darkModeTitle;
+  final String bonusPayPlan;
+  final String bonusWithdraw;
+  final String bonusPlanSheetTitle;
+  final String payWithBonus;
+  final String bonusNotEnough;
+  final String withdrawTitle;
+  final String withdrawAmountLabel;
+  final String withdrawCardLabel;
+  final String withdrawHolderLabel;
+  final String withdrawSubmit;
+  final String withdrawMinTemplate;
+  final String withdrawAllAction;
+  final String withdrawSentTitle;
+  final String withdrawSentBody;
+  final String withdrawalsHistoryTitle;
+  final String withdrawStatusPending;
+  final String withdrawStatusPaid;
+  final String withdrawStatusRejected;
+  final String validationCardInvalid;
+  final String validationAmountRequired;
+  final String bonusPlanPayment;
+  final String bonusWithdrawal;
+  final String bonusWithdrawalRefund;
+
+  String withdrawMinText(String amount) =>
+      withdrawMinTemplate.replaceAll('{amount}', amount);
 
   /// `{time}` o'rniga yangilanish vaqti qo'yiladi.
   String currencyUpdatedText(String time) =>
@@ -1218,6 +1267,29 @@ class AppStrings {
     bonusReversal: "Bonus qaytarildi (to'lov bekor qilindi)",
     linkOpenFailed: "Havolani ochib bo'lmadi.",
     darkModeTitle: "Qorong'u rejim",
+    bonusPayPlan: "Tarifga to'lash",
+    bonusWithdraw: "Pulni yechib olish",
+    bonusPlanSheetTitle: "Tarifni bonus bilan to'lash",
+    payWithBonus: "Bonus balansi bilan to'lash",
+    bonusNotEnough: "Bonus yetarli emas",
+    withdrawTitle: "Pulni yechib olish",
+    withdrawAmountLabel: "Yechib olinadigan summa",
+    withdrawCardLabel: "Plastik karta raqami",
+    withdrawHolderLabel: "Karta egasi (ixtiyoriy)",
+    withdrawSubmit: "Adminga yuborish",
+    withdrawMinTemplate: "Minimal summa: {amount}",
+    withdrawAllAction: "Hammasi",
+    withdrawSentTitle: "So'rov adminga yuborildi",
+    withdrawSentBody: "Admin tekshirib, pulni kartangizga o'tkazadi. Holatni shu yerdan kuzating.",
+    withdrawalsHistoryTitle: "Yechib olish so'rovlari",
+    withdrawStatusPending: "Kutilmoqda",
+    withdrawStatusPaid: "To'landi",
+    withdrawStatusRejected: "Rad etildi",
+    validationCardInvalid: "Karta raqami 16 xonali bo'lishi kerak.",
+    validationAmountRequired: "Summani kiriting.",
+    bonusPlanPayment: "Tarif to'lovi",
+    bonusWithdrawal: "Yechib olish so'rovi",
+    bonusWithdrawalRefund: "So'rov rad etildi — summa qaytdi",
   );
 
   static const AppStrings ru = AppStrings(
@@ -1541,6 +1613,29 @@ class AppStrings {
     bonusReversal: "Бонус возвращён (оплата отменена)",
     linkOpenFailed: "Не удалось открыть ссылку.",
     darkModeTitle: "Тёмный режим",
+    bonusPayPlan: "Оплатить тариф",
+    bonusWithdraw: "Вывести деньги",
+    bonusPlanSheetTitle: "Оплатить тариф бонусами",
+    payWithBonus: "Оплатить бонусами",
+    bonusNotEnough: "Недостаточно бонусов",
+    withdrawTitle: "Вывод денег",
+    withdrawAmountLabel: "Сумма вывода",
+    withdrawCardLabel: "Номер банковской карты",
+    withdrawHolderLabel: "Владелец карты (необязательно)",
+    withdrawSubmit: "Отправить админу",
+    withdrawMinTemplate: "Минимальная сумма: {amount}",
+    withdrawAllAction: "Всё",
+    withdrawSentTitle: "Заявка отправлена админу",
+    withdrawSentBody: "Админ проверит и переведёт деньги на вашу карту. Статус виден здесь.",
+    withdrawalsHistoryTitle: "Заявки на вывод",
+    withdrawStatusPending: "Ожидает",
+    withdrawStatusPaid: "Выплачено",
+    withdrawStatusRejected: "Отклонено",
+    validationCardInvalid: "Номер карты должен содержать 16 цифр.",
+    validationAmountRequired: "Введите сумму.",
+    bonusPlanPayment: "Оплата тарифа",
+    bonusWithdrawal: "Заявка на вывод",
+    bonusWithdrawalRefund: "Заявка отклонена — сумма возвращена",
   );
 }
 

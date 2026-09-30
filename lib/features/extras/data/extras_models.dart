@@ -133,6 +133,7 @@ class BonusEntry {
     required this.type,
     required this.amount,
     required this.from,
+    this.plan,
     this.createdAt,
   });
 
@@ -140,15 +141,75 @@ class BonusEntry {
         type: json['type']?.toString() ?? 'referral',
         amount: _num(json['amount']).toDouble(),
         from: json['from']?.toString() ?? '',
+        plan: json['plan']?.toString(),
         createdAt: DateTime.tryParse(json['created_at']?.toString() ?? ''),
       );
 
   final String type;
   final double amount;
   final String from;
+
+  /// `plan_payment` uchun tarif: standard | pro.
+  final String? plan;
   final DateTime? createdAt;
 
+  /// Backend turlari: referral, reversal, plan_payment, withdrawal,
+  /// withdrawal_refund. Balansni kamaytiradigan amallar (manfiy) qizil.
   bool get isReversal => type == 'reversal';
+  bool get isNegative => amount < 0;
+}
+
+/// Yechib olish so'rovi holati.
+enum WithdrawalStatus {
+  pending,
+  paid,
+  rejected;
+
+  static WithdrawalStatus fromApi(String? value) => switch (value) {
+        'paid' => WithdrawalStatus.paid,
+        'rejected' => WithdrawalStatus.rejected,
+        _ => WithdrawalStatus.pending,
+      };
+}
+
+/// `GET /withdrawals` elementi (karta maskalangan: `8600 **** **** 1234`).
+@immutable
+class WithdrawalRequest {
+  const WithdrawalRequest({
+    required this.amount,
+    required this.card,
+    required this.status,
+    this.adminNote,
+    this.createdAt,
+  });
+
+  factory WithdrawalRequest.fromJson(Map<String, dynamic> json) =>
+      WithdrawalRequest(
+        amount: _num(json['amount']).toDouble(),
+        card: json['card']?.toString() ?? '',
+        status: WithdrawalStatus.fromApi(json['status']?.toString()),
+        adminNote: json['admin_note']?.toString(),
+        createdAt: DateTime.tryParse(json['created_at']?.toString() ?? ''),
+      );
+
+  final double amount;
+  final String card;
+  final WithdrawalStatus status;
+  final String? adminNote;
+  final DateTime? createdAt;
+}
+
+@immutable
+class WithdrawalList {
+  const WithdrawalList({
+    required this.items,
+    required this.balance,
+    required this.minWithdrawal,
+  });
+
+  final List<WithdrawalRequest> items;
+  final double balance;
+  final double minWithdrawal;
 }
 
 @immutable

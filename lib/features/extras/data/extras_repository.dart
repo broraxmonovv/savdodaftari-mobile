@@ -38,4 +38,39 @@ class ExtrasRepository {
       entries: response.dataList.map(BonusEntry.fromJson).toList(),
     );
   }
+
+  /// POST /bonuses/pay-plan — tarifni to'liq bonus balansidan to'laydi.
+  Future<void> payPlanWithBonus(String plan) async {
+    await _client.post(
+      '/bonuses/pay-plan',
+      body: <String, dynamic>{'plan': plan},
+    );
+  }
+
+  /// GET /withdrawals — yechib olish so'rovlari va minimal summa.
+  Future<WithdrawalList> withdrawals() async {
+    final ApiResponse response = await _client.get('/withdrawals');
+    return WithdrawalList(
+      items: response.dataList.map(WithdrawalRequest.fromJson).toList(),
+      balance: response.balance,
+      minWithdrawal: response.metaNumber('min_withdrawal'),
+    );
+  }
+
+  /// POST /withdrawals — so'rov adminga yuboriladi, summa balansdan ushlanadi.
+  Future<void> requestWithdrawal({
+    required int amount,
+    required String cardNumber,
+    String? cardHolder,
+  }) async {
+    await _client.post(
+      '/withdrawals',
+      body: <String, dynamic>{
+        'amount': amount,
+        'card_number': cardNumber,
+        if (cardHolder != null && cardHolder.trim().isNotEmpty)
+          'card_holder': cardHolder.trim(),
+      },
+    );
+  }
 }
