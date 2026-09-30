@@ -75,9 +75,10 @@ class _BozorProAppState extends ConsumerState<BozorProApp>
       }
     }
 
-    // Kalkulyator splash tugagach (sessiya holati aniq bo'lgach) ko'rinadi.
+    // Kalkulyator faqat telefon orqali ro'yxatdan o'tib (kirib) bo'lingach,
+    // ya'ni ilovaning hamma ichki sahifalarida ko'rinadi.
     final bool showCalculator =
-        ref.watch(authControllerProvider).status != AuthStatus.unknown;
+        ref.watch(authControllerProvider).status == AuthStatus.authenticated;
 
     return MaterialApp.router(
       title: 'BozorPro',
