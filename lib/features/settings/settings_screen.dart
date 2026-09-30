@@ -19,6 +19,7 @@ import '../extras/bonuses_screen.dart';
 import '../extras/currencies_screen.dart';
 import '../extras/guides_screen.dart';
 import '../extras/referral_screen.dart';
+import '../printing/printer_screen.dart';
 import '../push/push_service.dart';
 import '../extras/support_screen.dart';
 import '../expenses/expenses_screen.dart';
@@ -244,6 +245,14 @@ class SettingsScreen extends ConsumerWidget {
             label: s.languageLabel,
             trailingText: languageName,
             onTap: () => _chooseLanguage(context, ref),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          _MenuItem(
+            icon: Icons.print_rounded,
+            iconColor: AppColors.info,
+            iconBackground: AppColors.infoSurface,
+            label: s.printerTitle,
+            onTap: () => _push(context, const PrinterScreen()),
           ),
           const SizedBox(height: AppSpacing.md),
           _MenuItem(

@@ -38,6 +38,7 @@ class ExpensesListState {
     bool? isLoading,
     List<Expense>? items,
     ExpensesSummary? summary,
+    bool clearSummary = false,
     ApiException? error,
     bool clearError = false,
     int? periodIndex,
@@ -46,7 +47,7 @@ class ExpensesListState {
     return ExpensesListState(
       isLoading: isLoading ?? this.isLoading,
       items: items ?? this.items,
-      summary: summary ?? this.summary,
+      summary: clearSummary ? null : (summary ?? this.summary),
       error: clearError ? null : (error ?? this.error),
       periodIndex: periodIndex ?? this.periodIndex,
       categoryIndex: categoryIndex ?? this.categoryIndex,
@@ -86,8 +87,15 @@ class ExpensesController extends StateNotifier<ExpensesListState> {
             ? null
             : categories[state.categoryIndex - 1],
       );
-      final ExpensesSummary summary =
-          await _repository.summary(period: period);
+      // 30 kun / "barchasi" jamlanmasi Pro'da; bepul/Standartda ro'yxat ko'rinadi, jamlanma yo'q.
+      ExpensesSummary? summary;
+      try {
+        summary = await _repository.summary(period: period);
+      } on ApiException catch (error) {
+        if (error.code != 'plan_required') {
+          rethrow;
+        }
+      }
       if (requestId != _requestId || !mounted) {
         return;
       }
@@ -95,6 +103,7 @@ class ExpensesController extends StateNotifier<ExpensesListState> {
         isLoading: false,
         items: items,
         summary: summary,
+        clearSummary: summary == null,
       );
     } on ApiException catch (error) {
       if (requestId != _requestId || !mounted) {

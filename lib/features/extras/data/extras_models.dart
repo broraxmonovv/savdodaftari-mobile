@@ -296,3 +296,52 @@ class AlertItem {
   final int? daysLeft;
   final String? plan;
 }
+
+/// `POST /ai/voice` javobi: ovozli buyruq tahlili (Pro).
+@immutable
+class VoiceResult {
+  const VoiceResult({
+    required this.intent,
+    required this.message,
+    required this.needsConfirmation,
+    required this.params,
+    required this.result,
+  });
+
+  factory VoiceResult.fromJson(Map<String, dynamic> json) {
+    final Object? params = json['params'];
+    final Object? result = json['result'];
+    return VoiceResult(
+      intent: json['intent']?.toString() ?? 'unknown',
+      message: json['message']?.toString() ?? '',
+      needsConfirmation: json['needs_confirmation'] == true,
+      params: params is Map ? params.cast<String, dynamic>() : const <String, dynamic>{},
+      result: result is Map ? result.cast<String, dynamic>() : null,
+    );
+  }
+
+  /// debt_add | debt_payment | stock_in | show_sales | show_profit |
+  /// show_debts | show_low_stock | unknown
+  final String intent;
+  final String message;
+
+  /// true — amal tayyor, foydalanuvchi tasdiqlashi kerak.
+  final bool needsConfirmation;
+  final Map<String, dynamic> params;
+
+  /// O'qish so'rovlari uchun ma'lumot (savdo, qarzdorlar, kam qoldiq).
+  final Map<String, dynamic>? result;
+
+  bool get isWrite =>
+      intent == 'debt_add' || intent == 'debt_payment' || intent == 'stock_in';
+
+  List<Map<String, dynamic>> paramList(String key) {
+    final Object? value = params[key];
+    return value is List
+        ? value
+            .whereType<Map<Object?, Object?>>()
+            .map((Map<Object?, Object?> e) => e.cast<String, dynamic>())
+            .toList()
+        : const <Map<String, dynamic>>[];
+  }
+}

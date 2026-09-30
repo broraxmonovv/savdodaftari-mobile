@@ -117,4 +117,13 @@ class ExtrasRepository {
   Future<void> unregisterDevice(String token) async {
     await _client.delete('/devices', body: <String, dynamic>{'token': token});
   }
+
+  /// POST /ai/voice — ovozli buyruq matnini tahlil qiladi (faqat Pro).
+  Future<VoiceResult> voice(String text) async {
+    final ApiResponse response = await _client.post(
+      '/ai/voice',
+      body: <String, dynamic>{'text': text},
+    );
+    return VoiceResult.fromJson(response.dataMap);
+  }
 }

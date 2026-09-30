@@ -352,6 +352,42 @@ class AppStrings {
     required this.alertOutOfStockTemplate,
     required this.alertLowStockTemplate,
     required this.alertSubscriptionTemplate,
+    required this.scanTitle,
+    required this.scanHint,
+    required this.scanProductNotFound,
+    required this.scanOutOfStock,
+    required this.scanAddedTemplate,
+    required this.scanButton,
+    required this.torchLabel,
+    required this.printAction,
+    required this.printerTitle,
+    required this.printerNone,
+    required this.printerPairedHint,
+    required this.printerPaper,
+    required this.printerTest,
+    required this.printerPrinted,
+    required this.printerFailed,
+    required this.printerPermission,
+    required this.printerBluetoothOff,
+    required this.printerNoDevices,
+    required this.printerChange,
+    required this.voiceTitle,
+    required this.voiceIntro,
+    required this.voiceExample,
+    required this.voiceListening,
+    required this.voiceProcessing,
+    required this.voiceTypeHint,
+    required this.voiceSend,
+    required this.voiceConfirm,
+    required this.voiceDone,
+    required this.voiceChooseCustomer,
+    required this.voiceChooseProduct,
+    required this.voiceProTitle,
+    required this.voiceProBody,
+    required this.proUpgradeAction,
+    required this.voiceUnavailable,
+    required this.voiceTalkAgain,
+    required this.reportsProRequired,
   });
 
   final String localeCode;
@@ -744,6 +780,44 @@ class AppStrings {
   final String alertOutOfStockTemplate;
   final String alertLowStockTemplate;
   final String alertSubscriptionTemplate;
+  final String scanTitle;
+  final String scanHint;
+  final String scanProductNotFound;
+  final String scanOutOfStock;
+  final String scanAddedTemplate;
+  final String scanButton;
+  final String torchLabel;
+  final String printAction;
+  final String printerTitle;
+  final String printerNone;
+  final String printerPairedHint;
+  final String printerPaper;
+  final String printerTest;
+  final String printerPrinted;
+  final String printerFailed;
+  final String printerPermission;
+  final String printerBluetoothOff;
+  final String printerNoDevices;
+  final String printerChange;
+  final String voiceTitle;
+  final String voiceIntro;
+  final String voiceExample;
+  final String voiceListening;
+  final String voiceProcessing;
+  final String voiceTypeHint;
+  final String voiceSend;
+  final String voiceConfirm;
+  final String voiceDone;
+  final String voiceChooseCustomer;
+  final String voiceChooseProduct;
+  final String voiceProTitle;
+  final String voiceProBody;
+  final String proUpgradeAction;
+  final String voiceUnavailable;
+  final String voiceTalkAgain;
+  final String reportsProRequired;
+
+  String scanAddedText(String name) => scanAddedTemplate.replaceAll('{name}', name);
 
   String alertText(
     String template, {
@@ -1344,6 +1418,42 @@ class AppStrings {
     alertOutOfStockTemplate: "{name} — omborda qolmadi",
     alertLowStockTemplate: "{name}: qoldiq {stock} {unit} (minimal {min})",
     alertSubscriptionTemplate: "{plan} tarifingiz {days} kundan keyin tugaydi",
+    scanTitle: "Barcode skanerlash",
+    scanHint: "Barcode'ni kamera ramkasiga tushiring",
+    scanProductNotFound: "Mahsulot topilmadi",
+    scanOutOfStock: "Omborda qolmagan",
+    scanAddedTemplate: "Savatga qo'shildi: {name}",
+    scanButton: "Skanerlash",
+    torchLabel: "Chiroq",
+    printAction: "Chop etish",
+    printerTitle: "Chek printeri (Bluetooth)",
+    printerNone: "Printer tanlanmagan",
+    printerPairedHint: "Avval telefon Bluetooth sozlamalarida printerni ulang (juftlang), so'ng shu yerdan tanlang.",
+    printerPaper: "Qog'oz kengligi",
+    printerTest: "Sinov cheki",
+    printerPrinted: "Chek chop etildi",
+    printerFailed: "Chop etib bo'lmadi. Printer yoqilgani va juftlangani tekshiring.",
+    printerPermission: "Bluetooth ruxsati kerak.",
+    printerBluetoothOff: "Bluetooth o'chiq. Uni yoqing.",
+    printerNoDevices: "Juftlangan printer topilmadi.",
+    printerChange: "Printerni o'zgartirish",
+    voiceTitle: "Ovozli boshqaruv",
+    voiceIntro: "Mikrofonni bosing va buyruq ayting",
+    voiceExample: "Masalan: \"Ali akaga 150 ming qarz yoz\"",
+    voiceListening: "Eshityapman…",
+    voiceProcessing: "Tahlil qilinmoqda…",
+    voiceTypeHint: "Yoki buyruqni yozing",
+    voiceSend: "Yuborish",
+    voiceConfirm: "Tasdiqlash",
+    voiceDone: "Bajarildi",
+    voiceChooseCustomer: "Mijozni tanlang",
+    voiceChooseProduct: "Mahsulotni tanlang",
+    voiceProTitle: "Pro funksiya",
+    voiceProBody: "Ovozli boshqaruv va AI yordamchi Pro tarifda ishlaydi.",
+    proUpgradeAction: "Pro'ga o'tish",
+    voiceUnavailable: "Ovozni taniy olmadi. Buyruqni yozib yuboring.",
+    voiceTalkAgain: "Qayta gapirish",
+    reportsProRequired: "30 kunlik va ixtiyoriy oraliq hisobot Pro tarifida ochiladi.",
   );
 
   static const AppStrings ru = AppStrings(
@@ -1701,6 +1811,42 @@ class AppStrings {
     alertOutOfStockTemplate: "{name} — закончился на складе",
     alertLowStockTemplate: "{name}: остаток {stock} {unit} (минимум {min})",
     alertSubscriptionTemplate: "Ваш тариф {plan} закончится через {days} дн.",
+    scanTitle: "Сканирование штрихкода",
+    scanHint: "Наведите камеру на штрихкод",
+    scanProductNotFound: "Товар не найден",
+    scanOutOfStock: "Нет на складе",
+    scanAddedTemplate: "Добавлено в корзину: {name}",
+    scanButton: "Сканировать",
+    torchLabel: "Фонарик",
+    printAction: "Печать",
+    printerTitle: "Принтер чеков (Bluetooth)",
+    printerNone: "Принтер не выбран",
+    printerPairedHint: "Сначала подключите (сопрягите) принтер в настройках Bluetooth телефона, затем выберите его здесь.",
+    printerPaper: "Ширина бумаги",
+    printerTest: "Пробный чек",
+    printerPrinted: "Чек напечатан",
+    printerFailed: "Не удалось напечатать. Проверьте, что принтер включён и сопряжён.",
+    printerPermission: "Нужно разрешение Bluetooth.",
+    printerBluetoothOff: "Bluetooth выключен. Включите его.",
+    printerNoDevices: "Сопряжённых принтеров не найдено.",
+    printerChange: "Сменить принтер",
+    voiceTitle: "Голосовое управление",
+    voiceIntro: "Нажмите микрофон и скажите команду",
+    voiceExample: "Например: «Запиши долг Али 150 тысяч»",
+    voiceListening: "Слушаю…",
+    voiceProcessing: "Анализирую…",
+    voiceTypeHint: "Или введите команду",
+    voiceSend: "Отправить",
+    voiceConfirm: "Подтвердить",
+    voiceDone: "Выполнено",
+    voiceChooseCustomer: "Выберите клиента",
+    voiceChooseProduct: "Выберите товар",
+    voiceProTitle: "Функция Pro",
+    voiceProBody: "Голосовое управление и AI-помощник доступны на тарифе Pro.",
+    proUpgradeAction: "Перейти на Pro",
+    voiceUnavailable: "Не удалось распознать речь. Введите команду текстом.",
+    voiceTalkAgain: "Сказать снова",
+    reportsProRequired: "Отчёты за 30 дней и за произвольный период доступны на тарифе Pro.",
   );
 }
 

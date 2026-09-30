@@ -8,6 +8,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_dimens.dart';
 import '../../core/utils/money.dart';
 import '../../core/widgets/widgets.dart';
+import '../scanner/barcode_scanner_screen.dart';
 import 'data/product_models.dart';
 import 'data/products_repository.dart';
 import 'state/products_providers.dart';
@@ -72,6 +73,14 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
           productUnits.indexOf(product.unit).clamp(0, productUnits.length - 1);
       _buyPrice = product.buyPrice?.round() ?? 0;
       _sellPrice = product.sellPrice.round();
+    }
+  }
+
+  /// Kamera bilan barcode skanerlab maydonga yozadi.
+  Future<void> _scanBarcode() async {
+    final String? code = await scanBarcode(context);
+    if (code != null && mounted) {
+      setState(() => _barcodeController.text = code);
     }
   }
 
@@ -192,6 +201,14 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                     controller: _barcodeController,
                     textInputAction: TextInputAction.next,
                     prefixIcon: Icons.qr_code_rounded,
+                    suffix: IconButton(
+                      tooltip: s.scanButton,
+                      icon: const Icon(
+                        Icons.qr_code_scanner_rounded,
+                        color: AppColors.primary,
+                      ),
+                      onPressed: _scanBarcode,
+                    ),
                   ),
                   const SizedBox(height: AppSpacing.lg),
                   Text(

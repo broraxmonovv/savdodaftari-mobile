@@ -6,6 +6,7 @@ import '../../core/network/api_error_text.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_dimens.dart';
 import '../../core/widgets/widgets.dart';
+import '../scanner/barcode_scanner_screen.dart';
 import 'data/product_models.dart';
 import 'product_detail_screen.dart';
 import 'product_form_screen.dart';
@@ -90,6 +91,14 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
             child: SearchField(
               hint: s.searchHint,
               controller: _searchController,
+              trailingIcon: Icons.qr_code_scanner_rounded,
+              onTrailingTap: () async {
+                final String? code = await scanBarcode(context);
+                if (code != null && mounted) {
+                  _searchController.text = code;
+                  notifier.setSearch(code);
+                }
+              },
               onChanged: notifier.setSearch,
             ),
           ),

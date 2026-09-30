@@ -2,6 +2,16 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <!-- Android 13+: push-bildirishnomalar ruxsati -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <!-- Barcode skaner -->
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-feature android:name="android.hardware.camera" android:required="false"/>
+    <!-- Ovozli boshqaruv -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <!-- Bluetooth chek printeri (XPrinter): Android 12+ va eski versiyalar -->
+    <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN"/>
     <application
         android:label="sotuvdaftar"
         android:name="${applicationName}"
@@ -40,6 +50,10 @@
 
          In particular, this is used by the Flutter engine in io.flutter.plugin.text.ProcessTextPlugin. -->
     <queries>
+        <!-- Ovoz tanish xizmati (speech_to_text) -->
+        <intent>
+            <action android:name="android.speech.RecognitionService"/>
+        </intent>
         <!-- Payme/Click checkout sahifasini brauzerda ochish (url_launcher) -->
         <intent>
             <action android:name="android.intent.action.VIEW"/>

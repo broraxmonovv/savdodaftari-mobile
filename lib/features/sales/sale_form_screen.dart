@@ -16,6 +16,7 @@ import '../inventory/data/product_models.dart';
 import '../inventory/state/products_providers.dart';
 import 'data/sale_models.dart';
 import 'data/sales_repository.dart';
+import '../scanner/barcode_scanner_screen.dart';
 import 'receipt_sheet.dart';
 import 'state/sales_providers.dart';
 
@@ -113,7 +114,11 @@ class _SaleFormScreenState extends ConsumerState<SaleFormScreen> {
     if (picked == null || !mounted) {
       return;
     }
+    _applyPicked(picked);
+  }
 
+  /// Tanlangan mahsulot yoki tezkor qatorni savatga qo'shadi.
+  void _applyPicked(Object picked) {
     setState(() {
       _itemsError = null;
       if (picked is Product) {
@@ -134,6 +139,65 @@ class _SaleFormScreenState extends ConsumerState<SaleFormScreen> {
         _lines.add(_CartLine.quick(name: picked.name, price: picked.price));
       }
     });
+  }
+
+  /// Kamera bilan barcode skanerlab mahsulotni savatga qo'shadi (Standart va Pro).
+  Future<void> _scanAndAdd() async {
+    final String? code = await scanBarcode(context);
+    if (code == null || !mounted) {
+      return;
+    }
+    final AppStrings s = context.s;
+    final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+
+    try {
+      final Product product =
+          await ref.read(productsRepositoryProvider).byBarcode(code);
+      if (!mounted) {
+        return;
+      }
+      if (product.stock < 1) {
+        messenger.showSnackBar(
+          SnackBar(content: Text('${product.name}: ${s.scanOutOfStock}')),
+        );
+        return;
+      }
+      _applyPicked(product);
+      messenger.showSnackBar(
+        SnackBar(content: Text(s.scanAddedText(product.name))),
+      );
+    } on ApiException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      if (error.code == 'product_not_found') {
+        // Mahsulot topilmasa: "Tezkor mahsulot qo'shish" (TZ 6).
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text('${s.scanProductNotFound}: $code'),
+            action: SnackBarAction(
+              label: s.quickAddProductTitle,
+              onPressed: _quickAddFromScan,
+            ),
+          ),
+        );
+      } else {
+        messenger.showSnackBar(
+          SnackBar(content: Text(apiErrorText(s, error))),
+        );
+      }
+    }
+  }
+
+  Future<void> _quickAddFromScan() async {
+    final _QuickItem? item = await showModalBottomSheet<_QuickItem>(
+      context: context,
+      isScrollControlled: true,
+      builder: (BuildContext context) => const _QuickItemSheet(),
+    );
+    if (item != null && mounted) {
+      _applyPicked(item);
+    }
   }
 
   Future<void> _pickCustomer() async {
@@ -283,28 +347,45 @@ class _SaleFormScreenState extends ConsumerState<SaleFormScreen> {
                     ),
                     const SizedBox(height: AppSpacing.sm),
                   ],
-                  AppCard(
-                    onTap: _addProduct,
-                    padding: const EdgeInsets.all(AppSpacing.md),
-                    borderColor: _itemsError == null
-                        ? AppColors.border
-                        : AppColors.danger,
-                    shadows: const <BoxShadow>[],
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        const Icon(
-                          Icons.add_rounded,
+                  Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: AppCard(
+                            onTap: _addProduct,
+                            padding: const EdgeInsets.all(AppSpacing.md),
+                            borderColor: _itemsError == null
+                                ? AppColors.border
+                                : AppColors.danger,
+                            shadows: const <BoxShadow>[],
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                const Icon(
+                                  Icons.add_rounded,
+                                  color: AppColors.primary,
+                                ),
+                                const SizedBox(width: AppSpacing.sm),
+                                Text(
+                                  s.addProductLabel,
+                                  style: textTheme.titleSmall
+                                      ?.copyWith(color: AppColors.primary),
+                                ),
+                              ],
+                            ),
+                          ),
+                      ),
+                      const SizedBox(width: AppSpacing.sm),
+                      AppCard(
+                        onTap: _scanAndAdd,
+                        padding: const EdgeInsets.all(AppSpacing.md),
+                        borderColor: AppColors.border,
+                        shadows: const <BoxShadow>[],
+                        child: const Icon(
+                          Icons.qr_code_scanner_rounded,
                           color: AppColors.primary,
                         ),
-                        const SizedBox(width: AppSpacing.sm),
-                        Text(
-                          s.addProductLabel,
-                          style: textTheme.titleSmall
-                              ?.copyWith(color: AppColors.primary),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                   if (_itemsError != null) ...<Widget>[
                     const SizedBox(height: AppSpacing.xs),
@@ -626,6 +707,7 @@ class _ProductPickerSheet extends ConsumerStatefulWidget {
 }
 
 class _ProductPickerSheetState extends ConsumerState<_ProductPickerSheet> {
+  final TextEditingController _searchController = TextEditingController();
   List<Product> _all = <Product>[];
   String _query = '';
   bool _isLoading = true;
@@ -635,6 +717,28 @@ class _ProductPickerSheetState extends ConsumerState<_ProductPickerSheet> {
   void initState() {
     super.initState();
     _load();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  /// Barcode skanerlaydi: aniq moslik bo'lsa darhol tanlanadi, aks holda qidiruvga qo'yiladi.
+  Future<void> _scan() async {
+    final String? code = await scanBarcode(context);
+    if (code == null || !mounted) {
+      return;
+    }
+    _searchController.text = code;
+    setState(() => _query = code);
+    final List<Product> exact = _all
+        .where((Product it) => it.barcode == code && it.stock >= 1)
+        .toList();
+    if (exact.length == 1) {
+      Navigator.of(context).pop(exact.first);
+    }
   }
 
   Future<void> _load() async {
@@ -714,6 +818,9 @@ class _ProductPickerSheetState extends ConsumerState<_ProductPickerSheet> {
                 const SizedBox(height: AppSpacing.md),
                 SearchField(
                   hint: s.searchHint,
+                  controller: _searchController,
+                  trailingIcon: Icons.qr_code_scanner_rounded,
+                  onTrailingTap: _scan,
                   onChanged: (String value) =>
                       setState(() => _query = value),
                 ),

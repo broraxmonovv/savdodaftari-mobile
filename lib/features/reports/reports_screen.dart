@@ -6,6 +6,8 @@ import '../../core/network/api_error_text.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_dimens.dart';
 import '../../core/widgets/widgets.dart';
+import '../auth/state/auth_providers.dart';
+import '../billing/pro_upsell.dart';
 import 'state/reports_providers.dart';
 
 /// TZ 17-bo'lim: hisobot va analitika — Bugun / 7 kun / 30 kun / Custom.
@@ -53,6 +55,20 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
   }
 
   void _onPeriodSelected(int index) {
+    // 30 kun va ixtiyoriy oraliq — Pro (TZ 35); Bugun va 7 kun hammada ochiq.
+    final bool isPro = ref.read(authControllerProvider).user?.isPro ?? false;
+    if (index >= 2 && !isPro) {
+      final AppStrings s = context.s;
+      showProUpsell(
+        context,
+        ref,
+        title: s.voiceProTitle,
+        body: s.reportsProRequired,
+        icon: Icons.bar_chart_rounded,
+      );
+      return;
+    }
+
     final ReportsState state = ref.read(reportsControllerProvider);
     ref.read(reportsControllerProvider.notifier).setPeriod(index);
     if (index == 3 && (state.customFrom == null || state.customTo == null)) {

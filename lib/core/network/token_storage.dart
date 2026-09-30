@@ -10,6 +10,7 @@ class TokenStorage {
   static const String _onboardingKey = 'onboarding_seen';
   static const String _localeKey = 'locale';
   static const String _themeKey = 'theme_mode';
+  static const String _printerKey = 'printer';
 
   Future<String?> readToken() => _storage.read(key: _tokenKey);
 
@@ -35,4 +36,12 @@ class TokenStorage {
 
   Future<void> writeThemeMode(String mode) =>
       _storage.write(key: _themeKey, value: mode);
+
+  /// Tanlangan Bluetooth printer: `mac|name|paper` (paper: 58 yoki 80).
+  Future<String?> readPrinter() => _storage.read(key: _printerKey);
+
+  Future<void> writePrinter(String value) =>
+      _storage.write(key: _printerKey, value: value);
+
+  Future<void> clearPrinter() => _storage.delete(key: _printerKey);
 }
