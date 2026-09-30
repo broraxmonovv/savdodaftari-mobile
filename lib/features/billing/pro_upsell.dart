@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/l10n/app_strings.dart';
+import '../../core/network/api_error_text.dart';
+import '../../core/network/api_exception.dart';
 import '../../core/theme/app_colors.dart';
 import '../auth/state/auth_providers.dart';
 import 'plans_screen.dart';
@@ -42,4 +44,28 @@ Future<void> showProUpsell(
     );
     await ref.read(authControllerProvider.notifier).refreshUser();
   }
+}
+
+/// API xatosini ko'rsatadi. Mijoz/mahsulot limiti (`limit_reached`) bo'lsa — tarifga
+/// o'tish taklifi (backend xabari bilan), aks holda oddiy snackbar.
+Future<void> showApiErrorOrUpsell(
+  BuildContext context,
+  WidgetRef ref,
+  ApiException error,
+) async {
+  final AppStrings s = context.s;
+
+  if (error.code == 'limit_reached') {
+    await showProUpsell(
+      context,
+      ref,
+      title: s.limitReachedTitle,
+      body: error.message,
+      icon: Icons.lock_outline_rounded,
+    );
+    return;
+  }
+
+  ScaffoldMessenger.of(context)
+      .showSnackBar(SnackBar(content: Text(apiErrorText(s, error))));
 }

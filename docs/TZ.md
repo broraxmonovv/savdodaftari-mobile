@@ -557,3 +557,7 @@ Sozlamalar → *AI yordamchi* yoki bosh sahifadagi ✨ tugmasi: chat ko'rinishid
 
 - **Excel/PDF eksport:** Hisobot ekranidagi ⬇ tugmasi: tur (Hisobot, Savdolar, Xarajatlar, Qarzlar, Ombor) va format tanlanadi, tanlangan davr uchun fayl backenddan olinib ulashish oynasi ochiladi (saqlash, Telegram, email).
 - **Zaxira nusxa:** Sozlamalar → *Zaxira nusxa*: hozir zaxira yaratish, ro'yxat (sana, hajm, mijoz/savdo/mahsulot soni), **tiklash** (ogohlantirish bilan; backend avval joriy holatning avtomatik zaxirasini oladi) va o'chirish.
+
+### 40.4 Mijoz/mahsulot limitlari
+
+Pro — cheksiz. Bepul va Standart tarifda mijoz/mahsulot soni cheklangan (Bepul: 30 mijoz; Standart: admin panelda belgilanadi, boshlang'ich 300 mijoz / 500 mahsulot). Limitga yetilganda backend `403 limit_reached` qaytaradi, ilova tarifga o'tish taklifini ko'rsatadi.

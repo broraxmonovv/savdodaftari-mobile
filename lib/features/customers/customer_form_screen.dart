@@ -3,11 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/l10n/app_strings.dart';
-import '../../core/network/api_error_text.dart';
 import '../../core/network/api_exception.dart';
 import '../../core/theme/app_dimens.dart';
 import '../../core/utils/phone.dart';
 import '../../core/widgets/widgets.dart';
+import '../billing/pro_upsell.dart';
 import 'data/customer_models.dart';
 import 'state/customers_providers.dart';
 
@@ -105,9 +105,7 @@ class _CustomerFormScreenState extends ConsumerState<CustomerFormScreen> {
         return;
       }
       setState(() => _isBusy = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(apiErrorText(context.s, error))),
-      );
+      showApiErrorOrUpsell(context, ref, error);
     }
   }
 

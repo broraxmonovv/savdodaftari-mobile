@@ -436,6 +436,7 @@ class AppStrings {
     required this.backupDeleteConfirm,
     required this.backupProBody,
     required this.backupCountsTemplate,
+    required this.limitReachedTitle,
   });
 
   final String localeCode;
@@ -912,6 +913,7 @@ class AppStrings {
   final String backupDeleteConfirm;
   final String backupProBody;
   final String backupCountsTemplate;
+  final String limitReachedTitle;
 
   String backupCountsText(int customers, int sales, int products) =>
       backupCountsTemplate
@@ -1612,6 +1614,7 @@ class AppStrings {
     backupDeleteConfirm: "Zaxirani o'chirasizmi?",
     backupProBody: "Bulut zaxira Pro tarifda ishlaydi.",
     backupCountsTemplate: "Mijoz: {customers} · Savdo: {sales} · Mahsulot: {products}",
+    limitReachedTitle: "Limitga yetdingiz",
   );
 
   static const AppStrings ru = AppStrings(
@@ -2053,6 +2056,7 @@ class AppStrings {
     backupDeleteConfirm: "Удалить копию?",
     backupProBody: "Облачная копия доступна на тарифе Pro.",
     backupCountsTemplate: "Клиентов: {customers} · Продаж: {sales} · Товаров: {products}",
+    limitReachedTitle: "Достигнут лимит",
   );
 }
 

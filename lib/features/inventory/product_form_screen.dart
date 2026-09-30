@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/l10n/app_strings.dart';
-import '../../core/network/api_error_text.dart';
 import '../../core/network/api_exception.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_dimens.dart';
 import '../../core/utils/money.dart';
 import '../../core/widgets/widgets.dart';
+import '../billing/pro_upsell.dart';
 import '../scanner/barcode_scanner_screen.dart';
 import 'data/product_models.dart';
 import 'data/products_repository.dart';
@@ -150,9 +150,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
         return;
       }
       setState(() => _isBusy = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(apiErrorText(context.s, error))),
-      );
+      showApiErrorOrUpsell(context, ref, error);
     }
   }
 
