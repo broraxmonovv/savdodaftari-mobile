@@ -76,7 +76,7 @@ class NotificationsScreen extends ConsumerWidget {
         ],
       ),
       body: list.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const SkeletonList(),
         error: (Object error, StackTrace _) => EmptyState(
           icon: Icons.wifi_off_rounded,
           title: s.errorNetwork,
@@ -167,8 +167,7 @@ class _AnnouncementTile extends StatelessWidget {
             child: Icon(
               Icons.campaign_rounded,
               size: 22,
-              color:
-                  item.isRead ? AppColors.textSecondary : AppColors.primary,
+              color: item.isRead ? AppColors.textSecondary : AppColors.primary,
             ),
           ),
           const SizedBox(width: AppSpacing.md),

@@ -240,8 +240,7 @@ class _SaleFormScreenState extends ConsumerState<SaleFormScreen> {
     if (_hasDebtPart && _customer == null) {
       customerError = s.validationDebtCustomerRequired;
     }
-    if (_method == 'mixed' &&
-        _mixedCash + _mixedCard + _mixedDebt != _total) {
+    if (_method == 'mixed' && _mixedCash + _mixedCard + _mixedDebt != _total) {
       mixedError = s.mixedMismatchText(Money.format(_total));
     }
 
@@ -323,8 +322,7 @@ class _SaleFormScreenState extends ConsumerState<SaleFormScreen> {
     final AppStrings s = context.s;
     final TextTheme textTheme = Theme.of(context).textTheme;
     final Customer? customer = _customer;
-    final int mixedRemaining =
-        _total - _mixedCash - _mixedCard - _mixedDebt;
+    final int mixedRemaining = _total - _mixedCash - _mixedCard - _mixedDebt;
 
     return Scaffold(
       appBar: AppBar(title: Text(s.saleNewTitle)),
@@ -351,28 +349,28 @@ class _SaleFormScreenState extends ConsumerState<SaleFormScreen> {
                     children: <Widget>[
                       Expanded(
                         child: AppCard(
-                            onTap: _addProduct,
-                            padding: const EdgeInsets.all(AppSpacing.md),
-                            borderColor: _itemsError == null
-                                ? AppColors.border
-                                : AppColors.danger,
-                            shadows: const <BoxShadow>[],
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                const Icon(
-                                  Icons.add_rounded,
-                                  color: AppColors.primary,
-                                ),
-                                const SizedBox(width: AppSpacing.sm),
-                                Text(
-                                  s.addProductLabel,
-                                  style: textTheme.titleSmall
-                                      ?.copyWith(color: AppColors.primary),
-                                ),
-                              ],
-                            ),
+                          onTap: _addProduct,
+                          padding: const EdgeInsets.all(AppSpacing.md),
+                          borderColor: _itemsError == null
+                              ? AppColors.border
+                              : AppColors.danger,
+                          shadows: const <BoxShadow>[],
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              const Icon(
+                                Icons.add_rounded,
+                                color: AppColors.primary,
+                              ),
+                              const SizedBox(width: AppSpacing.sm),
+                              Text(
+                                s.addProductLabel,
+                                style: textTheme.titleSmall
+                                    ?.copyWith(color: AppColors.primary),
+                              ),
+                            ],
                           ),
+                        ),
                       ),
                       const SizedBox(width: AppSpacing.sm),
                       AppCard(
@@ -489,8 +487,7 @@ class _SaleFormScreenState extends ConsumerState<SaleFormScreen> {
                         ),
                         if (customer != null)
                           IconButton(
-                            onPressed: () =>
-                                setState(() => _customer = null),
+                            onPressed: () => setState(() => _customer = null),
                             icon: Icon(
                               Icons.close_rounded,
                               size: 20,
@@ -549,8 +546,7 @@ class _SaleFormScreenState extends ConsumerState<SaleFormScreen> {
                           ),
                           if (_dueDate != null)
                             TextButton(
-                              onPressed: () =>
-                                  setState(() => _dueDate = null),
+                              onPressed: () => setState(() => _dueDate = null),
                               child: Text(
                                 s.clearLabel,
                                 style: textTheme.labelMedium?.copyWith(
@@ -567,8 +563,7 @@ class _SaleFormScreenState extends ConsumerState<SaleFormScreen> {
                   // —— Chegirma va izoh
                   MoneyInput(
                     label: s.discountOptionalLabel,
-                    onChanged: (int value) =>
-                        setState(() => _discount = value),
+                    onChanged: (int value) => setState(() => _discount = value),
                   ),
                   const SizedBox(height: AppSpacing.lg),
                   AppTextField(
@@ -821,15 +816,14 @@ class _ProductPickerSheetState extends ConsumerState<_ProductPickerSheet> {
                   controller: _searchController,
                   trailingIcon: Icons.qr_code_scanner_rounded,
                   onTrailingTap: _scan,
-                  onChanged: (String value) =>
-                      setState(() => _query = value),
+                  onChanged: (String value) => setState(() => _query = value),
                 ),
               ],
             ),
           ),
           Expanded(
             child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
+                ? const SkeletonList(count: 5, padding: EdgeInsets.zero)
                 : _error != null
                     ? EmptyState(
                         icon: Icons.wifi_off_rounded,
@@ -855,14 +849,12 @@ class _ProductPickerSheetState extends ConsumerState<_ProductPickerSheet> {
                             separatorBuilder:
                                 (BuildContext context, int index) =>
                                     const SizedBox(height: AppSpacing.sm),
-                            itemBuilder:
-                                (BuildContext context, int index) {
+                            itemBuilder: (BuildContext context, int index) {
                               final Product product = items[index];
                               return _ProductTile(
                                 product: product,
                                 onTap: product.stock >= 1
-                                    ? () => Navigator.of(context)
-                                        .pop(product)
+                                    ? () => Navigator.of(context).pop(product)
                                     : null,
                               );
                             },
@@ -1126,15 +1118,14 @@ class _CustomerPickerSheetState extends ConsumerState<_CustomerPickerSheet> {
                 const SizedBox(height: AppSpacing.md),
                 SearchField(
                   hint: s.searchHint,
-                  onChanged: (String value) =>
-                      setState(() => _query = value),
+                  onChanged: (String value) => setState(() => _query = value),
                 ),
               ],
             ),
           ),
           Expanded(
             child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
+                ? const SkeletonList(count: 5, padding: EdgeInsets.zero)
                 : _error != null
                     ? EmptyState(
                         icon: Icons.wifi_off_rounded,
@@ -1160,12 +1151,10 @@ class _CustomerPickerSheetState extends ConsumerState<_CustomerPickerSheet> {
                             separatorBuilder:
                                 (BuildContext context, int index) =>
                                     const SizedBox(height: AppSpacing.sm),
-                            itemBuilder:
-                                (BuildContext context, int index) {
+                            itemBuilder: (BuildContext context, int index) {
                               final Customer customer = items[index];
                               return AppCard(
-                                padding:
-                                    const EdgeInsets.all(AppSpacing.md),
+                                padding: const EdgeInsets.all(AppSpacing.md),
                                 onTap: () =>
                                     Navigator.of(context).pop(customer),
                                 child: Row(

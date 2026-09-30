@@ -129,7 +129,7 @@ class _PrinterScreenState extends ConsumerState<PrinterScreen> {
     return Scaffold(
       appBar: AppBar(title: Text(s.printerTitle)),
       body: _loading
-          ? const Center(child: CircularProgressIndicator())
+          ? const SkeletonDetail()
           : ListView(
               padding: const EdgeInsets.all(AppSpacing.screen),
               children: <Widget>[

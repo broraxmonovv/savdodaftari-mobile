@@ -59,7 +59,7 @@ class _CurrenciesScreenState extends ConsumerState<CurrenciesScreen> {
     return Scaffold(
       appBar: AppBar(title: Text(s.currencyTitle)),
       body: rates.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const SkeletonList(),
         error: (Object error, StackTrace _) => EmptyState(
           icon: Icons.wifi_off_rounded,
           title: s.errorNetwork,

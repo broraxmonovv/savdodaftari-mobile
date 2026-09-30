@@ -136,7 +136,7 @@ class BonusesScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: Text(s.bonusTitle)),
       body: summary.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const SkeletonDetail(),
         error: (Object error, StackTrace _) => EmptyState(
           icon: Icons.wifi_off_rounded,
           title: s.errorNetwork,

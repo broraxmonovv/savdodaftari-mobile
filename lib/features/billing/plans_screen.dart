@@ -73,7 +73,8 @@ class _PlansScreenState extends ConsumerState<PlansScreen>
   }
 
   /// To'lov usuli: Payme, Click yoki (balans yetsa) bonus balansi.
-  Future<_PayMethod?> _chooseMethod({required double bonus, required int price}) {
+  Future<_PayMethod?> _chooseMethod(
+      {required double bonus, required int price}) {
     final AppStrings s = context.s;
     return showModalBottomSheet<_PayMethod>(
       context: context,
@@ -113,8 +114,7 @@ class _PlansScreenState extends ConsumerState<PlansScreen>
                 if (bonus >= price) ...<Widget>[
                   const SizedBox(height: AppSpacing.md),
                   AppButton(
-                    label:
-                        '${s.payWithBonus} (${Money.format(bonus)})',
+                    label: '${s.payWithBonus} (${Money.format(bonus)})',
                     icon: Icons.card_giftcard_rounded,
                     variant: AppButtonVariant.outline,
                     onPressed: () =>
@@ -151,7 +151,9 @@ class _PlansScreenState extends ConsumerState<PlansScreen>
     setState(() => _busy = true);
     try {
       if (method == _PayMethod.bonus) {
-        await ref.read(extrasRepositoryProvider).payPlanWithBonus(plan.apiValue);
+        await ref
+            .read(extrasRepositoryProvider)
+            .payPlanWithBonus(plan.apiValue);
         await ref.read(authControllerProvider.notifier).refreshUser();
         ref.invalidate(bonusesProvider);
         ref.invalidate(billingPlansProvider);
@@ -258,7 +260,7 @@ class _PlansScreenState extends ConsumerState<PlansScreen>
     return Scaffold(
       appBar: AppBar(title: Text(s.planScreenTitle)),
       body: plans.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const SkeletonDetail(),
         error: (Object error, StackTrace _) => EmptyState(
           icon: Icons.wifi_off_rounded,
           title: s.errorNetwork,
@@ -351,8 +353,7 @@ class _PlansScreenState extends ConsumerState<PlansScreen>
             currentBadge: trial ? s.trialBadge : null,
             isIncluded: current == UserPlan.pro,
             showAction: (current == UserPlan.free || trial) && _orderId == null,
-            actionLabel:
-                trial ? s.standardExtendAction : s.planActivateAction,
+            actionLabel: trial ? s.standardExtendAction : s.planActivateAction,
             busy: _busy,
             onAction: () => _start(UserPlan.standard, standard.price),
           ),
@@ -456,7 +457,8 @@ class _Pill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 2),
+      padding:
+          const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 2),
       decoration: BoxDecoration(
         color: color.withOpacity(0.14),
         borderRadius: BorderRadius.circular(999),

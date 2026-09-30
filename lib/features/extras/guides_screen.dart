@@ -23,7 +23,7 @@ class GuidesScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: Text(s.guidesTitle)),
       body: guides.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const SkeletonList(),
         error: (Object error, StackTrace _) => EmptyState(
           icon: Icons.wifi_off_rounded,
           title: s.errorNetwork,

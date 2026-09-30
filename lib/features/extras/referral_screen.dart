@@ -34,7 +34,7 @@ class ReferralScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: Text(s.referralTitle)),
       body: info.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const SkeletonDetail(),
         error: (Object error, StackTrace _) => EmptyState(
           icon: Icons.wifi_off_rounded,
           title: s.errorNetwork,
@@ -59,8 +59,8 @@ class ReferralScreen extends ConsumerWidget {
                   children: <Widget>[
                     Text(
                       s.referralBodyText(percent),
-                      style: textTheme.bodyMedium
-                          ?.copyWith(color: Colors.white),
+                      style:
+                          textTheme.bodyMedium?.copyWith(color: Colors.white),
                     ),
                   ],
                 ),

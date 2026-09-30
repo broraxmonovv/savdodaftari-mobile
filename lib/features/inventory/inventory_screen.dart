@@ -20,7 +20,8 @@ class InventoryScreen extends ConsumerStatefulWidget {
   ConsumerState<InventoryScreen> createState() => _InventoryScreenState();
 }
 
-class _InventoryScreenState extends ConsumerState<InventoryScreen> {
+class _InventoryScreenState extends ConsumerState<InventoryScreen>
+    with RefreshSkeletonMixin {
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -128,8 +129,8 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
     ProductsListState state,
     ProductsController notifier,
   ) {
-    if (state.isLoading && state.items.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
+    if (state.isLoading && state.items.isEmpty || refreshing) {
+      return const SkeletonList(leadingSquare: true);
     }
 
     if (state.error != null && state.items.isEmpty) {
@@ -165,7 +166,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
 
     return RefreshIndicator(
       color: AppColors.primary,
-      onRefresh: notifier.load,
+      onRefresh: refreshWrap(notifier.load),
       child: ListView.separated(
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.fromLTRB(
@@ -264,10 +265,8 @@ class _SummaryBadge extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: Theme.of(context)
-            .textTheme
-            .labelSmall
-            ?.copyWith(color: foreground),
+        style:
+            Theme.of(context).textTheme.labelSmall?.copyWith(color: foreground),
       ),
     );
   }

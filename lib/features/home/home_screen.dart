@@ -37,7 +37,8 @@ class HomeScreen extends ConsumerStatefulWidget {
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends ConsumerState<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen>
+    with RefreshSkeletonMixin {
   Timer? _badgeTimer;
 
   @override
@@ -95,8 +96,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _buildBody(AppStrings s, HomeDashboardState state, String userName) {
-    if (state.isLoading && !state.hasData) {
-      return const Center(child: CircularProgressIndicator());
+    if (state.isLoading && !state.hasData || refreshing) {
+      return const SkeletonHome();
     }
 
     if (state.error != null && !state.hasData) {
@@ -119,7 +120,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     return RefreshIndicator(
       color: AppColors.primary,
-      onRefresh: _reload,
+      onRefresh: refreshWrap(_reload),
       child: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.only(bottom: AppSpacing.xxxl),
@@ -222,7 +223,8 @@ class _Header extends ConsumerWidget {
             ),
             child: Text(
               initial,
-              style: textTheme.titleMedium?.copyWith(color: AppColors.darkGreen),
+              style:
+                  textTheme.titleMedium?.copyWith(color: AppColors.darkGreen),
             ),
           ),
           const SizedBox(width: AppSpacing.md),

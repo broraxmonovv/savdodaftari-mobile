@@ -22,7 +22,8 @@ class ReportsScreen extends ConsumerStatefulWidget {
   ConsumerState<ReportsScreen> createState() => _ReportsScreenState();
 }
 
-class _ReportsScreenState extends ConsumerState<ReportsScreen> {
+class _ReportsScreenState extends ConsumerState<ReportsScreen>
+    with RefreshSkeletonMixin {
   @override
   void initState() {
     super.initState();
@@ -43,10 +44,9 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
       context: context,
       firstDate: now.subtract(const Duration(days: 365 * 3)),
       lastDate: now,
-      initialDateRange:
-          state.customFrom != null && state.customTo != null
-              ? DateTimeRange(start: state.customFrom!, end: state.customTo!)
-              : null,
+      initialDateRange: state.customFrom != null && state.customTo != null
+          ? DateTimeRange(start: state.customFrom!, end: state.customTo!)
+          : null,
     );
     if (picked != null) {
       ref
@@ -150,8 +150,8 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
     ReportsState state,
     ReportsController notifier,
   ) {
-    if (state.isLoading && !state.hasData) {
-      return const Center(child: CircularProgressIndicator());
+    if (state.isLoading && !state.hasData || refreshing) {
+      return const SkeletonCards();
     }
 
     if (state.error != null && !state.hasData) {
@@ -171,7 +171,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
 
     return RefreshIndicator(
       color: AppColors.primary,
-      onRefresh: notifier.load,
+      onRefresh: refreshWrap(notifier.load),
       child: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.fromLTRB(

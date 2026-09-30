@@ -104,7 +104,8 @@ class _BackupsScreenState extends ConsumerState<BackupsScreen> {
     if (!ok || !mounted) {
       return;
     }
-    await _run(() => ref.read(extrasRepositoryProvider).deleteBackup(backup.id));
+    await _run(
+        () => ref.read(extrasRepositoryProvider).deleteBackup(backup.id));
   }
 
   static String _size(int bytes) {
@@ -126,7 +127,7 @@ class _BackupsScreenState extends ConsumerState<BackupsScreen> {
     return Scaffold(
       appBar: AppBar(title: Text(s.backupTitle)),
       body: backups.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const SkeletonList(),
         error: (Object error, StackTrace _) => EmptyState(
           icon: Icons.wifi_off_rounded,
           title: s.errorNetwork,
@@ -214,7 +215,8 @@ class _BackupsScreenState extends ConsumerState<BackupsScreen> {
                           const SizedBox(width: AppSpacing.sm),
                           FilledButton.tonalIcon(
                             onPressed: _busy ? null : () => _restore(backup),
-                            icon: const Icon(Icons.settings_backup_restore_rounded),
+                            icon: const Icon(
+                                Icons.settings_backup_restore_rounded),
                             label: Text(s.backupRestore),
                           ),
                         ],

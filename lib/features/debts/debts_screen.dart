@@ -20,7 +20,8 @@ class DebtsScreen extends ConsumerStatefulWidget {
   ConsumerState<DebtsScreen> createState() => _DebtsScreenState();
 }
 
-class _DebtsScreenState extends ConsumerState<DebtsScreen> {
+class _DebtsScreenState extends ConsumerState<DebtsScreen>
+    with RefreshSkeletonMixin {
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -64,8 +65,7 @@ class _DebtsScreenState extends ConsumerState<DebtsScreen> {
   Widget build(BuildContext context) {
     final AppStrings s = context.s;
     final DebtsListState state = ref.watch(debtsControllerProvider);
-    final DebtsController notifier =
-        ref.read(debtsControllerProvider.notifier);
+    final DebtsController notifier = ref.read(debtsControllerProvider.notifier);
 
     return Scaffold(
       appBar: AppBar(title: Text(s.navDebts)),
@@ -112,8 +112,8 @@ class _DebtsScreenState extends ConsumerState<DebtsScreen> {
     DebtsListState state,
     DebtsController notifier,
   ) {
-    if (state.isLoading && state.items.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
+    if (state.isLoading && state.items.isEmpty || refreshing) {
+      return const SkeletonList();
     }
 
     if (state.error != null && state.items.isEmpty) {
@@ -145,7 +145,7 @@ class _DebtsScreenState extends ConsumerState<DebtsScreen> {
 
     return RefreshIndicator(
       color: AppColors.primary,
-      onRefresh: notifier.load,
+      onRefresh: refreshWrap(notifier.load),
       child: ListView.separated(
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.fromLTRB(
@@ -296,9 +296,7 @@ class _DebtTile extends StatelessWidget {
               MoneyText(
                 debt.isPaid ? debt.amount : debt.remaining,
                 size: 15,
-                color: debt.isPaid
-                    ? AppColors.textSecondary
-                    : AppColors.danger,
+                color: debt.isPaid ? AppColors.textSecondary : AppColors.danger,
               ),
               const SizedBox(height: 2),
               Text(

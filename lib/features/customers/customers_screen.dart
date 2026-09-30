@@ -20,7 +20,8 @@ class CustomersScreen extends ConsumerStatefulWidget {
   ConsumerState<CustomersScreen> createState() => _CustomersScreenState();
 }
 
-class _CustomersScreenState extends ConsumerState<CustomersScreen> {
+class _CustomersScreenState extends ConsumerState<CustomersScreen>
+    with RefreshSkeletonMixin {
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -112,8 +113,8 @@ class _CustomersScreenState extends ConsumerState<CustomersScreen> {
     CustomersListState state,
     CustomersController notifier,
   ) {
-    if (state.isLoading && state.items.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
+    if (state.isLoading && state.items.isEmpty || refreshing) {
+      return const SkeletonList();
     }
 
     if (state.error != null && state.items.isEmpty) {
@@ -145,7 +146,7 @@ class _CustomersScreenState extends ConsumerState<CustomersScreen> {
 
     return RefreshIndicator(
       color: AppColors.primary,
-      onRefresh: notifier.load,
+      onRefresh: refreshWrap(notifier.load),
       child: ListView.separated(
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.fromLTRB(
@@ -222,8 +223,8 @@ class _CustomerTile extends StatelessWidget {
               ] else
                 Text(
                   s.noDebtLabel,
-                  style: textTheme.bodySmall
-                      ?.copyWith(color: AppColors.primary),
+                  style:
+                      textTheme.bodySmall?.copyWith(color: AppColors.primary),
                 ),
             ],
           ),

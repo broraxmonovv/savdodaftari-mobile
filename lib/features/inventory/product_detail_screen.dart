@@ -124,8 +124,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   Future<void> _edit() async {
     final bool? changed = await Navigator.of(context).push<bool>(
       MaterialPageRoute<bool>(
-        builder: (BuildContext context) =>
-            ProductFormScreen(product: _product),
+        builder: (BuildContext context) => ProductFormScreen(product: _product),
       ),
     );
     if (changed == true && mounted) {
@@ -200,7 +199,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   Widget _buildBody(AppStrings s, Product? product) {
     if (product == null) {
       if (_isLoading) {
-        return const Center(child: CircularProgressIndicator());
+        return const SkeletonDetail();
       }
       return EmptyState(
         icon: Icons.wifi_off_rounded,
@@ -332,8 +331,8 @@ class _ProductHeaderCard extends StatelessWidget {
               label: s.marginLabel,
               child: Text(
                 '${margin.toStringAsFixed(0)}%',
-                style: textTheme.titleSmall
-                    ?.copyWith(color: AppColors.darkGreen),
+                style:
+                    textTheme.titleSmall?.copyWith(color: AppColors.darkGreen),
               ),
             ),
           _InfoRow(
@@ -412,9 +411,7 @@ class _MovementTile extends StatelessWidget {
               borderRadius: AppRadius.field,
             ),
             child: Icon(
-              isIn
-                  ? Icons.arrow_downward_rounded
-                  : Icons.arrow_upward_rounded,
+              isIn ? Icons.arrow_downward_rounded : Icons.arrow_upward_rounded,
               size: 20,
               color: color,
             ),

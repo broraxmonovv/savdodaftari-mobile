@@ -21,7 +21,8 @@ class ExpensesScreen extends ConsumerStatefulWidget {
   ConsumerState<ExpensesScreen> createState() => _ExpensesScreenState();
 }
 
-class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
+class _ExpensesScreenState extends ConsumerState<ExpensesScreen>
+    with RefreshSkeletonMixin {
   @override
   void initState() {
     super.initState();
@@ -114,8 +115,8 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
     ExpensesListState state,
     ExpensesController notifier,
   ) {
-    if (state.isLoading && state.items.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
+    if (state.isLoading && state.items.isEmpty || refreshing) {
+      return const SkeletonList();
     }
 
     if (state.error != null && state.items.isEmpty) {
@@ -147,7 +148,7 @@ class _ExpensesScreenState extends ConsumerState<ExpensesScreen> {
 
     return RefreshIndicator(
       color: AppColors.primary,
-      onRefresh: notifier.load,
+      onRefresh: refreshWrap(notifier.load),
       child: ListView.separated(
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.fromLTRB(

@@ -98,7 +98,7 @@ class _SaleDetailScreenState extends ConsumerState<SaleDetailScreen> {
     return Scaffold(
       appBar: AppBar(title: Text(s.historySale)),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const SkeletonDetail()
           : _error != null
               ? EmptyState(
                   icon: Icons.wifi_off_rounded,
@@ -126,9 +126,7 @@ class _SaleDetailScreenState extends ConsumerState<SaleDetailScreen> {
               Text(
                 s.saleStatusLabel(sale.status),
                 style: textTheme.labelMedium?.copyWith(
-                  color: sale.hasReturns
-                      ? AppColors.danger
-                      : AppColors.primary,
+                  color: sale.hasReturns ? AppColors.danger : AppColors.primary,
                 ),
               ),
               const SizedBox(height: AppSpacing.md),

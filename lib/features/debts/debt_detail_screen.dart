@@ -143,7 +143,7 @@ class _DebtDetailScreenState extends ConsumerState<DebtDetailScreen> {
 
   Widget _buildBody(AppStrings s, Debt? debt) {
     if (debt == null && _isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const SkeletonDetail();
     }
 
     if (debt == null) {
@@ -228,8 +228,7 @@ class _DebtDetailScreenState extends ConsumerState<DebtDetailScreen> {
                   MoneyText(
                     debt.remaining,
                     size: 18,
-                    color:
-                        debt.isPaid ? AppColors.primary : AppColors.danger,
+                    color: debt.isPaid ? AppColors.primary : AppColors.danger,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.md),
@@ -237,9 +236,7 @@ class _DebtDetailScreenState extends ConsumerState<DebtDetailScreen> {
                   textTheme,
                   s.dueDateShort,
                   Text(
-                    debt.dueDate == null
-                        ? '—'
-                        : _formatDate(debt.dueDate!),
+                    debt.dueDate == null ? '—' : _formatDate(debt.dueDate!),
                     style: textTheme.titleSmall?.copyWith(
                       color: debt.isOverdue
                           ? AppColors.danger
@@ -487,8 +484,7 @@ class _DebtPaymentSheetState extends ConsumerState<_DebtPaymentSheet> {
                 labels: s.payMethods,
                 selectedIndex: _methodIndex,
                 padding: EdgeInsets.zero,
-                onSelected: (int index) =>
-                    setState(() => _methodIndex = index),
+                onSelected: (int index) => setState(() => _methodIndex = index),
               ),
               const SizedBox(height: AppSpacing.lg),
               AppTextField(

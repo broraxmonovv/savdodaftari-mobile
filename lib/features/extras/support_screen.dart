@@ -22,7 +22,7 @@ class SupportScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: Text(s.supportTitle)),
       body: info.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const SkeletonDetail(),
         error: (Object error, StackTrace _) => EmptyState(
           icon: Icons.wifi_off_rounded,
           title: s.errorNetwork,

@@ -14,5 +14,6 @@ export 'pin_input.dart';
 export 'product_quantity_selector.dart';
 export 'quick_action_button.dart';
 export 'search_field.dart';
+export 'skeleton.dart';
 export 'section_title.dart';
 export 'stat_card.dart';

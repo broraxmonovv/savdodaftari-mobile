@@ -20,7 +20,8 @@ class SalesScreen extends ConsumerStatefulWidget {
   ConsumerState<SalesScreen> createState() => _SalesScreenState();
 }
 
-class _SalesScreenState extends ConsumerState<SalesScreen> {
+class _SalesScreenState extends ConsumerState<SalesScreen>
+    with RefreshSkeletonMixin {
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -51,8 +52,7 @@ class _SalesScreenState extends ConsumerState<SalesScreen> {
   Future<void> _openDetail(Sale sale) async {
     await Navigator.of(context).push<void>(
       MaterialPageRoute<void>(
-        builder: (BuildContext context) =>
-            SaleDetailScreen(saleId: sale.id),
+        builder: (BuildContext context) => SaleDetailScreen(saleId: sale.id),
       ),
     );
     if (mounted) {
@@ -64,8 +64,7 @@ class _SalesScreenState extends ConsumerState<SalesScreen> {
   Widget build(BuildContext context) {
     final AppStrings s = context.s;
     final SalesListState state = ref.watch(salesControllerProvider);
-    final SalesController notifier =
-        ref.read(salesControllerProvider.notifier);
+    final SalesController notifier = ref.read(salesControllerProvider.notifier);
 
     return Scaffold(
       appBar: AppBar(title: Text(s.salesHistoryTitle)),
@@ -112,8 +111,8 @@ class _SalesScreenState extends ConsumerState<SalesScreen> {
     SalesListState state,
     SalesController notifier,
   ) {
-    if (state.isLoading && state.items.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
+    if (state.isLoading && state.items.isEmpty || refreshing) {
+      return const SkeletonList();
     }
 
     if (state.error != null && state.items.isEmpty) {
@@ -145,7 +144,7 @@ class _SalesScreenState extends ConsumerState<SalesScreen> {
 
     return RefreshIndicator(
       color: AppColors.primary,
-      onRefresh: notifier.load,
+      onRefresh: refreshWrap(notifier.load),
       child: ListView.separated(
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.fromLTRB(
@@ -252,12 +251,10 @@ class _SaleTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final AppStrings s = context.s;
     final TextTheme textTheme = Theme.of(context).textTheme;
-    final int? itemsCount = sale.itemsCount ??
-        (sale.items.isEmpty ? null : sale.items.length);
+    final int? itemsCount =
+        sale.itemsCount ?? (sale.items.isEmpty ? null : sale.items.length);
     final String title = sale.customer?.name ??
-        (itemsCount == null
-            ? s.historySale
-            : s.productsCountText(itemsCount));
+        (itemsCount == null ? s.historySale : s.productsCountText(itemsCount));
 
     return AppCard(
       onTap: onTap,
@@ -302,8 +299,8 @@ class _SaleTile extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   s.saleStatusLabel(sale.status),
-                  style: textTheme.labelSmall
-                      ?.copyWith(color: AppColors.danger),
+                  style:
+                      textTheme.labelSmall?.copyWith(color: AppColors.danger),
                 ),
               ],
             ],

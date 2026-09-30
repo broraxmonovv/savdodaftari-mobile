@@ -88,8 +88,7 @@ class _DebtFormScreenState extends ConsumerState<DebtFormScreen> {
     final AppStrings s = context.s;
 
     setState(() {
-      _customerError =
-          _customer == null ? s.validationCustomerRequired : null;
+      _customerError = _customer == null ? s.validationCustomerRequired : null;
       _amountError = _amount <= 0 ? s.validationAmountInvalid : null;
     });
     if (_customerError != null || _amountError != null) {
@@ -349,15 +348,14 @@ class _CustomerPickerSheetState extends ConsumerState<_CustomerPickerSheet> {
                 const SizedBox(height: AppSpacing.md),
                 SearchField(
                   hint: s.searchHint,
-                  onChanged: (String value) =>
-                      setState(() => _query = value),
+                  onChanged: (String value) => setState(() => _query = value),
                 ),
               ],
             ),
           ),
           Expanded(
             child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
+                ? const SkeletonList(count: 5, padding: EdgeInsets.zero)
                 : _error != null
                     ? EmptyState(
                         icon: Icons.wifi_off_rounded,
@@ -386,8 +384,7 @@ class _CustomerPickerSheetState extends ConsumerState<_CustomerPickerSheet> {
                             itemBuilder: (BuildContext context, int index) {
                               final Customer customer = items[index];
                               return AppCard(
-                                padding:
-                                    const EdgeInsets.all(AppSpacing.md),
+                                padding: const EdgeInsets.all(AppSpacing.md),
                                 onTap: () =>
                                     Navigator.of(context).pop(customer),
                                 child: Row(

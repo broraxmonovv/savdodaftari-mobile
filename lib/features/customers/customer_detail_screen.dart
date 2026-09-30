@@ -106,9 +106,7 @@ class _CustomerDetailScreenState extends ConsumerState<CustomerDetailScreen> {
     }
 
     try {
-      await ref
-          .read(customersRepositoryProvider)
-          .delete(widget.customerId);
+      await ref.read(customersRepositoryProvider).delete(widget.customerId);
       if (!mounted) {
         return;
       }
@@ -193,7 +191,7 @@ class _CustomerDetailScreenState extends ConsumerState<CustomerDetailScreen> {
 
   Widget _buildBody(AppStrings s, Customer? customer) {
     if (customer == null && _isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const SkeletonDetail();
     }
 
     if (customer == null) {
@@ -270,8 +268,7 @@ class _CustomerDetailScreenState extends ConsumerState<CustomerDetailScreen> {
                   Align(
                     alignment: Alignment.centerRight,
                     child: _Badge(
-                      label:
-                          '${s.overdueLabel}: ${customer.overdueDebtsCount}',
+                      label: '${s.overdueLabel}: ${customer.overdueDebtsCount}',
                     ),
                   ),
                 ],
@@ -309,10 +306,8 @@ class _CustomerDetailScreenState extends ConsumerState<CustomerDetailScreen> {
           Text(s.historyTitle, style: textTheme.titleMedium),
           const SizedBox(height: AppSpacing.md),
           if (_isLoading && _items.isEmpty)
-            const Padding(
-              padding: EdgeInsets.all(AppSpacing.xxl),
-              child: Center(child: CircularProgressIndicator()),
-            )
+            const SkeletonList(
+                count: 3, shrinkWrap: true, padding: EdgeInsets.zero)
           else if (_items.isEmpty)
             EmptyState(
               icon: Icons.history_rounded,
@@ -432,7 +427,8 @@ class _HistoryTile extends StatelessWidget {
                 Row(
                   children: <Widget>[
                     Text(label, style: textTheme.titleSmall),
-                    if (item.type == HistoryType.debt && item.isOverdue) ...<Widget>[
+                    if (item.type == HistoryType.debt &&
+                        item.isOverdue) ...<Widget>[
                       const SizedBox(width: AppSpacing.sm),
                       _Badge(label: s.overdueLabel),
                     ],
@@ -510,8 +506,7 @@ class _PaymentSheetState extends ConsumerState<_PaymentSheet> {
     try {
       final CustomersRepository repository =
           ref.read(customersRepositoryProvider);
-      final ({Customer customer, String message}) result =
-          await repository.pay(
+      final ({Customer customer, String message}) result = await repository.pay(
         widget.customer.id,
         amount: _amount,
         method: _methodKeys[_methodIndex],
@@ -579,8 +574,7 @@ class _PaymentSheetState extends ConsumerState<_PaymentSheet> {
                 labels: s.payMethods,
                 selectedIndex: _methodIndex,
                 padding: EdgeInsets.zero,
-                onSelected: (int index) =>
-                    setState(() => _methodIndex = index),
+                onSelected: (int index) => setState(() => _methodIndex = index),
               ),
               const SizedBox(height: AppSpacing.lg),
               AppTextField(
