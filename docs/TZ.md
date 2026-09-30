@@ -548,3 +548,7 @@ Pro tarifni faollashtirish to'liq backend API orqali, checkout sahifasiga o'tish
 ### 40.1 Eski daftarni ko'chirish (OCR, Pro)
 
 Sozlamalar → *Eski daftarni ko'chirish*: daftar sahifasi kamera yoki galereyadan olinadi → AI (Claude, backend `POST /ai/ocr-import`) mijoz ismi va qarz summalarini ajratadi → **tekshirish ekrani** (har qatorni tahrirlash/belgini olib tashlash, noaniq qatorlar "Tekshirish kerak" belgisi bilan, bazadagi mijozlar "Mavjud mijoz" belgisi bilan) → "Import qilish" (`/ai/ocr-import/confirm`): mavjud mijozga qarz qo'shiladi, yo'q bo'lsa mijoz yaratiladi. Foydalanuvchi tasdiqlamaguncha hech narsa yozilmaydi. Backendda `ANTHROPIC_API_KEY` sozlanishi shart.
+
+### 40.2 AI biznes yordamchi (Pro)
+
+Sozlamalar → *AI yordamchi* yoki bosh sahifadagi ✨ tugmasi: chat ko'rinishidagi savol-javob (tayyor savollar: "Bugun qancha foyda qildim?", "Kimlarning qarzi muddati o'tgan?", ...). Javoblar backend `/ai/assistant` orqali foydalanuvchining haqiqiy ma'lumotlariga asoslanadi; yordamchi ma'lumotni o'zgartirmaydi. Pro bo'lmaganlarga Pro taklifi ko'rsatiladi.

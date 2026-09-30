@@ -19,6 +19,7 @@ import '../debts/debt_form_screen.dart';
 import '../debts/debts_screen.dart';
 import '../expenses/expenses_screen.dart';
 import '../extras/notifications_screen.dart';
+import '../assistant/assistant_screen.dart';
 import '../voice/voice_sheet.dart';
 import '../extras/state/extras_providers.dart';
 import '../inventory/inventory_screen.dart';
@@ -237,6 +238,11 @@ class _Header extends ConsumerWidget {
                 Text(today, style: textTheme.labelSmall),
               ],
             ),
+          ),
+          IconButton(
+            onPressed: () => openAssistant(context, ref),
+            tooltip: s.assistantTitle,
+            icon: const Icon(Icons.auto_awesome_outlined, size: 24),
           ),
           IconButton(
             onPressed: () => openVoiceAssistant(context, ref),

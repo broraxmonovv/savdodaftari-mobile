@@ -19,6 +19,7 @@ import '../extras/bonuses_screen.dart';
 import '../extras/currencies_screen.dart';
 import '../extras/guides_screen.dart';
 import '../extras/referral_screen.dart';
+import '../assistant/assistant_screen.dart';
 import '../ocr/ocr_import_screen.dart';
 import '../printing/printer_screen.dart';
 import '../push/push_service.dart';
@@ -246,6 +247,15 @@ class SettingsScreen extends ConsumerWidget {
             label: s.languageLabel,
             trailingText: languageName,
             onTap: () => _chooseLanguage(context, ref),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          _MenuItem(
+            icon: Icons.auto_awesome_rounded,
+            iconColor: AppColors.darkGreen,
+            iconBackground: AppColors.lightGreen,
+            label: s.assistantTitle,
+            trailingText: 'Pro',
+            onTap: () => openAssistant(context, ref),
           ),
           const SizedBox(height: AppSpacing.md),
           _MenuItem(

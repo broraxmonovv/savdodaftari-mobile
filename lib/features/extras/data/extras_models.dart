@@ -401,3 +401,14 @@ class OcrImportSummary {
   final int debtsCreated;
   final double total;
 }
+
+/// AI yordamchi suhbatidagi xabar (`role`: user | assistant).
+@immutable
+class ChatMessage {
+  const ChatMessage({required this.role, required this.content});
+
+  final String role;
+  final String content;
+
+  bool get isUser => role == 'user';
+}

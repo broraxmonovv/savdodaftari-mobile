@@ -163,4 +163,20 @@ class ExtrasRepository {
     );
     return OcrImportSummary.fromJson(response.dataMap);
   }
+
+  /// POST /ai/assistant — AI biznes yordamchi (Pro). [history]: oldingi xabarlar.
+  Future<String> assistant(String message, List<ChatMessage> history) async {
+    final ApiResponse response = await _client.post(
+      '/ai/assistant',
+      body: <String, dynamic>{
+        'message': message,
+        if (history.isNotEmpty)
+          'history': history
+              .map((ChatMessage m) =>
+                  <String, String>{'role': m.role, 'content': m.content})
+              .toList(),
+      },
+    );
+    return response.dataMap['reply']?.toString() ?? '';
+  }
 }

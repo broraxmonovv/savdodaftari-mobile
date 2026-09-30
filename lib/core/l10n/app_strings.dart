@@ -402,6 +402,16 @@ class AppStrings {
     required this.ocrSelectedTemplate,
     required this.ocrProBody,
     required this.ocrTryAgain,
+    required this.assistantTitle,
+    required this.assistantIntro,
+    required this.assistantHint,
+    required this.assistantThinking,
+    required this.assistantQ1,
+    required this.assistantQ2,
+    required this.assistantQ3,
+    required this.assistantQ4,
+    required this.assistantQ5,
+    required this.assistantProBody,
   });
 
   final String localeCode;
@@ -844,6 +854,16 @@ class AppStrings {
   final String ocrSelectedTemplate;
   final String ocrProBody;
   final String ocrTryAgain;
+  final String assistantTitle;
+  final String assistantIntro;
+  final String assistantHint;
+  final String assistantThinking;
+  final String assistantQ1;
+  final String assistantQ2;
+  final String assistantQ3;
+  final String assistantQ4;
+  final String assistantQ5;
+  final String assistantProBody;
 
   String ocrImportedText(int customers, int debts) => ocrImportedTemplate
       .replaceAll('{customers}', customers.toString())
@@ -1504,6 +1524,16 @@ class AppStrings {
     ocrSelectedTemplate: "{count} ta qator · {total}",
     ocrProBody: "Eski daftarni ko'chirish Pro tarifda ishlaydi.",
     ocrTryAgain: "Boshqa rasm",
+    assistantTitle: "AI yordamchi",
+    assistantIntro: "Biznesingiz haqida savol bering — javob sizning haqiqiy ma'lumotlaringiz asosida beriladi.",
+    assistantHint: "Savolingizni yozing…",
+    assistantThinking: "Javob tayyorlanmoqda…",
+    assistantQ1: "Bugun qancha foyda qildim?",
+    assistantQ2: "Kimlarning qarzi muddati o'tgan?",
+    assistantQ3: "Qaysi mahsulot eng ko'p foyda berdi?",
+    assistantQ4: "Bu oy o'tgan oyga nisbatan savdo qanday?",
+    assistantQ5: "10 dona kam qolgan mahsulotlarni ko'rsat",
+    assistantProBody: "AI biznes yordamchi Pro tarifda ishlaydi.",
   );
 
   static const AppStrings ru = AppStrings(
@@ -1911,6 +1941,16 @@ class AppStrings {
     ocrSelectedTemplate: "Строк: {count} · {total}",
     ocrProBody: "Перенос старой тетради доступен на тарифе Pro.",
     ocrTryAgain: "Другое фото",
+    assistantTitle: "AI-помощник",
+    assistantIntro: "Задайте вопрос о вашем бизнесе — ответ строится на ваших реальных данных.",
+    assistantHint: "Введите вопрос…",
+    assistantThinking: "Готовлю ответ…",
+    assistantQ1: "Сколько прибыли я получил сегодня?",
+    assistantQ2: "У кого просрочены долги?",
+    assistantQ3: "Какой товар принёс больше всего прибыли?",
+    assistantQ4: "Как продажи в этом месяце по сравнению с прошлым?",
+    assistantQ5: "Покажи товары, которых осталось меньше 10",
+    assistantProBody: "AI-помощник доступен на тарифе Pro.",
   );
 }
 
