@@ -107,7 +107,7 @@ class _PrinterScreenState extends ConsumerState<PrinterScreen> {
     setState(() => _busy = true);
     final PrintResult result =
         await ref.read(receiptPrinterProvider).printLines(config, <String>[
-      'BozorPro',
+      'Savdo Up',
       DateTime.now().toString().substring(0, 16),
       '--------------------------------',
       s.printerTest,

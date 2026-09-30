@@ -12,14 +12,14 @@ import 'locale_provider.dart';
 import 'router.dart';
 import 'theme_provider.dart';
 
-class BozorProApp extends ConsumerStatefulWidget {
-  const BozorProApp({super.key});
+class SavdoUpApp extends ConsumerStatefulWidget {
+  const SavdoUpApp({super.key});
 
   @override
-  ConsumerState<BozorProApp> createState() => _BozorProAppState();
+  ConsumerState<SavdoUpApp> createState() => _SavdoUpAppState();
 }
 
-class _BozorProAppState extends ConsumerState<BozorProApp>
+class _SavdoUpAppState extends ConsumerState<SavdoUpApp>
     with WidgetsBindingObserver {
   Brightness? _applied;
 
@@ -81,7 +81,7 @@ class _BozorProAppState extends ConsumerState<BozorProApp>
         ref.watch(authControllerProvider).status == AuthStatus.authenticated;
 
     return MaterialApp.router(
-      title: 'BozorPro',
+      title: 'Savdo Up',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.build(),
       routerConfig: appRouter,

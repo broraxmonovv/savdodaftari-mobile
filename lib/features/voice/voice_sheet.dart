@@ -59,6 +59,9 @@ class _VoiceSheetState extends ConsumerState<VoiceSheet> {
   final SpeechToText _speech = SpeechToText();
   final TextEditingController _input = TextEditingController();
 
+  /// Tanish tili: 'uz' yoki 'ru'. Boshlang'ich qiymat — ilova tili; foydalanuvchi
+  /// ilova tilidan qat'i nazar istalgan tilda gapira oladi (backend ikkalasini ham tushunadi).
+  String? _lang;
   bool _speechReady = false;
   bool _listening = false;
   bool _busy = false;
@@ -138,7 +141,7 @@ class _VoiceSheetState extends ConsumerState<VoiceSheet> {
       return;
     }
 
-    final String? localeId = await _pickLocale(context.s.localeCode);
+    final String? localeId = await _pickLocale(_lang ?? context.s.localeCode);
     if (!mounted) {
       return;
     }
@@ -276,7 +279,8 @@ class _VoiceSheetState extends ConsumerState<VoiceSheet> {
     final VoiceResult? result = _result;
 
     return Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      padding:
+          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(AppSpacing.screen),
@@ -286,7 +290,8 @@ class _VoiceSheetState extends ConsumerState<VoiceSheet> {
             children: <Widget>[
               Row(
                 children: <Widget>[
-                  Expanded(child: Text(s.voiceTitle, style: textTheme.titleMedium)),
+                  Expanded(
+                      child: Text(s.voiceTitle, style: textTheme.titleMedium)),
                   IconButton(
                     onPressed: () => Navigator.of(context).pop(),
                     icon: const Icon(Icons.close_rounded),
@@ -295,6 +300,23 @@ class _VoiceSheetState extends ConsumerState<VoiceSheet> {
                 ],
               ),
               const SizedBox(height: AppSpacing.sm),
+              Center(
+                child: SegmentedButton<String>(
+                  showSelectedIcon: false,
+                  segments: <ButtonSegment<String>>[
+                    ButtonSegment<String>(
+                        value: 'uz', label: Text(s.voiceLangUz)),
+                    ButtonSegment<String>(
+                        value: 'ru', label: Text(s.voiceLangRu)),
+                  ],
+                  selected: <String>{_lang ?? s.localeCode},
+                  onSelectionChanged: _listening
+                      ? null
+                      : (Set<String> value) =>
+                          setState(() => _lang = value.first),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.lg),
               Center(
                 child: GestureDetector(
                   onTap: _busy || _executing ? null : _toggleListening,
@@ -338,7 +360,8 @@ class _VoiceSheetState extends ConsumerState<VoiceSheet> {
                 suffix: IconButton(
                   tooltip: s.voiceSend,
                   onPressed: _busy ? null : () => _send(_input.text),
-                  icon: const Icon(Icons.send_rounded, color: AppColors.primary),
+                  icon:
+                      const Icon(Icons.send_rounded, color: AppColors.primary),
                 ),
               ),
               if (_error != null) ...<Widget>[
@@ -370,8 +393,9 @@ class _VoiceSheetState extends ConsumerState<VoiceSheet> {
         (r.intent == 'debt_add' || r.intent == 'debt_payment') &&
             _customerId == null &&
             customerCandidates.isNotEmpty;
-    final bool needsProduct =
-        r.intent == 'stock_in' && _productId == null && customerCandidates.isNotEmpty;
+    final bool needsProduct = r.intent == 'stock_in' &&
+        _productId == null &&
+        customerCandidates.isNotEmpty;
 
     return AppCard(
       color: _done ? AppColors.successSurface : null,
@@ -410,7 +434,10 @@ class _VoiceSheetState extends ConsumerState<VoiceSheet> {
               ],
             ),
           ],
-          if (!_done && r.isWrite && !r.needsConfirmation && _ready) ...<Widget>[
+          if (!_done &&
+              r.isWrite &&
+              !r.needsConfirmation &&
+              _ready) ...<Widget>[
             const SizedBox(height: AppSpacing.sm),
             Text(_summary(r), style: textTheme.bodyMedium),
           ],
@@ -481,7 +508,8 @@ class _VoiceSheetState extends ConsumerState<VoiceSheet> {
         Money.format(double.tryParse(data[key]?.toString() ?? '') ?? 0);
     final List<(String, String)> rows = <(String, String)>[
       if (data['sales_total'] != null) (s.statSales, money('sales_total')),
-      if (data['gross_profit'] != null) (s.grossProfitLabel, money('gross_profit')),
+      if (data['gross_profit'] != null)
+        (s.grossProfitLabel, money('gross_profit')),
       if (data['net_profit'] != null) (s.netProfitLabel, money('net_profit')),
     ];
     return <Widget>[

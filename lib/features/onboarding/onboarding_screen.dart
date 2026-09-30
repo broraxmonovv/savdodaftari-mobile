@@ -8,6 +8,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_dimens.dart';
 import '../../core/widgets/widgets.dart';
 import '../auth/state/auth_providers.dart';
+import 'onboarding_art.dart';
 
 /// TZ 2–4 ekranlar: uch sahifali onboarding + pagination dots.
 class OnboardingScreen extends ConsumerStatefulWidget {
@@ -60,6 +61,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         body: s.onboardingBody2,
       ),
       _OnboardingPageData(
+        icon: Icons.mic_rounded,
+        title: s.onboardingTitle4,
+        body: s.onboardingBody4,
+      ),
+      _OnboardingPageData(
         icon: Icons.insights_rounded,
         title: s.onboardingTitle3,
         body: s.onboardingBody3,
@@ -94,7 +100,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 itemCount: pages.length,
                 onPageChanged: (int value) => setState(() => _index = value),
                 itemBuilder: (BuildContext context, int index) =>
-                    _OnboardingPage(data: pages[index]),
+                    _OnboardingPage(data: pages[index], index: index),
               ),
             ),
             Row(
@@ -140,42 +146,40 @@ class _OnboardingPageData {
 }
 
 class _OnboardingPage extends StatelessWidget {
-  const _OnboardingPage({required this.data});
+  const _OnboardingPage({required this.data, required this.index});
 
   final _OnboardingPageData data;
+  final int index;
 
   @override
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Container(
-            height: 180,
-            width: 180,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: AppColors.lightGreen,
-              shape: BoxShape.circle,
+    return Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 320),
+              child: OnboardingArt(page: index),
             ),
-            child: Icon(data.icon, size: 76, color: AppColors.primary),
-          ),
-          const SizedBox(height: AppSpacing.xxxl),
-          Text(
-            data.title,
-            textAlign: TextAlign.center,
-            style: textTheme.headlineSmall,
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            data.body,
-            textAlign: TextAlign.center,
-            style: textTheme.bodyLarge?.copyWith(color: AppColors.textSecondary),
-          ),
-        ],
+            const SizedBox(height: AppSpacing.xxl),
+            Text(
+              data.title,
+              textAlign: TextAlign.center,
+              style: textTheme.headlineSmall,
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Text(
+              data.body,
+              textAlign: TextAlign.center,
+              style:
+                  textTheme.bodyLarge?.copyWith(color: AppColors.textSecondary),
+            ),
+          ],
+        ),
       ),
     );
   }

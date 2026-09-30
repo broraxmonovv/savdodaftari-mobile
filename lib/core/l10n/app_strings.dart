@@ -17,6 +17,11 @@ class AppStrings {
     required this.onboardingBody2,
     required this.onboardingTitle3,
     required this.onboardingBody3,
+    required this.voiceLangUz,
+    required this.voiceLangRu,
+    required this.onboardingTitle4,
+    required this.onboardingBody4,
+    required this.onboardingVoiceExample,
     required this.next,
     required this.start,
     required this.skip,
@@ -468,6 +473,11 @@ class AppStrings {
   final String onboardingBody2;
   final String onboardingTitle3;
   final String onboardingBody3;
+  final String voiceLangUz;
+  final String voiceLangRu;
+  final String onboardingTitle4;
+  final String onboardingBody4;
+  final String onboardingVoiceExample;
 
   final String next;
   final String start;
@@ -1229,7 +1239,12 @@ class AppStrings {
 
   static const AppStrings uz = AppStrings(
     localeCode: 'uz',
-    appName: 'BozorPro',
+    voiceLangUz: "O'zbekcha",
+    voiceLangRu: 'Русский',
+    onboardingTitle4: 'Ovoz bilan boshqaring',
+    onboardingBody4: '"Ali akaga 150 ming qarz yoz" deng — ilova o\'zi yozadi. O\'zbekcha va ruscha tushunadi.',
+    onboardingVoiceExample: 'Ali akaga 150 ming qarz yoz',
+    appName: 'Savdo Up',
     slogan: "Daftaringiz endi telefoningizda!",
     onboardingTitle1: "Qog'oz daftarni unuting",
     onboardingBody1: 'Mijozlar, qarzlar va savdoni telefoningizda saqlang.',
@@ -1535,7 +1550,7 @@ class AppStrings {
     referralCopy: "Nusxa olish",
     referralCopied: "Nusxa olindi",
     referralShare: "Telegram orqali ulashish",
-    referralShareTemplate: "BozorPro — bozorchi uchun raqamli daftar. Ro'yxatdan o'ting: {link} (referal kod: {code})",
+    referralShareTemplate: "Savdo Up — bozorchi uchun raqamli daftar. Ro'yxatdan o'ting: {link} (referal kod: {code})",
     referralInvited: "Taklif qilinganlar",
     referralPaying: "To'lov qilganlar",
     referralEarned: "Jami ishlangan bonus",
@@ -1709,7 +1724,12 @@ class AppStrings {
 
   static const AppStrings ru = AppStrings(
     localeCode: 'ru',
-    appName: 'BozorPro',
+    voiceLangUz: "O'zbekcha",
+    voiceLangRu: 'Русский',
+    onboardingTitle4: 'Управляйте голосом',
+    onboardingBody4: 'Скажите «Запиши Али долг 150 тысяч» — приложение запишет само. Понимает узбекский и русский.',
+    onboardingVoiceExample: 'Запиши Али долг 150 тысяч',
+    appName: 'Savdo Up',
     slogan: 'Ваша тетрадь теперь в телефоне!',
     onboardingTitle1: 'Забудьте о бумажной тетради',
     onboardingBody1: 'Храните клиентов, долги и продажи в телефоне.',
@@ -2015,7 +2035,7 @@ class AppStrings {
     referralCopy: "Копировать",
     referralCopied: "Скопировано",
     referralShare: "Поделиться в Telegram",
-    referralShareTemplate: "BozorPro — цифровая тетрадь для торговцев. Регистрация: {link} (реферальный код: {code})",
+    referralShareTemplate: "Savdo Up — цифровая тетрадь для торговцев. Регистрация: {link} (реферальный код: {code})",
     referralInvited: "Приглашено",
     referralPaying: "Оплатили",
     referralEarned: "Всего заработано бонусов",

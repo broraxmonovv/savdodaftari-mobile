@@ -62,7 +62,7 @@ class AppPalette {
   );
 }
 
-/// BozorPro brend ranglari — TZ v3, 0-bo'lim (Global design system).
+/// Savdo Up brend ranglari — TZ v3, 0-bo'lim (Global design system).
 ///
 /// Uslub: yashil akcent, minimalist SaaS ko'rinish. Brend/status ranglari
 /// ikkala rejimda bir xil (`const`), sirt va matn ranglari esa joriy
