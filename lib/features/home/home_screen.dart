@@ -283,14 +283,23 @@ class _PlanBanner extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AppStrings s = context.s;
     final TextTheme textTheme = Theme.of(context).textTheme;
-    final UserPlan plan =
-        ref.watch(authControllerProvider).user?.plan ?? UserPlan.free;
+    final AuthUser? user = ref.watch(authControllerProvider).user;
+    final UserPlan plan = user?.plan ?? UserPlan.free;
 
     if (plan == UserPlan.pro) {
       return const SizedBox.shrink();
     }
 
     final bool offerStandard = plan == UserPlan.free;
+
+    // Bepul sinov: qolgan kunlar va to'lab cho'zish taklifi.
+    final bool trial = plan == UserPlan.standard && (user?.isTrial ?? false);
+    final int trialDays = trial && user?.planExpiresAt != null
+        ? (user!.planExpiresAt!.difference(DateTime.now()).inHours / 24)
+            .ceil()
+            .clamp(0, 365)
+            .toInt()
+        : 0;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.screen),
@@ -323,12 +332,16 @@ class _PlanBanner extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    offerStandard ? s.bannerStandardTitle : s.proTitle,
+                    trial
+                        ? s.trialBannerTitle(trialDays)
+                        : (offerStandard ? s.bannerStandardTitle : s.proTitle),
                     style: textTheme.titleSmall?.copyWith(color: Colors.white),
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    offerStandard ? s.bannerStandardBody : s.proBody,
+                    trial
+                        ? s.trialBannerBody
+                        : (offerStandard ? s.bannerStandardBody : s.proBody),
                     style: textTheme.labelSmall?.copyWith(
                       color: Colors.white.withOpacity(0.8),
                     ),

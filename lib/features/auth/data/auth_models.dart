@@ -38,6 +38,7 @@ class AuthUser {
     this.hasPin = false,
     this.plan = UserPlan.free,
     this.planExpiresAt,
+    this.isTrial = false,
     bool? isProfileComplete,
   }) : _isProfileComplete = isProfileComplete;
 
@@ -55,6 +56,7 @@ class AuthUser {
       planExpiresAt: DateTime.tryParse(
         json['plan_expires_at']?.toString() ?? '',
       ),
+      isTrial: json['plan_is_trial'] == true,
       isProfileComplete: profileComplete is bool ? profileComplete : null,
     );
   }
@@ -72,6 +74,9 @@ class AuthUser {
 
   /// Pullik tarif amal qilish muddati (free uchun null).
   final DateTime? planExpiresAt;
+
+  /// Hozirgi tarif — bepul sinov Standarti (yangi foydalanuvchilarga 14 kun).
+  final bool isTrial;
   final bool? _isProfileComplete;
 
   /// Savdo va ombor bo'limlari ochiqmi (Standart yoki Pro).
@@ -92,6 +97,7 @@ class AuthUser {
     bool? hasPin,
     UserPlan? plan,
     DateTime? planExpiresAt,
+    bool? isTrial,
   }) {
     return AuthUser(
       id: id,
@@ -103,6 +109,7 @@ class AuthUser {
       hasPin: hasPin ?? this.hasPin,
       plan: plan ?? this.plan,
       planExpiresAt: planExpiresAt ?? this.planExpiresAt,
+      isTrial: isTrial ?? this.isTrial,
       isProfileComplete: _isProfileComplete,
     );
   }

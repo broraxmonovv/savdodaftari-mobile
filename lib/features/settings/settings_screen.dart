@@ -218,7 +218,9 @@ class SettingsScreen extends ConsumerWidget {
             iconColor: AppColors.darkGreen,
             iconBackground: AppColors.lightGreen,
             label: s.planScreenTitle,
-            trailingText: (user?.plan ?? UserPlan.free).label(s),
+            trailingText: (user?.isTrial ?? false)
+                ? '${UserPlan.standard.label(s)} · ${s.trialBadge}'
+                : (user?.plan ?? UserPlan.free).label(s),
             onTap: () async {
               await _push(context, const PlansScreen());
               await ref.read(authControllerProvider.notifier).refreshUser();

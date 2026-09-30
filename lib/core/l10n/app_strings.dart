@@ -437,6 +437,24 @@ class AppStrings {
     required this.backupProBody,
     required this.backupCountsTemplate,
     required this.limitReachedTitle,
+    required this.planDurationTemplate,
+    required this.planDurationUnlimited,
+    required this.limitCustomersTemplate,
+    required this.limitCustomersUnlimited,
+    required this.limitProductsTemplate,
+    required this.limitProductsUnlimited,
+    required this.trialBadge,
+    required this.trialBannerTitleTemplate,
+    required this.trialBannerBody,
+    required this.trialActiveTitle,
+    required this.trialActiveBodyTemplate,
+    required this.trialEndedTitle,
+    required this.trialEndedBody,
+    required this.standardExtendAction,
+    required this.planWhatIncluded,
+    required this.planFreeFeatures,
+    required this.planStandardFeatures,
+    required this.planProFeatures,
   });
 
   final String localeCode;
@@ -914,6 +932,40 @@ class AppStrings {
   final String backupProBody;
   final String backupCountsTemplate;
   final String limitReachedTitle;
+  final String planDurationTemplate;
+  final String planDurationUnlimited;
+  final String limitCustomersTemplate;
+  final String limitCustomersUnlimited;
+  final String limitProductsTemplate;
+  final String limitProductsUnlimited;
+  final String trialBadge;
+  final String trialBannerTitleTemplate;
+  final String trialBannerBody;
+  final String trialActiveTitle;
+  final String trialActiveBodyTemplate;
+  final String trialEndedTitle;
+  final String trialEndedBody;
+  final String standardExtendAction;
+  final String planWhatIncluded;
+  final List<String> planFreeFeatures;
+  final List<String> planStandardFeatures;
+  final List<String> planProFeatures;
+
+  String planDurationText(int days) =>
+      planDurationTemplate.replaceAll('{days}', days.toString());
+
+  String limitCustomersText(int? n) =>
+      n == null ? limitCustomersUnlimited : limitCustomersTemplate.replaceAll('{n}', n.toString());
+
+  String limitProductsText(int? n) =>
+      n == null ? limitProductsUnlimited : limitProductsTemplate.replaceAll('{n}', n.toString());
+
+  String trialBannerTitle(int days) =>
+      trialBannerTitleTemplate.replaceAll('{days}', days.toString());
+
+  String trialActiveBody(int days, String date) => trialActiveBodyTemplate
+      .replaceAll('{days}', days.toString())
+      .replaceAll('{date}', date);
 
   String backupCountsText(int customers, int sales, int products) =>
       backupCountsTemplate
@@ -1615,6 +1667,44 @@ class AppStrings {
     backupProBody: "Bulut zaxira Pro tarifda ishlaydi.",
     backupCountsTemplate: "Mijoz: {customers} · Savdo: {sales} · Mahsulot: {products}",
     limitReachedTitle: "Limitga yetdingiz",
+    planDurationTemplate: "Muddati: {days} kun",
+    planDurationUnlimited: "Muddati: cheksiz",
+    limitCustomersTemplate: "{n} tagacha mijoz",
+    limitCustomersUnlimited: "Cheksiz mijozlar soni",
+    limitProductsTemplate: "{n} tagacha mahsulot",
+    limitProductsUnlimited: "Cheksiz mahsulotlar soni",
+    trialBadge: "Bepul sinov",
+    trialBannerTitleTemplate: "Bepul sinov: {days} kun qoldi",
+    trialBannerBody: "Tarifni 30 kunga cho'zish uchun Standartga to'lang.",
+    trialActiveTitle: "Bepul sinov davri",
+    trialActiveBodyTemplate: "{days} kunlik bepul Standart {date} da tugaydi. Savdo va ombor yopilib qolmasligi uchun Standartga to'lab, tarifni 30 kunga cho'zing — qolgan sinov kunlari yo'qolmaydi.",
+    trialEndedTitle: "Bepul sinov tugagan",
+    trialEndedBody: "Savdo va ombor bo'limlari yopiq. Mijozlar, qarz daftari, xarajatlar va 7 kunlik hisobot ishlashda davom etadi. Qayta yoqish uchun Standart yoki Pro tarifni tanlang.",
+    standardExtendAction: "Standartga to'lash (30 kunga cho'zish)",
+    planWhatIncluded: "Nimalar kiradi",
+    planFreeFeatures: <String>[
+      "Mijozlar va qarz daftari (muddat, qisman to'lovlar, eslatmalar)",
+      "Xarajatlar va sof foyda hisobi",
+      "Hisobot: bugun va 7 kun",
+      "Valyuta kurslari, kalkulyator, bildirishnomalar",
+      "Savdo va ombor bo'limlari yopiq",
+    ],
+    planStandardFeatures: <String>[
+      "Bepuldagi hamma imkoniyatlar",
+      "Savdo bo'limi: mahsulot tanlash, barcode skaner, aralash to'lov (naqd/karta/qarz), qaytarish",
+      "Ombor: kirim/chiqim, inventarizatsiya, kam qoldiq ogohlantirishi",
+      "Chek: elektron chek va Bluetooth printerda chop etish",
+      "Hisobot: bugun va 7 kun",
+    ],
+    planProFeatures: <String>[
+      "Standartdagi hamma imkoniyatlar",
+      "Ovozli boshqaruv: qarz, to'lov va kirimni ovoz bilan yozish",
+      "AI biznes yordamchi: savollarga ma'lumotlaringiz asosida javob",
+      "Eski daftarni rasmdan avtomatik ko'chirish (OCR)",
+      "Kengaytirilgan hisobot: 30 kun va ixtiyoriy sana oralig'i",
+      "Excel va PDF eksport",
+      "Bulutga zaxira nusxa va tiklash",
+    ],
   );
 
   static const AppStrings ru = AppStrings(
@@ -2057,6 +2147,44 @@ class AppStrings {
     backupProBody: "Облачная копия доступна на тарифе Pro.",
     backupCountsTemplate: "Клиентов: {customers} · Продаж: {sales} · Товаров: {products}",
     limitReachedTitle: "Достигнут лимит",
+    planDurationTemplate: "Срок: {days} дн.",
+    planDurationUnlimited: "Срок: без ограничений",
+    limitCustomersTemplate: "До {n} клиентов",
+    limitCustomersUnlimited: "Неограниченное число клиентов",
+    limitProductsTemplate: "До {n} товаров",
+    limitProductsUnlimited: "Неограниченное число товаров",
+    trialBadge: "Бесплатный пробный",
+    trialBannerTitleTemplate: "Пробный период: осталось {days} дн.",
+    trialBannerBody: "Оплатите «Стандарт», чтобы продлить тариф на 30 дней.",
+    trialActiveTitle: "Бесплатный пробный период",
+    trialActiveBodyTemplate: "Бесплатный «Стандарт» на {days} дн. закончится {date}. Чтобы разделы «Продажи» и «Склад» не закрылись, оплатите «Стандарт» и продлите тариф на 30 дней — оставшиеся дни пробного периода сохранятся.",
+    trialEndedTitle: "Пробный период закончился",
+    trialEndedBody: "Разделы «Продажи» и «Склад» закрыты. Клиенты, долговая тетрадь, расходы и отчёт за 7 дней продолжают работать. Чтобы включить снова, выберите «Стандарт» или Pro.",
+    standardExtendAction: "Оплатить «Стандарт» (продлить на 30 дней)",
+    planWhatIncluded: "Что входит",
+    planFreeFeatures: <String>[
+      "Клиенты и долговая тетрадь (сроки, частичные оплаты, напоминания)",
+      "Расходы и учёт чистой прибыли",
+      "Отчёт: сегодня и 7 дней",
+      "Курсы валют, калькулятор, уведомления",
+      "Разделы «Продажи» и «Склад» закрыты",
+    ],
+    planStandardFeatures: <String>[
+      "Всё из бесплатного тарифа",
+      "Продажи: выбор товара, сканер штрихкодов, смешанная оплата (нал/карта/долг), возвраты",
+      "Склад: приход/расход, инвентаризация, предупреждения о низком остатке",
+      "Чек: электронный и печать на Bluetooth-принтере",
+      "Отчёт: сегодня и 7 дней",
+    ],
+    planProFeatures: <String>[
+      "Всё из тарифа «Стандарт»",
+      "Голосовое управление: запись долгов, платежей и прихода голосом",
+      "AI-помощник: ответы на вопросы по вашим данным",
+      "Перенос старой тетради по фото (OCR)",
+      "Расширенные отчёты: 30 дней и произвольный период",
+      "Экспорт в Excel и PDF",
+      "Облачная резервная копия и восстановление",
+    ],
   );
 }
 

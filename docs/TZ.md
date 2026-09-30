@@ -561,3 +561,10 @@ Sozlamalar → *AI yordamchi* yoki bosh sahifadagi ✨ tugmasi: chat ko'rinishid
 ### 40.4 Mijoz/mahsulot limitlari
 
 Pro — cheksiz. Bepul va Standart tarifda mijoz/mahsulot soni cheklangan (Bepul: 30 mijoz; Standart: admin panelda belgilanadi, boshlang'ich 300 mijoz / 500 mahsulot). Limitga yetilganda backend `403 limit_reached` qaytaradi, ilova tarifga o'tish taklifini ko'rsatadi.
+
+## 41. Bepul sinov va tariflar ekrani
+
+- **Bepul sinov:** yangi foydalanuvchiga 14 kunlik bepul Standart (savdo + ombor) beriladi. Bosh sahifadagi banner *"Bepul sinov: X kun qoldi — tarifni 30 kunga cho'zish uchun Standartga to'lang"* ko'rsatadi; Sozlamalarda tarif qatorida "Standart · Bepul sinov".
+- **Tugashi:** tugashiga 2 kun qolganda va tugaganda bildirishnoma (ilova ichida + push) keladi. To'lanmasa Standart va Pro funksiyalari o'chadi (savdo, ombor, AI, eksport, zaxira...), mijozlar, qarz daftari, xarajatlar va 7 kunlik hisobot ishlaydi.
+- **To'lab cho'zish:** sinov paytida Standartga to'lov (Payme/Click/bonus) tarifni sinov tugashidan boshlab 30 kunga uzaytiradi.
+- **Tariflar ekrani:** joriy tarif va muddati; sinov holati (qolgan kunlar yoki "Bepul sinov tugagan"); Bepul, Standart va Pro kartalari — narxi, muddati (Bepul: cheksiz, pullik: 30 kun), mijoz/mahsulot limitlari va to'liq imkoniyatlar ro'yxati; sinovda Standart kartasida *"Standartga to'lash (30 kunga cho'zish)"* tugmasi.

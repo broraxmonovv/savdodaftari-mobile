@@ -18,6 +18,8 @@ class PlanOffer {
     required this.price,
     required this.days,
     this.features = const <String>[],
+    this.maxCustomers,
+    this.maxProducts,
   });
 
   factory PlanOffer.fromJson(Map<String, dynamic> json) {
@@ -29,6 +31,8 @@ class PlanOffer {
       features: features is List
           ? features.map((Object? e) => e.toString()).toList()
           : const <String>[],
+      maxCustomers: _limit(json['limits'], 'customers'),
+      maxProducts: _limit(json['limits'], 'products'),
     );
   }
 
@@ -42,6 +46,17 @@ class PlanOffer {
 
   /// Backend kalitlari: sales, inventory, voice, ai_assistant, ...
   final List<String> features;
+
+  /// Mijoz va mahsulot limiti (null — cheksiz).
+  final int? maxCustomers;
+  final int? maxProducts;
+
+  static int? _limit(Object? limits, String key) {
+    if (limits is Map && limits[key] != null) {
+      return int.tryParse(limits[key].toString());
+    }
+    return null;
+  }
 }
 
 /// `GET /billing/plan` javobi: joriy tarif va taklif qilinadigan tariflar.
@@ -51,6 +66,10 @@ class BillingPlans {
     required this.current,
     required this.offers,
     this.expiresAt,
+    this.isTrial = false,
+    this.trialDays = 14,
+    this.trialUsed = false,
+    this.freeMaxCustomers = 30,
     this.providers = const <PaymentProvider>[
       PaymentProvider.payme,
       PaymentProvider.click,
@@ -63,6 +82,13 @@ class BillingPlans {
     return BillingPlans(
       current: UserPlan.fromApi(json['plan']?.toString()),
       expiresAt: DateTime.tryParse(json['expires_at']?.toString() ?? ''),
+      isTrial: json['is_trial'] == true,
+      trialDays: int.tryParse('${(json['trial'] as Map?)?['days'] ?? ''}') ?? 14,
+      trialUsed: (json['trial'] as Map?)?['used'] == true,
+      freeMaxCustomers: int.tryParse(
+            '${((json['free'] as Map?)?['limits'] as Map?)?['customers'] ?? ''}',
+          ) ??
+          30,
       offers: offers is List
           ? offers
               .whereType<Map<Object?, Object?>>()
@@ -83,6 +109,14 @@ class BillingPlans {
 
   final UserPlan current;
   final DateTime? expiresAt;
+
+  /// Hozir bepul sinov (Standart) davrida.
+  final bool isTrial;
+  final int trialDays;
+
+  /// Sinov allaqachon berilgan (tugagan bo'lishi mumkin).
+  final bool trialUsed;
+  final int freeMaxCustomers;
   final List<PlanOffer> offers;
   final List<PaymentProvider> providers;
 

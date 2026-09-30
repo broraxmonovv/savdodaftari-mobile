@@ -275,11 +275,42 @@ class _PlansScreenState extends ConsumerState<PlansScreen>
     final PlanOffer? standard = data.offerFor(UserPlan.standard);
     final PlanOffer? pro = data.offerFor(UserPlan.pro);
     final UserPlan current = data.current;
+    final bool trial = data.isTrial && current == UserPlan.standard;
+    final bool trialEnded =
+        data.trialUsed && current == UserPlan.free && !data.isTrial;
 
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.screen),
       children: <Widget>[
-        _CurrentPlanCard(plan: current, expiresAt: data.expiresAt),
+        _CurrentPlanCard(
+          plan: current,
+          expiresAt: data.expiresAt,
+          isTrial: trial,
+        ),
+        if (trial) ...<Widget>[
+          const SizedBox(height: AppSpacing.md),
+          _InfoCard(
+            icon: Icons.card_giftcard_rounded,
+            color: AppColors.info,
+            title: s.trialActiveTitle,
+            body: s.trialActiveBody(
+              data.trialDays,
+              data.expiresAt == null
+                  ? '—'
+                  : DateFormat('d MMMM yyyy', s.localeCode)
+                      .format(data.expiresAt!.toLocal()),
+            ),
+          ),
+        ],
+        if (trialEnded) ...<Widget>[
+          const SizedBox(height: AppSpacing.md),
+          _InfoCard(
+            icon: Icons.lock_clock_rounded,
+            color: AppColors.warning,
+            title: s.trialEndedTitle,
+            body: s.trialEndedBody,
+          ),
+        ],
         if (_orderId != null) ...<Widget>[
           const SizedBox(height: AppSpacing.lg),
           _PendingCard(
@@ -287,51 +318,83 @@ class _PlansScreenState extends ConsumerState<PlansScreen>
           ),
         ],
         const SizedBox(height: AppSpacing.lg),
+
+        // —— Bepul tarif
+        _PlanCard(
+          title: s.planFreeName,
+          price: '0 ${Money.currency}',
+          duration: s.planDurationUnlimited,
+          features: <String>[
+            s.limitCustomersText(data.freeMaxCustomers),
+            ...s.planFreeFeatures,
+          ],
+          isCurrent: current == UserPlan.free,
+          isIncluded: false,
+          showAction: false,
+          actionLabel: '',
+          busy: false,
+        ),
+        const SizedBox(height: AppSpacing.md),
+
+        // —— Standart (sinovda turganda ham to'lab 30 kunga cho'zish mumkin)
         if (standard != null)
           _PlanCard(
             title: s.planStandardName,
-            price: s.planPriceText(Money.format(standard.price), standard.days),
-            features: <String>[s.planFeatureSales, s.planFeatureInventory],
+            price: Money.format(standard.price),
+            duration: s.planDurationText(standard.days),
+            features: <String>[
+              s.limitCustomersText(standard.maxCustomers),
+              s.limitProductsText(standard.maxProducts),
+              ...s.planStandardFeatures,
+            ],
             isCurrent: current == UserPlan.standard,
+            currentBadge: trial ? s.trialBadge : null,
             isIncluded: current == UserPlan.pro,
-            actionLabel: s.planActivateAction,
+            showAction: (current == UserPlan.free || trial) && _orderId == null,
+            actionLabel:
+                trial ? s.standardExtendAction : s.planActivateAction,
             busy: _busy,
-            onAction: current == UserPlan.free && _orderId == null
-                ? () => _start(UserPlan.standard, standard.price)
-                : null,
+            onAction: () => _start(UserPlan.standard, standard.price),
           ),
         const SizedBox(height: AppSpacing.md),
+
+        // —— Pro
         if (pro != null)
           _PlanCard(
             title: s.planProName,
-            price: s.planPriceText(Money.format(pro.price), pro.days),
+            price: Money.format(pro.price),
+            duration: s.planDurationText(pro.days),
             features: <String>[
-              s.planIncludesStandard,
-              s.proFeatureVoice,
-              s.proFeatureAi,
-              s.proFeatureOcr,
-              s.proFeatureReports,
+              s.limitCustomersText(pro.maxCustomers),
+              s.limitProductsText(pro.maxProducts),
+              ...s.planProFeatures,
             ],
             highlighted: true,
             isCurrent: current == UserPlan.pro,
+            isIncluded: false,
+            showAction: current != UserPlan.pro && _orderId == null,
             actionLabel: current == UserPlan.standard
                 ? s.planUpgradeProAction
                 : s.planActivateAction,
             busy: _busy,
-            onAction: current != UserPlan.pro && _orderId == null
-                ? () => _start(UserPlan.pro, pro.price)
-                : null,
+            onAction: () => _start(UserPlan.pro, pro.price),
           ),
+        const SizedBox(height: AppSpacing.xl),
       ],
     );
   }
 }
 
 class _CurrentPlanCard extends StatelessWidget {
-  const _CurrentPlanCard({required this.plan, required this.expiresAt});
+  const _CurrentPlanCard({
+    required this.plan,
+    required this.expiresAt,
+    this.isTrial = false,
+  });
 
   final UserPlan plan;
   final DateTime? expiresAt;
+  final bool isTrial;
 
   @override
   Widget build(BuildContext context) {
@@ -360,7 +423,15 @@ class _CurrentPlanCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(s.planCurrentLabel, style: textTheme.bodySmall),
-                Text(plan.label(s), style: textTheme.titleMedium),
+                Row(
+                  children: <Widget>[
+                    Text(plan.label(s), style: textTheme.titleMedium),
+                    if (isTrial) ...<Widget>[
+                      const SizedBox(width: AppSpacing.sm),
+                      _Pill(text: s.trialBadge, color: AppColors.info),
+                    ],
+                  ],
+                ),
                 if (plan != UserPlan.free && expiresAt != null)
                   Text(
                     '${s.proExpiresLabel}: '
@@ -376,24 +447,92 @@ class _CurrentPlanCard extends StatelessWidget {
   }
 }
 
+class _Pill extends StatelessWidget {
+  const _Pill({required this.text, required this.color});
+
+  final String text;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 2),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.14),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        text,
+        style: Theme.of(context).textTheme.labelSmall?.copyWith(color: color),
+      ),
+    );
+  }
+}
+
+class _InfoCard extends StatelessWidget {
+  const _InfoCard({
+    required this.icon,
+    required this.color,
+    required this.title,
+    required this.body,
+  });
+
+  final IconData icon;
+  final Color color;
+  final String title;
+  final String body;
+
+  @override
+  Widget build(BuildContext context) {
+    final TextTheme textTheme = Theme.of(context).textTheme;
+
+    return AppCard(
+      borderColor: color,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Icon(icon, color: color),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(title, style: textTheme.titleSmall),
+                const SizedBox(height: AppSpacing.xs),
+                Text(body, style: textTheme.bodySmall),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Tarif kartasi: nomi, narxi, muddati, to'liq imkoniyatlar ro'yxati va harakat tugmasi.
 class _PlanCard extends StatelessWidget {
   const _PlanCard({
     required this.title,
     required this.price,
+    required this.duration,
     required this.features,
     required this.actionLabel,
     required this.busy,
+    required this.showAction,
     this.onAction,
     this.isCurrent = false,
     this.isIncluded = false,
     this.highlighted = false,
+    this.currentBadge,
   });
 
   final String title;
   final String price;
+  final String duration;
   final List<String> features;
   final String actionLabel;
   final bool busy;
+  final bool showAction;
   final VoidCallback? onAction;
 
   /// Shu tarif hozir faol.
@@ -402,6 +541,9 @@ class _PlanCard extends StatelessWidget {
   /// Yuqoriroq tarif (Pro) shu tarifni o'z ichiga oladi.
   final bool isIncluded;
   final bool highlighted;
+
+  /// Faol belgisi o'rniga ko'rsatiladigan matn (masalan, "Bepul sinov").
+  final String? currentBadge;
 
   @override
   Widget build(BuildContext context) {
@@ -417,20 +559,9 @@ class _PlanCard extends StatelessWidget {
             children: <Widget>[
               Expanded(child: Text(title, style: textTheme.titleMedium)),
               if (isCurrent || isIncluded)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.sm,
-                    vertical: 2,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.lightGreen,
-                    borderRadius: BorderRadius.circular(999),
-                  ),
-                  child: Text(
-                    s.planActiveLabel,
-                    style: textTheme.labelSmall
-                        ?.copyWith(color: AppColors.darkGreen),
-                  ),
+                _Pill(
+                  text: currentBadge ?? s.planActiveLabel,
+                  color: AppColors.primary,
                 ),
             ],
           ),
@@ -439,7 +570,17 @@ class _PlanCard extends StatelessWidget {
             price,
             style: textTheme.titleLarge?.copyWith(color: AppColors.primary),
           ),
+          Row(
+            children: <Widget>[
+              Icon(Icons.schedule_rounded,
+                  size: 14, color: AppColors.textSecondary),
+              const SizedBox(width: 4),
+              Text(duration, style: textTheme.labelSmall),
+            ],
+          ),
           const SizedBox(height: AppSpacing.md),
+          Text(s.planWhatIncluded, style: textTheme.labelMedium),
+          const SizedBox(height: AppSpacing.sm),
           for (final String feature in features)
             Padding(
               padding: const EdgeInsets.only(bottom: AppSpacing.sm),
@@ -456,7 +597,7 @@ class _PlanCard extends StatelessWidget {
                 ],
               ),
             ),
-          if (!isCurrent && !isIncluded) ...<Widget>[
+          if (showAction) ...<Widget>[
             const SizedBox(height: AppSpacing.sm),
             AppButton(
               label: actionLabel,
