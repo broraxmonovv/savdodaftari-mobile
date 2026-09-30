@@ -7,6 +7,8 @@ import '../../core/l10n/app_strings.dart';
 import '../auth/state/auth_providers.dart';
 import '../auth/state/auth_state.dart';
 import '../billing/plan_gate.dart';
+import '../extras/state/extras_providers.dart';
+import '../push/push_service.dart';
 import '../customers/customers_screen.dart';
 import '../debts/debts_screen.dart';
 import '../home/home_screen.dart';
@@ -32,6 +34,16 @@ class _AppShellState extends ConsumerState<AppShell>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    // Push: ruxsat so'rash va token ro'yxatdan o'tkazish; ilova ochiq paytida
+    // xabar kelsa bildirishnomalar belgisi yangilanadi.
+    Future<void>.microtask(() {
+      final PushService push = ref.read(pushServiceProvider);
+      push.onMessage = () {
+        ref.invalidate(announcementsProvider);
+        ref.invalidate(alertsProvider);
+      };
+      push.start();
+    });
   }
 
   @override

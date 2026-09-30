@@ -82,8 +82,8 @@ class ApiClient {
     return _send(() => _dio.put<dynamic>(path, data: body));
   }
 
-  Future<ApiResponse> delete(String path) {
-    return _send(() => _dio.delete<dynamic>(path));
+  Future<ApiResponse> delete(String path, {Map<String, dynamic>? body}) {
+    return _send(() => _dio.delete<dynamic>(path, data: body));
   }
 
   Future<ApiResponse> _send(

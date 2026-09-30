@@ -7,7 +7,10 @@ import '../../core/network/api_error_text.dart';
 import '../../core/network/api_exception.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_dimens.dart';
+import '../../core/utils/money.dart';
 import '../../core/widgets/widgets.dart';
+import '../auth/data/auth_models.dart';
+import '../billing/plan_text.dart';
 import 'data/extras_models.dart';
 import 'state/extras_providers.dart';
 
@@ -82,7 +85,10 @@ class NotificationsScreen extends ConsumerWidget {
           onAction: () => ref.invalidate(announcementsProvider),
         ),
         data: (AnnouncementList data) {
-          if (data.items.isEmpty) {
+          final List<AlertItem> alerts =
+              ref.watch(alertsProvider).valueOrNull ?? const <AlertItem>[];
+
+          if (data.items.isEmpty && alerts.isEmpty) {
             return EmptyState(
               icon: Icons.notifications_none_rounded,
               title: s.notificationsEmptyTitle,
@@ -92,6 +98,7 @@ class NotificationsScreen extends ConsumerWidget {
           return RefreshIndicator(
             color: AppColors.primary,
             onRefresh: () async {
+              ref.invalidate(alertsProvider);
               ref.invalidate(announcementsProvider);
               await ref.read(announcementsProvider.future).catchError(
                     (Object _) => const AnnouncementList(
@@ -100,87 +107,199 @@ class NotificationsScreen extends ConsumerWidget {
                     ),
                   );
             },
-            child: ListView.separated(
+            child: ListView(
               physics: const AlwaysScrollableScrollPhysics(),
               padding: const EdgeInsets.all(AppSpacing.screen),
-              itemCount: data.items.length,
-              separatorBuilder: (BuildContext _, int __) =>
+              children: <Widget>[
+                if (alerts.isNotEmpty) ...<Widget>[
+                  Text(s.alertsTitle, style: textTheme.titleMedium),
                   const SizedBox(height: AppSpacing.md),
-              itemBuilder: (BuildContext context, int index) {
-                final Announcement item = data.items[index];
-                return AppCard(
-                  padding: const EdgeInsets.all(AppSpacing.md),
-                  onTap: () => _open(context, ref, item),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Container(
-                        height: 40,
-                        width: 40,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: item.isRead
-                              ? AppColors.border
-                              : AppColors.lightGreen,
-                          borderRadius: AppRadius.field,
-                        ),
-                        child: Icon(
-                          Icons.campaign_rounded,
-                          size: 22,
-                          color: item.isRead
-                              ? AppColors.textSecondary
-                              : AppColors.primary,
-                        ),
-                      ),
-                      const SizedBox(width: AppSpacing.md),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              item.title,
-                              style: textTheme.titleSmall?.copyWith(
-                                fontWeight: item.isRead
-                                    ? FontWeight.w500
-                                    : FontWeight.w700,
-                              ),
-                            ),
-                            const SizedBox(height: 2),
-                            Text(
-                              item.body,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: textTheme.bodySmall,
-                            ),
-                            if (item.createdAt != null)
-                              Padding(
-                                padding: const EdgeInsets.only(top: 4),
-                                child: Text(
-                                  DateFormat('dd.MM.yyyy HH:mm')
-                                      .format(item.createdAt!.toLocal()),
-                                  style: textTheme.labelSmall,
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                      if (!item.isRead)
-                        Container(
-                          margin: const EdgeInsets.only(top: 6, left: 8),
-                          height: 10,
-                          width: 10,
-                          decoration: const BoxDecoration(
-                            color: AppColors.danger,
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                    ],
-                  ),
-                );
-              },
+                  for (final AlertItem alert in alerts) ...<Widget>[
+                    _AlertTile(alert: alert),
+                    const SizedBox(height: AppSpacing.md),
+                  ],
+                  const SizedBox(height: AppSpacing.md),
+                ],
+                if (data.items.isNotEmpty) ...<Widget>[
+                  Text(s.announcementsTitle, style: textTheme.titleMedium),
+                  const SizedBox(height: AppSpacing.md),
+                  for (final Announcement item in data.items) ...<Widget>[
+                    _AnnouncementTile(
+                      item: item,
+                      onTap: () => _open(context, ref, item),
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                  ],
+                ],
+              ],
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class _AnnouncementTile extends StatelessWidget {
+  const _AnnouncementTile({required this.item, required this.onTap});
+
+  final Announcement item;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final TextTheme textTheme = Theme.of(context).textTheme;
+
+    return AppCard(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      onTap: onTap,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            height: 40,
+            width: 40,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: item.isRead ? AppColors.border : AppColors.lightGreen,
+              borderRadius: AppRadius.field,
+            ),
+            child: Icon(
+              Icons.campaign_rounded,
+              size: 22,
+              color:
+                  item.isRead ? AppColors.textSecondary : AppColors.primary,
+            ),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  item.title,
+                  style: textTheme.titleSmall?.copyWith(
+                    fontWeight: item.isRead ? FontWeight.w500 : FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  item.body,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: textTheme.bodySmall,
+                ),
+                if (item.createdAt != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text(
+                      DateFormat('dd.MM.yyyy HH:mm')
+                          .format(item.createdAt!.toLocal()),
+                      style: textTheme.labelSmall,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          if (!item.isRead)
+            Container(
+              margin: const EdgeInsets.only(top: 6, left: 8),
+              height: 10,
+              width: 10,
+              decoration: const BoxDecoration(
+                color: AppColors.danger,
+                shape: BoxShape.circle,
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Hisoblangan ogohlantirish (qarz, qoldiq, tarif) — faqat ko'rsatiladi.
+class _AlertTile extends StatelessWidget {
+  const _AlertTile({required this.alert});
+
+  final AlertItem alert;
+
+  static String _qty(double? value) {
+    if (value == null) {
+      return '';
+    }
+    return value == value.roundToDouble()
+        ? value.toInt().toString()
+        : value.toString();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final AppStrings s = context.s;
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    final String amount =
+        alert.amount == null ? '' : Money.format(alert.amount!);
+    final String date = alert.dueDate == null
+        ? ''
+        : DateFormat('dd.MM.yyyy').format(alert.dueDate!);
+
+    final (String text, IconData icon, Color color) = switch (alert.type) {
+      'debt_overdue' => (
+          s.alertText(s.alertDebtOverdueTemplate,
+              name: alert.name, amount: amount),
+          Icons.account_balance_wallet_rounded,
+          AppColors.danger,
+        ),
+      'debt_due_soon' => (
+          s.alertText(s.alertDebtDueSoonTemplate,
+              name: alert.name, amount: amount, date: date),
+          Icons.schedule_rounded,
+          AppColors.warning,
+        ),
+      'out_of_stock' => (
+          s.alertText(s.alertOutOfStockTemplate, name: alert.name),
+          Icons.inventory_2_rounded,
+          AppColors.danger,
+        ),
+      'low_stock' => (
+          s.alertText(
+            s.alertLowStockTemplate,
+            name: alert.name,
+            stock: _qty(alert.stock),
+            unit: alert.unit ?? '',
+            min: _qty(alert.minStock),
+          ),
+          Icons.inventory_2_rounded,
+          AppColors.warning,
+        ),
+      'subscription_expiring' => (
+          s.alertText(
+            s.alertSubscriptionTemplate,
+            plan: UserPlan.fromApi(alert.plan).label(s),
+            days: (alert.daysLeft ?? 0).toString(),
+          ),
+          Icons.workspace_premium_rounded,
+          AppColors.info,
+        ),
+      _ => (alert.name, Icons.info_outline_rounded, AppColors.info),
+    };
+
+    return AppCard(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      child: Row(
+        children: <Widget>[
+          Container(
+            height: 40,
+            width: 40,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.14),
+              borderRadius: AppRadius.field,
+            ),
+            child: Icon(icon, color: color, size: 20),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(child: Text(text, style: textTheme.bodyMedium)),
+        ],
       ),
     );
   }

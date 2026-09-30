@@ -345,6 +345,13 @@ class AppStrings {
     required this.blockedBody,
     required this.blockedReasonLabel,
     required this.markAllRead,
+    required this.alertsTitle,
+    required this.announcementsTitle,
+    required this.alertDebtOverdueTemplate,
+    required this.alertDebtDueSoonTemplate,
+    required this.alertOutOfStockTemplate,
+    required this.alertLowStockTemplate,
+    required this.alertSubscriptionTemplate,
   });
 
   final String localeCode;
@@ -730,6 +737,34 @@ class AppStrings {
   final String blockedBody;
   final String blockedReasonLabel;
   final String markAllRead;
+  final String alertsTitle;
+  final String announcementsTitle;
+  final String alertDebtOverdueTemplate;
+  final String alertDebtDueSoonTemplate;
+  final String alertOutOfStockTemplate;
+  final String alertLowStockTemplate;
+  final String alertSubscriptionTemplate;
+
+  String alertText(
+    String template, {
+    String name = '',
+    String amount = '',
+    String date = '',
+    String stock = '',
+    String unit = '',
+    String min = '',
+    String plan = '',
+    String days = '',
+  }) =>
+      template
+          .replaceAll('{name}', name)
+          .replaceAll('{amount}', amount)
+          .replaceAll('{date}', date)
+          .replaceAll('{stock}', stock)
+          .replaceAll('{unit}', unit)
+          .replaceAll('{min}', min)
+          .replaceAll('{plan}', plan)
+          .replaceAll('{days}', days);
 
   String withdrawMinText(String amount) =>
       withdrawMinTemplate.replaceAll('{amount}', amount);
@@ -1302,6 +1337,13 @@ class AppStrings {
     blockedBody: "Hisobingiz administrator tomonidan bloklandi. Savollaringiz bo'lsa, qo'llab-quvvatlashga murojaat qiling.",
     blockedReasonLabel: "Sabab",
     markAllRead: "Hammasini o'qilgan deb belgilash",
+    alertsTitle: "Ogohlantirishlar",
+    announcementsTitle: "Xabarlar",
+    alertDebtOverdueTemplate: "{name}: muddati o'tgan qarz — {amount}",
+    alertDebtDueSoonTemplate: "{name}: {amount} qarz muddati {date} da tugaydi",
+    alertOutOfStockTemplate: "{name} — omborda qolmadi",
+    alertLowStockTemplate: "{name}: qoldiq {stock} {unit} (minimal {min})",
+    alertSubscriptionTemplate: "{plan} tarifingiz {days} kundan keyin tugaydi",
   );
 
   static const AppStrings ru = AppStrings(
@@ -1652,6 +1694,13 @@ class AppStrings {
     blockedBody: "Ваш аккаунт заблокирован администратором. Если есть вопросы, обратитесь в поддержку.",
     blockedReasonLabel: "Причина",
     markAllRead: "Отметить всё прочитанным",
+    alertsTitle: "Предупреждения",
+    announcementsTitle: "Сообщения",
+    alertDebtOverdueTemplate: "{name}: просроченный долг — {amount}",
+    alertDebtDueSoonTemplate: "{name}: долг {amount} до {date}",
+    alertOutOfStockTemplate: "{name} — закончился на складе",
+    alertLowStockTemplate: "{name}: остаток {stock} {unit} (минимум {min})",
+    alertSubscriptionTemplate: "Ваш тариф {plan} закончится через {days} дн.",
   );
 }
 

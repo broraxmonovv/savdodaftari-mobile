@@ -90,4 +90,31 @@ class ExtrasRepository {
   Future<void> markAllAnnouncementsRead() async {
     await _client.post('/announcements/read-all');
   }
+
+  /// GET /notifications — hisoblangan ogohlantirishlar (qarz, qoldiq, tarif).
+  Future<List<AlertItem>> alerts() async {
+    final ApiResponse response = await _client.get('/notifications');
+    final Object? items = response.dataMap['items'];
+    if (items is! List) {
+      return const <AlertItem>[];
+    }
+    return items
+        .whereType<Map<Object?, Object?>>()
+        .map((Map<Object?, Object?> e) =>
+            AlertItem.fromJson(e.cast<String, dynamic>()))
+        .toList();
+  }
+
+  /// POST /devices — push uchun FCM tokenini ro'yxatdan o'tkazadi.
+  Future<void> registerDevice(String token, String platform) async {
+    await _client.post(
+      '/devices',
+      body: <String, dynamic>{'token': token, 'platform': platform},
+    );
+  }
+
+  /// DELETE /devices — chiqishda tokenni o'chiradi.
+  Future<void> unregisterDevice(String token) async {
+    await _client.delete('/devices', body: <String, dynamic>{'token': token});
+  }
 }

@@ -42,3 +42,9 @@ android {
 flutter {
     source = "../.."
 }
+
+// Firebase (push): google-services.json qo'yilgandagina plagin yoqiladi,
+// aks holda build odatdagidek ishlaydi (push o'chiq).
+if (file("google-services.json").exists()) {
+    apply(plugin = "com.google.gms.google-services")
+}

@@ -531,3 +531,9 @@ Pro tarifni faollashtirish to'liq backend API orqali, checkout sahifasiga o'tish
 
 - **Bildirishnomalar:** bosh sahifadagi qo'ng'iroq belgisida o'qilmaganlar soni (har 2 daqiqada yangilanadi); bosilganda ro'yxat (`GET /announcements`), xabar ustiga bosilsa to'liq matn ochiladi va o'qilgan deb belgilanadi, "Hammasini o'qilgan deb belgilash" tugmasi bor. Xabarlar admin paneldan hammaga, tarif bo'yicha yoki bitta foydalanuvchiga yuboriladi.
 - **Bloklangan hisob:** API `403 account_blocked` qaytarsa, sessiya tozalanadi va *"Hisobingiz bloklangan"* ekrani (sabab, qo'llab-quvvatlash kontaktlari — ochiq `/support`) ko'rsatiladi. OTP bilan kirishda bloklangan hisob uchun shu xabar chiqadi.
+
+### 39.1 Ogohlantirishlar va push-bildirishnomalar
+
+- **Bildirishnomalar ekrani** endi ikki bo'limdan iborat: *Ogohlantirishlar* (muddati o'tgan va yaqinlashayotgan qarzlar, kam qolgan/tugagan mahsulotlar, tarif tugashi — `GET /notifications`) va *Xabarlar* (admin yuborgan e'lonlar).
+- **Push (FCM):** kirgandan keyin ilova ruxsat so'raydi va qurilma tokenini `POST /devices` bilan yuboradi; chiqishda token o'chiriladi. Admin e'loni va kunlik eslatmalar (tarif tugashi, qarzlar, kam qoldiq) push sifatida keladi; ilova ochiq paytida belgi va ro'yxat yangilanadi. Firebase sozlanmagan bo'lsa push o'chiq, ilova odatdagidek ishlaydi.
+- **Firebase sozlash:** Android — `android/app/google-services.json`; iOS — `ios/Runner/GoogleService-Info.plist` + Xcode'da *Push Notifications* va *Background Modes → Remote notifications* capability, APNs kaliti Firebase'ga yuklanadi.

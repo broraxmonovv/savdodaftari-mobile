@@ -44,3 +44,9 @@ final AutoDisposeFutureProvider<AnnouncementList> announcementsProvider =
     FutureProvider.autoDispose<AnnouncementList>(
   (Ref ref) => ref.watch(extrasRepositoryProvider).announcements(),
 );
+
+/// Ogohlantirishlar (qarz muddati, kam qoldiq, tarif tugashi).
+final AutoDisposeFutureProvider<List<AlertItem>> alertsProvider =
+    FutureProvider.autoDispose<List<AlertItem>>(
+  (Ref ref) => ref.watch(extrasRepositoryProvider).alerts(),
+);

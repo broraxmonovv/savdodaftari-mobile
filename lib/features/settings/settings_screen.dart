@@ -19,6 +19,7 @@ import '../extras/bonuses_screen.dart';
 import '../extras/currencies_screen.dart';
 import '../extras/guides_screen.dart';
 import '../extras/referral_screen.dart';
+import '../push/push_service.dart';
 import '../extras/support_screen.dart';
 import '../expenses/expenses_screen.dart';
 import '../reports/reports_screen.dart';
@@ -144,6 +145,7 @@ class SettingsScreen extends ConsumerWidget {
       return;
     }
 
+    await ref.read(pushServiceProvider).stop();
     await ref.read(authControllerProvider.notifier).logout();
     if (context.mounted) {
       context.go(AppRoutes.phone);

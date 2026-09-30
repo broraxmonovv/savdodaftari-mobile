@@ -253,3 +253,46 @@ class AnnouncementList {
   final List<Announcement> items;
   final int unreadCount;
 }
+
+/// `GET /notifications` dagi hisoblangan ogohlantirish: muddati o'tgan qarz,
+/// kam qoldiq, tarif tugashi va h.k.
+@immutable
+class AlertItem {
+  const AlertItem({
+    required this.type,
+    required this.name,
+    this.amount,
+    this.dueDate,
+    this.stock,
+    this.minStock,
+    this.unit,
+    this.daysLeft,
+    this.plan,
+  });
+
+  factory AlertItem.fromJson(Map<String, dynamic> json) => AlertItem(
+        type: json['type']?.toString() ?? '',
+        name: json['name']?.toString() ?? '',
+        amount: json['amount'] == null ? null : _num(json['amount']).toDouble(),
+        dueDate: DateTime.tryParse(json['due_date']?.toString() ?? ''),
+        stock: json['stock'] == null ? null : _num(json['stock']).toDouble(),
+        minStock: json['min_stock'] == null
+            ? null
+            : _num(json['min_stock']).toDouble(),
+        unit: json['unit']?.toString(),
+        daysLeft:
+            json['days_left'] == null ? null : _num(json['days_left']).toInt(),
+        plan: json['plan']?.toString(),
+      );
+
+  /// debt_overdue | debt_due_soon | out_of_stock | low_stock | subscription_expiring
+  final String type;
+  final String name;
+  final double? amount;
+  final DateTime? dueDate;
+  final double? stock;
+  final double? minStock;
+  final String? unit;
+  final int? daysLeft;
+  final String? plan;
+}
