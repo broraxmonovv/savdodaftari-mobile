@@ -336,8 +336,8 @@ Namuna savollar:
 | `suppliers` | id, user_id, name, phone, address, balance |
 | `stock_movements` | id, product_id, type, qty, reference_id, created_at |
 | `otp_codes` **(yangi)** | id, phone, code_hash, attempts, expires_at, created_at |
-| `subscriptions` **(yangi)** | id, user_id, plan (free/pro), status, started_at, expires_at |
-| `payments` **(yangi)** | id, user_id, subscription_id, amount, provider (payme/click), order_id, transaction_id, status, created_at |
+| `subscriptions` **(yangi)** | id, user_id, plan (standard/pro), status, started_at, expires_at |
+| `payments` **(yangi)** | id, user_id, subscription_id, plan (standard/pro), amount, provider (payme/click), order_id, transaction_id, status, created_at |
 
 `notifications`, `employees`, `audit_logs`, `backups` — **V2**.
 
@@ -367,11 +367,12 @@ Namuna savollar:
 
 ## 31. Monetizatsiya
 
-Ilovada ikkita tarif mavjud: **Free** va **Pro**.
+Ilovada uchta daraja mavjud: **Free** (bepul), **Standart** va **Pro**. Pullik tariflar (Standart va Pro) sozlanadigan ikkita variant sifatida taklif qilinadi.
 
-- **Free:** asosiy mijoz, qarz, savdo va cheklangan hisobot.
-- **Pro:** AI'ga oid barcha xizmatlar (ovozli boshqaruv, AI biznes yordamchi, eski daftar OCR/AI import) + cheksiz mijoz/mahsulot, backup, eksport, rivojlangan analitika.
-- **Pro narxi: 49 000 so'm.**
+- **Free:** mijozlar, qarz daftari va xarajatlar. **Savdo va Ombor bo'limlari yopiq** — Standart yoki Pro faollashtirilganda ochiladi.
+- **Standart — 12 000 so'm / 30 kun:** Free imkoniyatlari + **Savdo** va **Ombor** bo'limlari.
+- **Pro — 49 000 so'm / 30 kun:** Standart'dagi hamma narsa + AI'ga oid xizmatlar (ovozli boshqaruv, AI biznes yordamchi, eski daftar OCR/AI import) + cheksiz mijoz/mahsulot, backup, eksport, rivojlangan analitika.
+- Standartdan Pro'ga o'tish mumkin (Pro to'liq narxda alohida sotib olinadi). Pro faol bo'lsa Standart qayta sotib olinmaydi.
 - Pro'ni yoqish taklifi **uchta joyda** ko'rsatiladi: bosh sahifada, bildirishnoma blokidan oldin, va Sozlamalar bo'limida.
 - Faollashtirish backend API orqali to'liq checkout oqimi bilan: foydalanuvchi **Payme** yoki **Click** to'lov sahifasiga yo'naltiriladi, to'lov muvaffaqiyatli bo'lgach backend **webhook** orqali tasdiqlaydi va Pro tarifni faollashtiradi.
 
@@ -423,12 +424,20 @@ Ilovaning asosiy vazifasi ko'p funksiyali bo'lish emas, balki bozorchining kunda
 
 ### 35.1 Free tarif
 
-- Mijozlar, qarz daftari, savdo, ombor va xarajat modullariga **to'liq kirish**.
-- Cheklangan hisobot (**Bugun**, **7 kun**).
+- Mijozlar, qarz daftari va xarajat modullariga **to'liq kirish**.
+- **Savdo** va **Ombor** bo'limlari **yopiq**: bosilganda *"Bu bo'lim yopiq"* ekrani va tariflarni ko'rish tugmasi chiqadi (backend `403 plan_required` qaytaradi).
+- Cheklangan hisobot (**Bugun**, **7 kun**); savdo bo'yicha ko'rsatkichlar Standart/Pro'da.
 - Ovozli boshqaruv, AI yordamchi va eski daftar OCR import — **yopiq**, Pro taklif banneri ko'rsatiladi.
+
+### 35.1a Standart tarif — 12 000 so'm / 30 kun
+
+- Free'dagi hamma narsa + **Savdo** va **Ombor** bo'limlari to'liq ishlaydi.
+- To'lov **Payme** yoki **Click** checkout sahifasi orqali (36-bo'lim).
+- Bosh sahifada bannerda *"Savdo va omborni yoqing"* taklifi ko'rsatiladi.
 
 ### 35.2 Pro tarif — 49 000 so'm
 
+- Standart tarifdagi barcha imkoniyatlar.
 - Ovozli boshqaruv (savdo/qarz/kirim ovoz orqali).
 - AI biznes yordamchi (savol-javob, hisobot tayyorlash).
 - Eski daftar OCR/AI import.
@@ -466,8 +475,10 @@ Pro tarifni faollashtirish to'liq backend API orqali, checkout sahifasiga o'tish
 
 ### 36.3 Texnik talablar
 
-- `payments` jadvali: `id, user_id, subscription_id, amount, provider (payme/click), order_id, transaction_id, status (pending/paid/failed), created_at`.
-- `subscriptions` jadvali: `id, user_id, plan, status, started_at, expires_at`.
+- `payments` jadvali: `id, user_id, subscription_id, plan (standard/pro), amount, provider (payme/click), order_id, transaction_id, status (pending/paid/failed), created_at`.
+- `subscriptions` jadvali: `id, user_id, plan (standard/pro), status, started_at, expires_at`.
+- API: `GET /billing/plan` (joriy tarif + `plans[]`), `POST /billing/checkout {plan: standard|pro, provider: payme|click}`, `GET /billing/payments/{orderId}`.
+- Mobil ilova: **Sozlamalar → Tariflar** va bosh sahifa banneri `PlansScreen`'ni ochadi; provayder tanlangach checkout URL tashqi brauzerda ochiladi, ilova `order_id` holatini har 4 soniyada (va ilovaga qaytganda) so'raydi, to'lov `paid` bo'lgach `/auth/me` orqali tarif yangilanadi.
 - Payme va Click uchun alohida **merchant sertifikatlash** va integratsiya — development jadvalida alohida vazifa sifatida rejalashtiriladi.
 - Obuna muddati tugashiga **2–3 kun** qolganda foydalanuvchiga bildirishnoma yuboriladi (avtomatik uzaytirish yo'q, agar boshqacha qaror qilinmasa).
 

@@ -8,7 +8,11 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_dimens.dart';
 import '../../core/utils/money.dart';
 import '../../core/widgets/widgets.dart';
+import '../auth/data/auth_models.dart';
 import '../auth/state/auth_providers.dart';
+import '../auth/state/auth_state.dart';
+import '../billing/plan_gate.dart';
+import '../billing/plans_screen.dart';
 import '../debts/debt_form_screen.dart';
 import '../debts/debts_screen.dart';
 import '../expenses/expenses_screen.dart';
@@ -53,6 +57,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final HomeDashboardState state = ref.watch(homeControllerProvider);
     final String userName = ref.watch(authControllerProvider).user?.name ?? '';
 
+    // Tarif o'zgarganda (to'lov o'tdi) savdo/ombor ma'lumotlari qayta yuklanadi.
+    ref.listen<UserPlan?>(
+      authControllerProvider.select((AuthState st) => st.user?.plan),
+      (UserPlan? previous, UserPlan? next) {
+        if (previous != next) {
+          _reload();
+        }
+      },
+    );
+
     return Scaffold(
       body: SafeArea(
         bottom: false,
@@ -93,7 +107,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         children: <Widget>[
           _Header(userName: userName),
           const SizedBox(height: AppSpacing.lg),
-          const _ProBanner(),
+          _PlanBanner(onOpen: _push),
           const SizedBox(height: AppSpacing.lg),
           _StatGrid(
             sales: sales,
@@ -130,7 +144,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       message: s.lowStock(lowStockCount),
                       tone: AlertTone.warning,
                       actionLabel: s.viewInventory,
-                      onAction: () => _push(const InventoryScreen()),
+                      onAction: () => _push(
+                        PlanGate(
+                          title: s.navInventory,
+                          child: const InventoryScreen(),
+                        ),
+                      ),
                     ),
                 ],
               ),
@@ -210,20 +229,36 @@ class _Header extends ConsumerWidget {
   }
 }
 
-class _ProBanner extends StatelessWidget {
-  const _ProBanner();
+/// Tarif taklifi (TZ 35.3): bepul tarifda — Standart (savdo + ombor),
+/// Standartda — Pro; Pro faol bo'lsa ko'rsatilmaydi.
+class _PlanBanner extends ConsumerWidget {
+  const _PlanBanner({required this.onOpen});
+
+  /// Tariflar ekranini ochadi va qaytganda dashboardni yangilaydi.
+  final Future<void> Function(Widget screen) onOpen;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final AppStrings s = context.s;
     final TextTheme textTheme = Theme.of(context).textTheme;
+    final UserPlan plan =
+        ref.watch(authControllerProvider).user?.plan ?? UserPlan.free;
+
+    if (plan == UserPlan.pro) {
+      return const SizedBox.shrink();
+    }
+
+    final bool offerStandard = plan == UserPlan.free;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.screen),
       child: AppCard(
         color: AppColors.darkGreen,
         shadows: AppShadows.raised,
-        onTap: () {},
+        onTap: () async {
+          await onOpen(const PlansScreen());
+          await ref.read(authControllerProvider.notifier).refreshUser();
+        },
         child: Row(
           children: <Widget>[
             Container(
@@ -246,12 +281,12 @@ class _ProBanner extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    s.proTitle,
+                    offerStandard ? s.bannerStandardTitle : s.proTitle,
                     style: textTheme.titleSmall?.copyWith(color: Colors.white),
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    s.proBody,
+                    offerStandard ? s.bannerStandardBody : s.proBody,
                     style: textTheme.labelSmall?.copyWith(
                       color: Colors.white.withOpacity(0.8),
                     ),
@@ -360,7 +395,9 @@ class _QuickActions extends StatelessWidget {
               label: s.quickSale,
               icon: Icons.shopping_basket_rounded,
               color: AppColors.primary,
-              onTap: () => onOpen(const SaleFormScreen()),
+              onTap: () => onOpen(
+                PlanGate(title: s.quickSale, child: const SaleFormScreen()),
+              ),
             ),
           ),
           const SizedBox(width: AppSpacing.md),
@@ -387,7 +424,12 @@ class _QuickActions extends StatelessWidget {
               label: s.quickStockIn,
               icon: Icons.inventory_rounded,
               color: AppColors.warning,
-              onTap: () => onOpen(const InventoryScreen()),
+              onTap: () => onOpen(
+                PlanGate(
+                  title: s.navInventory,
+                  child: const InventoryScreen(),
+                ),
+              ),
             ),
           ),
         ],

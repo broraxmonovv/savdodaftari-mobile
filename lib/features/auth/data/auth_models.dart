@@ -10,6 +10,22 @@ extension OtpPurposeApi on OtpPurpose {
       };
 }
 
+/// Foydalanuvchi tarifi: Bepul, Standart (savdo + ombor 12 000 so'm) yoki Pro.
+enum UserPlan {
+  free,
+  standard,
+  pro;
+
+  static UserPlan fromApi(String? value) => switch (value) {
+        'standard' => UserPlan.standard,
+        'pro' => UserPlan.pro,
+        _ => UserPlan.free,
+      };
+
+  /// Backend `plan` qiymati (checkout so'rovi uchun).
+  String get apiValue => name;
+}
+
 @immutable
 class AuthUser {
   const AuthUser({
@@ -20,6 +36,8 @@ class AuthUser {
     this.businessType,
     this.locale,
     this.hasPin = false,
+    this.plan = UserPlan.free,
+    this.planExpiresAt,
     bool? isProfileComplete,
   }) : _isProfileComplete = isProfileComplete;
 
@@ -33,6 +51,10 @@ class AuthUser {
       businessType: json['business_type']?.toString(),
       locale: json['locale']?.toString(),
       hasPin: json['has_pin'] == true,
+      plan: UserPlan.fromApi(json['plan']?.toString()),
+      planExpiresAt: DateTime.tryParse(
+        json['plan_expires_at']?.toString() ?? '',
+      ),
       isProfileComplete: profileComplete is bool ? profileComplete : null,
     );
   }
@@ -44,7 +66,18 @@ class AuthUser {
   final String? businessType;
   final String? locale;
   final bool hasPin;
+
+  /// Joriy tarif (backend `plan`: free | standard | pro).
+  final UserPlan plan;
+
+  /// Pullik tarif amal qilish muddati (free uchun null).
+  final DateTime? planExpiresAt;
   final bool? _isProfileComplete;
+
+  /// Savdo va ombor bo'limlari ochiqmi (Standart yoki Pro).
+  bool get hasSalesAndInventory => plan != UserPlan.free;
+
+  bool get isPro => plan == UserPlan.pro;
 
   /// Backend `is_profile_complete` bergan bo'lsa — o'sha qiymat,
   /// aks holda ism kiritilganligi bo'yicha aniqlanadi.
@@ -57,6 +90,8 @@ class AuthUser {
     String? businessType,
     String? locale,
     bool? hasPin,
+    UserPlan? plan,
+    DateTime? planExpiresAt,
   }) {
     return AuthUser(
       id: id,
@@ -66,6 +101,8 @@ class AuthUser {
       businessType: businessType ?? this.businessType,
       locale: locale ?? this.locale,
       hasPin: hasPin ?? this.hasPin,
+      plan: plan ?? this.plan,
+      planExpiresAt: planExpiresAt ?? this.planExpiresAt,
       isProfileComplete: _isProfileComplete,
     );
   }

@@ -259,6 +259,28 @@ class AppStrings {
     required this.notifDueSoonLabel,
     required this.notificationsEmptyTitle,
     required this.notificationsEmptyBody,
+    required this.planScreenTitle,
+    required this.planFreeName,
+    required this.planStandardName,
+    required this.planProName,
+    required this.planCurrentLabel,
+    required this.planFeatureBasic,
+    required this.planFeatureSales,
+    required this.planFeatureInventory,
+    required this.planIncludesStandard,
+    required this.planPriceTemplate,
+    required this.planActiveLabel,
+    required this.planActivateAction,
+    required this.planUpgradeProAction,
+    required this.choosePaymentTitle,
+    required this.payWithPayme,
+    required this.payWithClick,
+    required this.planLockedTitle,
+    required this.planLockedBody,
+    required this.planLockedAction,
+    required this.planActivatedTemplate,
+    required this.bannerStandardTitle,
+    required this.bannerStandardBody,
   });
 
   final String localeCode;
@@ -554,6 +576,39 @@ class AppStrings {
   final String notifDueSoonLabel;
   final String notificationsEmptyTitle;
   final String notificationsEmptyBody;
+
+  // —— Tariflar: Standart (savdo + ombor) va Pro (TZ 31, 35)
+  final String planScreenTitle;
+  final String planFreeName;
+  final String planStandardName;
+  final String planProName;
+  final String planCurrentLabel;
+  final String planFeatureBasic;
+  final String planFeatureSales;
+  final String planFeatureInventory;
+  final String planIncludesStandard;
+  final String planPriceTemplate;
+  final String planActiveLabel;
+  final String planActivateAction;
+  final String planUpgradeProAction;
+  final String choosePaymentTitle;
+  final String payWithPayme;
+  final String payWithClick;
+  final String planLockedTitle;
+  final String planLockedBody;
+  final String planLockedAction;
+  final String planActivatedTemplate;
+  final String bannerStandardTitle;
+  final String bannerStandardBody;
+
+  /// Tarif narxi: `{price}` va `{days}` o'rniga qiymatlar qo'yiladi.
+  String planPriceText(String price, int days) => planPriceTemplate
+      .replaceAll('{price}', price)
+      .replaceAll('{days}', days.toString());
+
+  /// Tarif faollashgach: `{plan}` o'rniga tarif nomi qo'yiladi.
+  String planActivatedText(String plan) =>
+      planActivatedTemplate.replaceAll('{plan}', plan);
 
   /// Hisobot davri filtrlari — 0: bugun, 1: 7 kun, 2: 30 kun, 3: custom.
   List<String> get reportPeriods =>
@@ -1014,6 +1069,29 @@ class AppStrings {
     notificationsEmptyTitle: "Bildirishnomalar yo'q",
     notificationsEmptyBody:
         "Muddati o'tgan qarzlar va kam qolgan mahsulotlar shu yerda ko'rinadi.",
+    planScreenTitle: 'Tariflar',
+    planFreeName: 'Bepul',
+    planStandardName: 'Standart',
+    planProName: 'Pro',
+    planCurrentLabel: 'Joriy tarif',
+    planFeatureBasic: 'Mijozlar, qarz daftari va xarajatlar',
+    planFeatureSales: "Savdo bo'limi",
+    planFeatureInventory: "Ombor bo'limi",
+    planIncludesStandard: 'Standart tarifdagi barcha imkoniyatlar',
+    planPriceTemplate: "{price} / {days} kun",
+    planActiveLabel: 'Faol',
+    planActivateAction: 'Faollashtirish',
+    planUpgradeProAction: "Pro'ga o'tish",
+    choosePaymentTitle: "To'lov usulini tanlang",
+    payWithPayme: "Payme orqali to'lash",
+    payWithClick: "Click orqali to'lash",
+    planLockedTitle: "Bu bo'lim yopiq",
+    planLockedBody:
+        "Savdo va ombor bo'limlaridan foydalanish uchun Standart yoki Pro tarifni faollashtiring.",
+    planLockedAction: "Tariflarni ko'rish",
+    planActivatedTemplate: '{plan} tarifi faollashtirildi!',
+    bannerStandardTitle: "Savdo va omborni yoqing",
+    bannerStandardBody: "Standart tarif — oyiga atigi 12 000 so'm.",
   );
 
   static const AppStrings ru = AppStrings(
@@ -1277,6 +1355,29 @@ class AppStrings {
     notificationsEmptyTitle: 'Уведомлений нет',
     notificationsEmptyBody:
         'Просроченные долги и заканчивающиеся товары появятся здесь.',
+    planScreenTitle: 'Тарифы',
+    planFreeName: 'Бесплатный',
+    planStandardName: 'Стандарт',
+    planProName: 'Pro',
+    planCurrentLabel: 'Текущий тариф',
+    planFeatureBasic: 'Клиенты, долговая тетрадь и расходы',
+    planFeatureSales: 'Раздел «Продажи»',
+    planFeatureInventory: 'Раздел «Склад»',
+    planIncludesStandard: 'Все возможности тарифа «Стандарт»',
+    planPriceTemplate: '{price} / {days} дн.',
+    planActiveLabel: 'Активен',
+    planActivateAction: 'Активировать',
+    planUpgradeProAction: 'Перейти на Pro',
+    choosePaymentTitle: 'Выберите способ оплаты',
+    payWithPayme: 'Оплатить через Payme',
+    payWithClick: 'Оплатить через Click',
+    planLockedTitle: 'Раздел закрыт',
+    planLockedBody:
+        'Чтобы пользоваться разделами «Продажи» и «Склад», активируйте тариф «Стандарт» или Pro.',
+    planLockedAction: 'Посмотреть тарифы',
+    planActivatedTemplate: 'Тариф «{plan}» активирован!',
+    bannerStandardTitle: 'Подключите продажи и склад',
+    bannerStandardBody: 'Тариф «Стандарт» — всего 12 000 сум в месяц.',
   );
 }
 

@@ -1,0 +1,480 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../../core/l10n/app_strings.dart';
+import '../../core/network/api_error_text.dart';
+import '../../core/network/api_exception.dart';
+import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_dimens.dart';
+import '../../core/utils/money.dart';
+import '../../core/widgets/widgets.dart';
+import '../auth/data/auth_models.dart';
+import '../auth/state/auth_providers.dart';
+import 'data/billing_models.dart';
+import 'plan_text.dart';
+import 'state/billing_providers.dart';
+
+/// TZ 31, 35, 36: tariflar — Bepul, Standart (savdo + ombor) va Pro.
+///
+/// Pullik tarif tanlanganda Payme yoki Click checkout sahifasi tashqi
+/// brauzerda ochiladi. Asosiy tasdiqlash — backend webhook'i; ilova
+/// `order_id` holatini polling qilib, to'lov o'tgach profilni yangilaydi.
+class PlansScreen extends ConsumerStatefulWidget {
+  const PlansScreen({super.key});
+
+  @override
+  ConsumerState<PlansScreen> createState() => _PlansScreenState();
+}
+
+class _PlansScreenState extends ConsumerState<PlansScreen>
+    with WidgetsBindingObserver {
+  static const Duration _pollInterval = Duration(seconds: 4);
+
+  String? _orderId;
+  UserPlan? _pendingPlan;
+  bool _busy = false;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  /// Foydalanuvchi to'lov sahifasidan ilovaga qaytganda holat tekshiriladi.
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && _orderId != null) {
+      _check();
+    }
+  }
+
+  void _snack(String text) {
+    if (!mounted) {
+      return;
+    }
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(text)));
+  }
+
+  Future<PaymentProvider?> _chooseProvider() {
+    final AppStrings s = context.s;
+    return showModalBottomSheet<PaymentProvider>(
+      context: context,
+      showDragHandle: true,
+      builder: (BuildContext sheetContext) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.screen,
+              0,
+              AppSpacing.screen,
+              AppSpacing.lg,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Text(
+                  s.choosePaymentTitle,
+                  style: Theme.of(sheetContext).textTheme.titleMedium,
+                ),
+                const SizedBox(height: AppSpacing.lg),
+                AppButton(
+                  label: s.payWithPayme,
+                  icon: Icons.account_balance_wallet_rounded,
+                  onPressed: () =>
+                      Navigator.of(sheetContext).pop(PaymentProvider.payme),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                AppButton(
+                  label: s.payWithClick,
+                  icon: Icons.touch_app_rounded,
+                  variant: AppButtonVariant.secondary,
+                  onPressed: () =>
+                      Navigator.of(sheetContext).pop(PaymentProvider.click),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  /// Tarif tanlandi: provayder -> checkout -> brauzerda to'lov sahifasi.
+  Future<void> _start(UserPlan plan) async {
+    final PaymentProvider? provider = await _chooseProvider();
+    if (provider == null || !mounted) {
+      return;
+    }
+
+    final AppStrings s = context.s;
+    setState(() => _busy = true);
+    try {
+      final CheckoutResult result = await ref
+          .read(billingRepositoryProvider)
+          .checkout(plan: plan, provider: provider);
+
+      final String? url = result.checkoutUrl;
+      if (url == null || url.isEmpty) {
+        _snack(s.checkoutUnavailable);
+        return;
+      }
+
+      final bool opened = await launchUrl(
+        Uri.parse(url),
+        mode: LaunchMode.externalApplication,
+      );
+      if (!opened) {
+        _snack(s.checkoutUnavailable);
+        return;
+      }
+
+      if (mounted) {
+        setState(() {
+          _orderId = result.orderId;
+          _pendingPlan = plan;
+        });
+        _startPolling();
+      }
+    } on ApiException catch (error) {
+      _snack(apiErrorText(s, error));
+    } finally {
+      if (mounted) {
+        setState(() => _busy = false);
+      }
+    }
+  }
+
+  void _startPolling() {
+    _timer?.cancel();
+    _timer = Timer.periodic(_pollInterval, (_) => _check());
+  }
+
+  void _stopPolling() {
+    _timer?.cancel();
+    _timer = null;
+  }
+
+  /// To'lov holatini so'raydi; to'langan bo'lsa tarifni yangilaydi.
+  Future<void> _check({bool manual = false}) async {
+    final String? orderId = _orderId;
+    final UserPlan? plan = _pendingPlan;
+    if (orderId == null) {
+      return;
+    }
+
+    final AppStrings s = context.s;
+    try {
+      final PaymentStatus status =
+          await ref.read(billingRepositoryProvider).paymentStatus(orderId);
+      if (!mounted || _orderId != orderId) {
+        return;
+      }
+
+      if (status == PaymentStatus.paid) {
+        _stopPolling();
+        setState(() {
+          _orderId = null;
+          _pendingPlan = null;
+        });
+        await ref.read(authControllerProvider.notifier).refreshUser();
+        ref.invalidate(billingPlansProvider);
+        _snack(s.planActivatedText((plan ?? UserPlan.standard).label(s)));
+      } else if (status == PaymentStatus.failed ||
+          status == PaymentStatus.canceled) {
+        _stopPolling();
+        setState(() {
+          _orderId = null;
+          _pendingPlan = null;
+        });
+        _snack(s.paymentFailedLabel);
+      } else if (manual) {
+        _snack(s.paymentPendingBody);
+      }
+    } on ApiException catch (error) {
+      if (manual) {
+        _snack(apiErrorText(s, error));
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final AppStrings s = context.s;
+    final AsyncValue<BillingPlans> plans = ref.watch(billingPlansProvider);
+
+    return Scaffold(
+      appBar: AppBar(title: Text(s.planScreenTitle)),
+      body: plans.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (Object error, StackTrace _) => EmptyState(
+          icon: Icons.wifi_off_rounded,
+          title: s.errorNetwork,
+          message: apiErrorText(s, error),
+          actionLabel: s.retry,
+          onAction: () => ref.invalidate(billingPlansProvider),
+        ),
+        data: (BillingPlans data) => _buildPlans(s, data),
+      ),
+    );
+  }
+
+  Widget _buildPlans(AppStrings s, BillingPlans data) {
+    final PlanOffer? standard = data.offerFor(UserPlan.standard);
+    final PlanOffer? pro = data.offerFor(UserPlan.pro);
+    final UserPlan current = data.current;
+
+    return ListView(
+      padding: const EdgeInsets.all(AppSpacing.screen),
+      children: <Widget>[
+        _CurrentPlanCard(plan: current, expiresAt: data.expiresAt),
+        if (_orderId != null) ...<Widget>[
+          const SizedBox(height: AppSpacing.lg),
+          _PendingCard(
+            onCheck: () => _check(manual: true),
+          ),
+        ],
+        const SizedBox(height: AppSpacing.lg),
+        if (standard != null)
+          _PlanCard(
+            title: s.planStandardName,
+            price: s.planPriceText(Money.format(standard.price), standard.days),
+            features: <String>[s.planFeatureSales, s.planFeatureInventory],
+            isCurrent: current == UserPlan.standard,
+            isIncluded: current == UserPlan.pro,
+            actionLabel: s.planActivateAction,
+            busy: _busy,
+            onAction: current == UserPlan.free && _orderId == null
+                ? () => _start(UserPlan.standard)
+                : null,
+          ),
+        const SizedBox(height: AppSpacing.md),
+        if (pro != null)
+          _PlanCard(
+            title: s.planProName,
+            price: s.planPriceText(Money.format(pro.price), pro.days),
+            features: <String>[
+              s.planIncludesStandard,
+              s.proFeatureVoice,
+              s.proFeatureAi,
+              s.proFeatureOcr,
+              s.proFeatureReports,
+            ],
+            highlighted: true,
+            isCurrent: current == UserPlan.pro,
+            actionLabel: current == UserPlan.standard
+                ? s.planUpgradeProAction
+                : s.planActivateAction,
+            busy: _busy,
+            onAction: current != UserPlan.pro && _orderId == null
+                ? () => _start(UserPlan.pro)
+                : null,
+          ),
+      ],
+    );
+  }
+}
+
+class _CurrentPlanCard extends StatelessWidget {
+  const _CurrentPlanCard({required this.plan, required this.expiresAt});
+
+  final UserPlan plan;
+  final DateTime? expiresAt;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppStrings s = context.s;
+    final TextTheme textTheme = Theme.of(context).textTheme;
+
+    return AppCard(
+      child: Row(
+        children: <Widget>[
+          Container(
+            height: 44,
+            width: 44,
+            alignment: Alignment.center,
+            decoration: const BoxDecoration(
+              color: AppColors.lightGreen,
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.workspace_premium_rounded,
+              color: AppColors.darkGreen,
+            ),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(s.planCurrentLabel, style: textTheme.bodySmall),
+                Text(plan.label(s), style: textTheme.titleMedium),
+                if (plan != UserPlan.free && expiresAt != null)
+                  Text(
+                    '${s.proExpiresLabel}: '
+                    '${DateFormat('d MMMM yyyy', s.localeCode).format(expiresAt!.toLocal())}',
+                    style: textTheme.labelSmall,
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PlanCard extends StatelessWidget {
+  const _PlanCard({
+    required this.title,
+    required this.price,
+    required this.features,
+    required this.actionLabel,
+    required this.busy,
+    this.onAction,
+    this.isCurrent = false,
+    this.isIncluded = false,
+    this.highlighted = false,
+  });
+
+  final String title;
+  final String price;
+  final List<String> features;
+  final String actionLabel;
+  final bool busy;
+  final VoidCallback? onAction;
+
+  /// Shu tarif hozir faol.
+  final bool isCurrent;
+
+  /// Yuqoriroq tarif (Pro) shu tarifni o'z ichiga oladi.
+  final bool isIncluded;
+  final bool highlighted;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppStrings s = context.s;
+    final TextTheme textTheme = Theme.of(context).textTheme;
+
+    return AppCard(
+      borderColor: highlighted || isCurrent ? AppColors.primary : null,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Expanded(child: Text(title, style: textTheme.titleMedium)),
+              if (isCurrent || isIncluded)
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.sm,
+                    vertical: 2,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.lightGreen,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: Text(
+                    s.planActiveLabel,
+                    style: textTheme.labelSmall
+                        ?.copyWith(color: AppColors.darkGreen),
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            price,
+            style: textTheme.titleLarge?.copyWith(color: AppColors.primary),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          for (final String feature in features)
+            Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  const Icon(
+                    Icons.check_circle_rounded,
+                    size: 18,
+                    color: AppColors.primary,
+                  ),
+                  const SizedBox(width: AppSpacing.sm),
+                  Expanded(child: Text(feature, style: textTheme.bodyMedium)),
+                ],
+              ),
+            ),
+          if (!isCurrent && !isIncluded) ...<Widget>[
+            const SizedBox(height: AppSpacing.sm),
+            AppButton(
+              label: actionLabel,
+              isLoading: busy,
+              onPressed: onAction,
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+/// To'lov kutilmoqda holati (TZ 36.2): foydalanuvchi holatni qo'lda ham tekshira oladi.
+class _PendingCard extends StatelessWidget {
+  const _PendingCard({required this.onCheck});
+
+  final VoidCallback onCheck;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppStrings s = context.s;
+    final TextTheme textTheme = Theme.of(context).textTheme;
+
+    return AppCard(
+      color: AppColors.warningSurface,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              const SizedBox(
+                height: 18,
+                width: 18,
+                child: CircularProgressIndicator(strokeWidth: 2.2),
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Text(
+                  s.paymentPendingTitle,
+                  style: textTheme.titleSmall,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Text(s.paymentPendingBody, style: textTheme.bodySmall),
+          const SizedBox(height: AppSpacing.md),
+          AppButton(
+            label: s.checkStatusAction,
+            variant: AppButtonVariant.outline,
+            size: AppButtonSize.medium,
+            onPressed: onCheck,
+          ),
+        ],
+      ),
+    );
+  }
+}

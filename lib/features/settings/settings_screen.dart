@@ -11,6 +11,8 @@ import '../../core/utils/phone.dart';
 import '../../core/widgets/widgets.dart';
 import '../auth/data/auth_models.dart';
 import '../auth/state/auth_providers.dart';
+import '../billing/plan_text.dart';
+import '../billing/plans_screen.dart';
 import '../customers/customers_screen.dart' show CustomerAvatar;
 import '../expenses/expenses_screen.dart';
 import '../reports/reports_screen.dart';
@@ -21,8 +23,8 @@ import 'pin_change_screen.dart';
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
-  void _push(BuildContext context, Widget screen) {
-    Navigator.of(context).push(
+  Future<void> _push(BuildContext context, Widget screen) {
+    return Navigator.of(context).push(
       MaterialPageRoute<void>(builder: (BuildContext context) => screen),
     );
   }
@@ -149,16 +151,17 @@ class SettingsScreen extends ConsumerWidget {
             const SizedBox(height: AppSpacing.lg),
           ],
 
-          // —— Pro tarif qatori (TZ 35.3)
+          // —— Tarif qatori: joriy tarif holati bilan (TZ 35.3)
           _MenuItem(
             icon: Icons.auto_awesome_rounded,
             iconColor: AppColors.darkGreen,
             iconBackground: AppColors.lightGreen,
-            label: s.proTitle,
-            trailingText: s.proAction,
-            onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(s.comingSoonBody)),
-            ),
+            label: s.planScreenTitle,
+            trailingText: (user?.plan ?? UserPlan.free).label(s),
+            onTap: () async {
+              await _push(context, const PlansScreen());
+              await ref.read(authControllerProvider.notifier).refreshUser();
+            },
           ),
           const SizedBox(height: AppSpacing.md),
           _MenuItem(

@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/network/api_exception.dart';
+import '../../auth/state/auth_providers.dart';
 import '../../expenses/data/expense_models.dart';
 import '../../expenses/state/expenses_providers.dart';
 import '../../sales/data/sale_models.dart';
@@ -32,7 +33,7 @@ class ReportsState {
   final ExpensesSummary? expenses;
   final ApiException? error;
 
-  bool get hasData => sales != null;
+  bool get hasData => sales != null || expenses != null;
 
   /// Sof foyda = yalpi foyda − xarajatlar (TZ 14).
   double get netProfit => (sales?.profit ?? 0) - (expenses?.total ?? 0);
@@ -91,8 +92,12 @@ class ReportsController extends StateNotifier<ReportsState> {
     final String to = _ymd(toDate);
 
     try {
-      final SalesSummary sales =
-          await _ref.read(salesRepositoryProvider).summary(from: from, to: to);
+      // Savdo hisoboti faqat Standart/Pro tarifda mavjud (bepulda 403).
+      final bool hasSales =
+          _ref.read(authControllerProvider).user?.hasSalesAndInventory ?? false;
+      final SalesSummary? sales = hasSales
+          ? await _ref.read(salesRepositoryProvider).summary(from: from, to: to)
+          : null;
 
       // Xarajatlar endpointi backendda hali bo'lmasligi mumkin —
       // uning xatosi hisobotni to'xtatmaydi.

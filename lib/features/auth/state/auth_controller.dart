@@ -123,6 +123,19 @@ class AuthController extends StateNotifier<AuthState> {
     return true;
   }
 
+  /// Tarif o'zgargandan keyin (to'lov muvaffaqiyatli) profilni qayta yuklaydi.
+  /// Xatolik bo'lsa joriy holat saqlanadi.
+  Future<void> refreshUser() async {
+    try {
+      final AuthUser user = await _repository.me();
+      if (mounted) {
+        state = state.copyWith(user: user);
+      }
+    } on ApiException catch (_) {
+      // Keyingi urinishda yangilanadi.
+    }
+  }
+
   /// Sessiyani bloklash — ilova fonga o'tganda PIN qayta so'raladi (TZ 23).
   void lock() {
     if (state.user != null && state.user!.hasPin) {

@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/network/api_exception.dart';
+import '../../auth/state/auth_providers.dart';
 import '../../debts/data/debt_models.dart';
 import '../../debts/state/debts_providers.dart';
 import '../../expenses/data/expense_models.dart';
@@ -32,7 +33,8 @@ class HomeDashboardState {
   final ExpensesSummary? expenses;
   final ApiException? error;
 
-  bool get hasData => sales != null;
+  /// Qarz summary'si har doim yuklanadi; savdo/ombor faqat pullik tarifda.
+  bool get hasData => debts != null;
 
   HomeDashboardState copyWith({
     bool? isLoading,
@@ -65,15 +67,24 @@ class HomeController extends StateNotifier<HomeDashboardState> {
     state = state.copyWith(isLoading: true, clearError: true);
 
     try {
-      // Uchala summary parallel yuklanadi — dashboard tezroq ochiladi.
-      final List<Object> results = await Future.wait(<Future<Object>>[
-        _ref.read(salesRepositoryProvider).summary(),
+      // Savdo va ombor Standart/Pro tarifda ochiq — bepul tarifda ular
+      // so'ralmaydi (backend 403 `plan_required` qaytaradi).
+      final bool hasSalesAndInventory =
+          _ref.read(authControllerProvider).user?.hasSalesAndInventory ?? false;
+
+      // Summary'lar parallel yuklanadi — dashboard tezroq ochiladi.
+      final List<Object?> results = await Future.wait(<Future<Object?>>[
         _ref.read(debtsRepositoryProvider).summary(),
-        _ref.read(productsRepositoryProvider).summary(),
+        if (hasSalesAndInventory) ...<Future<Object?>>[
+          _ref.read(salesRepositoryProvider).summary(),
+          _ref.read(productsRepositoryProvider).summary(),
+        ],
       ]);
-      final SalesSummary sales = results[0] as SalesSummary;
-      final DebtsSummary debts = results[1] as DebtsSummary;
-      final ProductsSummary products = results[2] as ProductsSummary;
+      final DebtsSummary debts = results[0] as DebtsSummary;
+      final SalesSummary? sales =
+          hasSalesAndInventory ? results[1] as SalesSummary : null;
+      final ProductsSummary? products =
+          hasSalesAndInventory ? results[2] as ProductsSummary : null;
 
       // Xarajatlar endpointi backendda hali bo'lmasligi mumkin —
       // uning xatosi dashboardni to'xtatmaydi.

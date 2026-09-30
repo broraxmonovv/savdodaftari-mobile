@@ -6,6 +6,7 @@ import '../../app/router.dart';
 import '../../core/l10n/app_strings.dart';
 import '../auth/state/auth_providers.dart';
 import '../auth/state/auth_state.dart';
+import '../billing/plan_gate.dart';
 import '../customers/customers_screen.dart';
 import '../debts/debts_screen.dart';
 import '../home/home_screen.dart';
@@ -67,12 +68,12 @@ class _AppShellState extends ConsumerState<AppShell>
     return Scaffold(
       body: IndexedStack(
         index: _index,
-        children: const <Widget>[
-          HomeScreen(),
-          CustomersScreen(),
-          DebtsScreen(),
-          InventoryScreen(),
-          SettingsScreen(),
+        children: <Widget>[
+          const HomeScreen(),
+          const CustomersScreen(),
+          const DebtsScreen(),
+          PlanGate(title: s.navInventory, child: const InventoryScreen()),
+          const SettingsScreen(),
         ],
       ),
       bottomNavigationBar: NavigationBar(
