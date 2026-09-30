@@ -6,11 +6,9 @@ import '../data/auth_models.dart';
 import '../../../app/router.dart';
 import '../../../core/l10n/app_strings.dart';
 import '../../../core/network/api_error_text.dart';
-import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_dimens.dart';
 import '../../../core/utils/phone.dart';
 import '../../../core/widgets/widgets.dart';
-import '../data/auth_models.dart';
 import '../state/auth_providers.dart';
 import '../state/auth_state.dart';
 

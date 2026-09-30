@@ -11,7 +11,6 @@ import '../../../core/theme/app_dimens.dart';
 import '../../../core/widgets/widgets.dart';
 import '../data/auth_models.dart';
 import '../state/auth_providers.dart';
-import 'otp_screen.dart';
 
 /// Keyingi kirishlar: Splash -> PIN -> Home (TZ 38-bo'lim).
 class PinUnlockScreen extends ConsumerStatefulWidget {
