@@ -17,3 +17,4 @@ export 'search_field.dart';
 export 'skeleton.dart';
 export 'section_title.dart';
 export 'stat_card.dart';
+export 'user_avatar.dart';

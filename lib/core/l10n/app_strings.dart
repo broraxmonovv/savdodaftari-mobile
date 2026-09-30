@@ -17,6 +17,14 @@ class AppStrings {
     required this.onboardingBody2,
     required this.onboardingTitle3,
     required this.onboardingBody3,
+    required this.openLinkFailed,
+    required this.profilePhotoTitle,
+    required this.photoFromGallery,
+    required this.photoFromCamera,
+    required this.photoRemove,
+    required this.photoSaved,
+    required this.smsRemindersTitle,
+    required this.smsRemindersBody,
     required this.voiceLangUz,
     required this.voiceLangRu,
     required this.onboardingTitle4,
@@ -473,6 +481,14 @@ class AppStrings {
   final String onboardingBody2;
   final String onboardingTitle3;
   final String onboardingBody3;
+  final String openLinkFailed;
+  final String profilePhotoTitle;
+  final String photoFromGallery;
+  final String photoFromCamera;
+  final String photoRemove;
+  final String photoSaved;
+  final String smsRemindersTitle;
+  final String smsRemindersBody;
   final String voiceLangUz;
   final String voiceLangRu;
   final String onboardingTitle4;
@@ -1244,6 +1260,14 @@ class AppStrings {
     onboardingTitle4: 'Ovoz bilan boshqaring',
     onboardingBody4: '"Ali akaga 150 ming qarz yoz" deng — ilova o\'zi yozadi. O\'zbekcha va ruscha tushunadi.',
     onboardingVoiceExample: 'Ali akaga 150 ming qarz yoz',
+    openLinkFailed: "Havolani ochib bo'lmadi",
+    profilePhotoTitle: 'Profil rasmi',
+    photoFromGallery: 'Galereyadan tanlash',
+    photoFromCamera: 'Kameradan olish',
+    photoRemove: "Rasmni o'chirish",
+    photoSaved: 'Profil rasmi yangilandi',
+    smsRemindersTitle: 'Qarzdorlarga SMS eslatma',
+    smsRemindersBody: "Muddati o'tgan va ertaga tugaydigan qarzlar bo'yicha mijozlarga avtomatik SMS yuboriladi.",
     appName: 'Savdo Up',
     slogan: "Daftaringiz endi telefoningizda!",
     onboardingTitle1: "Qog'oz daftarni unuting",
@@ -1729,6 +1753,14 @@ class AppStrings {
     onboardingTitle4: 'Управляйте голосом',
     onboardingBody4: 'Скажите «Запиши Али долг 150 тысяч» — приложение запишет само. Понимает узбекский и русский.',
     onboardingVoiceExample: 'Запиши Али долг 150 тысяч',
+    openLinkFailed: 'Не удалось открыть ссылку',
+    profilePhotoTitle: 'Фото профиля',
+    photoFromGallery: 'Выбрать из галереи',
+    photoFromCamera: 'Сделать снимок',
+    photoRemove: 'Удалить фото',
+    photoSaved: 'Фото профиля обновлено',
+    smsRemindersTitle: 'SMS-напоминания должникам',
+    smsRemindersBody: 'Клиентам автоматически отправляется SMS о просроченных долгах и о сроке, истекающем завтра.',
     appName: 'Savdo Up',
     slogan: 'Ваша тетрадь теперь в телефоне!',
     onboardingTitle1: 'Забудьте о бумажной тетради',

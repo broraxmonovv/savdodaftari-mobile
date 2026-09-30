@@ -112,6 +112,34 @@ class AuthRepository {
     return AuthUser.fromJson(_unwrapUser(response));
   }
 
+  /// POST /auth/avatar — profil rasmini yuklaydi.
+  Future<AuthUser> uploadAvatar(String filePath) async {
+    final ApiResponse response = await _client.postFile(
+      '/auth/avatar',
+      fileField: 'avatar',
+      filePath: filePath,
+    );
+    return AuthUser.fromJson(_unwrapUser(response));
+  }
+
+  /// DELETE /auth/avatar
+  Future<AuthUser> deleteAvatar() async {
+    final ApiResponse response = await _client.delete('/auth/avatar');
+    return AuthUser.fromJson(_unwrapUser(response));
+  }
+
+  /// Qarzdorlarga SMS eslatmani yoqish/o'chirish (profil yangilash orqali).
+  Future<AuthUser> setSmsReminders({
+    required String name,
+    required bool enabled,
+  }) async {
+    final ApiResponse response = await _client.put(
+      '/auth/profile',
+      body: <String, dynamic>{'name': name, 'sms_reminders': enabled},
+    );
+    return AuthUser.fromJson(_unwrapUser(response));
+  }
+
   /// PIN o'rnatish yoki almashtirish.
   /// Mavjud PIN bo'lsa [currentPin] yoki `reset_pin` OTP talab qilinadi.
   Future<void> setPin({required String pin, String? currentPin}) async {

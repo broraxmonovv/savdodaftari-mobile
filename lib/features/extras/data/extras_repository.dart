@@ -16,6 +16,22 @@ class ExtrasRepository {
     return CurrencyRates.fromJson(response.dataMap);
   }
 
+  /// GET /banners — hozir ko'rsatilishi kerak bo'lgan reklama bannerlari.
+  Future<List<AdBanner>> banners() async {
+    final ApiResponse response = await _client.get('/banners');
+    return response.dataList
+        .map(AdBanner.fromJson)
+        .where((AdBanner it) => it.imageUrl.isNotEmpty)
+        .toList();
+  }
+
+  /// POST /banners/{id}/click — bosishlar statistikasi (xatolik e'tiborsiz).
+  Future<void> bannerClicked(int id) async {
+    try {
+      await _client.post('/banners/$id/click');
+    } catch (_) {}
+  }
+
   Future<SupportInfo> support() async {
     final ApiResponse response = await _client.get('/support');
     return SupportInfo.fromJson(response.dataMap);

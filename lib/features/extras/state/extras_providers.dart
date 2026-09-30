@@ -14,6 +14,16 @@ final AutoDisposeFutureProvider<CurrencyRates> currencyRatesProvider =
   (Ref ref) => ref.watch(extrasRepositoryProvider).currencies(),
 );
 
+/// Bosh sahifadagi reklama bannerlari (xatolikda bo'sh ro'yxat — karusel yashirinadi).
+final AutoDisposeFutureProvider<List<AdBanner>> bannersProvider =
+    FutureProvider.autoDispose<List<AdBanner>>((Ref ref) async {
+  try {
+    return await ref.watch(extrasRepositoryProvider).banners();
+  } catch (_) {
+    return <AdBanner>[];
+  }
+});
+
 final AutoDisposeFutureProvider<SupportInfo> supportProvider =
     FutureProvider.autoDispose<SupportInfo>(
   (Ref ref) => ref.watch(extrasRepositoryProvider).support(),

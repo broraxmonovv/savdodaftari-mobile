@@ -39,6 +39,8 @@ class AuthUser {
     this.plan = UserPlan.free,
     this.planExpiresAt,
     this.isTrial = false,
+    this.avatarUrl,
+    this.smsReminders = true,
     bool? isProfileComplete,
   }) : _isProfileComplete = isProfileComplete;
 
@@ -57,6 +59,8 @@ class AuthUser {
         json['plan_expires_at']?.toString() ?? '',
       ),
       isTrial: json['plan_is_trial'] == true,
+      avatarUrl: json['avatar_url']?.toString(),
+      smsReminders: json['sms_reminders'] != false,
       isProfileComplete: profileComplete is bool ? profileComplete : null,
     );
   }
@@ -77,6 +81,12 @@ class AuthUser {
 
   /// Hozirgi tarif — bepul sinov Standarti (yangi foydalanuvchilarga 14 kun).
   final bool isTrial;
+
+  /// Profil rasmi (yuklanmagan bo'lsa null).
+  final String? avatarUrl;
+
+  /// Qarzdor mijozlarga avtomatik SMS eslatma yuborilsinmi.
+  final bool smsReminders;
   final bool? _isProfileComplete;
 
   /// Savdo va ombor bo'limlari ochiqmi (Standart yoki Pro).
@@ -98,6 +108,7 @@ class AuthUser {
     UserPlan? plan,
     DateTime? planExpiresAt,
     bool? isTrial,
+    bool? smsReminders,
   }) {
     return AuthUser(
       id: id,
@@ -110,6 +121,8 @@ class AuthUser {
       plan: plan ?? this.plan,
       planExpiresAt: planExpiresAt ?? this.planExpiresAt,
       isTrial: isTrial ?? this.isTrial,
+      avatarUrl: avatarUrl,
+      smsReminders: smsReminders ?? this.smsReminders,
       isProfileComplete: _isProfileComplete,
     );
   }

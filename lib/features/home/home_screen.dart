@@ -19,6 +19,7 @@ import '../debts/debt_form_screen.dart';
 import '../debts/debts_screen.dart';
 import '../expenses/expenses_screen.dart';
 import '../extras/notifications_screen.dart';
+import '../ads/ads_carousel.dart';
 import '../assistant/assistant_screen.dart';
 import '../voice/voice_sheet.dart';
 import '../extras/state/extras_providers.dart';
@@ -60,7 +61,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     super.dispose();
   }
 
-  Future<void> _reload() => ref.read(homeControllerProvider.notifier).load();
+  Future<void> _reload() {
+    ref.invalidate(bannersProvider);
+    return ref.read(homeControllerProvider.notifier).load();
+  }
 
   Future<void> _push(Widget screen) async {
     await Navigator.of(context).push<Object?>(
@@ -126,6 +130,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         padding: const EdgeInsets.only(bottom: AppSpacing.xxxl),
         children: <Widget>[
           _Header(userName: userName),
+          const AdsCarousel(),
           const SizedBox(height: AppSpacing.lg),
           _PlanBanner(onOpen: _push),
           const SizedBox(height: AppSpacing.lg),
@@ -201,8 +206,6 @@ class _Header extends ConsumerWidget {
         DateFormat('d MMMM, yyyy', s.localeCode).format(DateTime.now());
     final int unread =
         ref.watch(announcementsProvider).valueOrNull?.unreadCount ?? 0;
-    final String initial =
-        userName.trim().isEmpty ? '\u2014' : userName.trim().characters.first;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(
@@ -213,19 +216,9 @@ class _Header extends ConsumerWidget {
       ),
       child: Row(
         children: <Widget>[
-          Container(
-            height: 44,
-            width: 44,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: AppColors.lightGreen,
-              shape: BoxShape.circle,
-            ),
-            child: Text(
-              initial,
-              style:
-                  textTheme.titleMedium?.copyWith(color: AppColors.darkGreen),
-            ),
+          UserAvatar(
+            name: userName,
+            imageUrl: ref.watch(authControllerProvider).user?.avatarUrl,
           ),
           const SizedBox(width: AppSpacing.md),
           Expanded(

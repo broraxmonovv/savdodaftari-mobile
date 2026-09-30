@@ -448,3 +448,25 @@ class BackupInfo {
   final Map<String, int> counts;
   final DateTime? createdAt;
 }
+
+/// Bosh sahifadagi reklama karuseli banneri (admin panel orqali boshqariladi).
+class AdBanner {
+  const AdBanner({
+    required this.id,
+    required this.title,
+    required this.url,
+    required this.imageUrl,
+  });
+
+  factory AdBanner.fromJson(Map<String, dynamic> json) => AdBanner(
+        id: int.tryParse(json['id']?.toString() ?? '') ?? 0,
+        title: json['title']?.toString() ?? '',
+        url: json['url']?.toString() ?? '',
+        imageUrl: json['image_url']?.toString() ?? '',
+      );
+
+  final int id;
+  final String title;
+  final String url;
+  final String imageUrl;
+}

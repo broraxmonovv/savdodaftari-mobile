@@ -99,6 +99,29 @@ class AuthController extends StateNotifier<AuthState> {
     return true;
   }
 
+  /// Profil rasmini yuklaydi; xatolik [ApiException] sifatida chiqadi.
+  Future<void> uploadAvatar(String filePath) async {
+    final AuthUser user = await _repository.uploadAvatar(filePath);
+    state = state.copyWith(user: user);
+  }
+
+  Future<void> deleteAvatar() async {
+    final AuthUser user = await _repository.deleteAvatar();
+    state = state.copyWith(user: user);
+  }
+
+  Future<void> setSmsReminders(bool enabled) async {
+    final AuthUser? current = state.user;
+    if (current == null) {
+      return;
+    }
+    final AuthUser user = await _repository.setSmsReminders(
+      name: current.name,
+      enabled: enabled,
+    );
+    state = state.copyWith(user: user);
+  }
+
   Future<bool> setPin(String pin, {String? currentPin}) async {
     final bool? done = await _guard<bool>(() async {
       await _repository.setPin(pin: pin, currentPin: currentPin);

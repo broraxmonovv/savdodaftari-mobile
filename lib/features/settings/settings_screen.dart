@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../app/locale_provider.dart';
 import '../../app/router.dart';
 import '../../app/theme_provider.dart';
 import '../../core/l10n/app_strings.dart';
+import '../../core/network/api_error_text.dart';
+import '../../core/network/api_exception.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_dimens.dart';
 import '../../core/utils/phone.dart';
 import '../../core/widgets/widgets.dart';
 import '../auth/data/auth_models.dart';
+import '../auth/state/auth_controller.dart';
 import '../auth/state/auth_providers.dart';
 import '../billing/plan_text.dart';
 import '../billing/plans_screen.dart';
-import '../customers/customers_screen.dart' show CustomerAvatar;
 import '../extras/bonuses_screen.dart';
 import '../extras/currencies_screen.dart';
 import '../extras/guides_screen.dart';
@@ -38,6 +41,84 @@ class SettingsScreen extends ConsumerWidget {
     return Navigator.of(context).push(
       MaterialPageRoute<void>(builder: (BuildContext context) => screen),
     );
+  }
+
+  Future<void> _setSmsReminders(
+    BuildContext context,
+    WidgetRef ref,
+    bool value,
+  ) async {
+    final AppStrings s = context.s;
+    final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+    try {
+      await ref.read(authControllerProvider.notifier).setSmsReminders(value);
+    } on ApiException catch (error) {
+      messenger.showSnackBar(SnackBar(content: Text(apiErrorText(s, error))));
+    }
+  }
+
+  /// Profil rasmi: galereya / kamera / o'chirish.
+  Future<void> _changePhoto(BuildContext context, WidgetRef ref) async {
+    final AppStrings s = context.s;
+    final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+    final bool hasPhoto =
+        (ref.read(authControllerProvider).user?.avatarUrl ?? '').isNotEmpty;
+
+    final String? action = await showModalBottomSheet<String>(
+      context: context,
+      builder: (BuildContext sheet) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            ListTile(
+              leading: const Icon(Icons.photo_library_rounded),
+              title: Text(s.photoFromGallery),
+              onTap: () => Navigator.of(sheet).pop('gallery'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_camera_rounded),
+              title: Text(s.photoFromCamera),
+              onTap: () => Navigator.of(sheet).pop('camera'),
+            ),
+            if (hasPhoto)
+              ListTile(
+                leading: Icon(Icons.delete_outline_rounded, color: AppColors.danger),
+                title: Text(
+                  s.photoRemove,
+                  style: TextStyle(color: AppColors.danger),
+                ),
+                onTap: () => Navigator.of(sheet).pop('remove'),
+              ),
+          ],
+        ),
+      ),
+    );
+    if (action == null) {
+      return;
+    }
+
+    final AuthController auth = ref.read(authControllerProvider.notifier);
+    try {
+      if (action == 'remove') {
+        await auth.deleteAvatar();
+        return;
+      }
+      final XFile? file = await ImagePicker().pickImage(
+        source: action == 'camera' ? ImageSource.camera : ImageSource.gallery,
+        maxWidth: 800,
+        maxHeight: 800,
+        imageQuality: 85,
+      );
+      if (file == null) {
+        return;
+      }
+      await auth.uploadAvatar(file.path);
+      messenger.showSnackBar(SnackBar(content: Text(s.photoSaved)));
+    } on ApiException catch (error) {
+      messenger.showSnackBar(SnackBar(content: Text(apiErrorText(s, error))));
+    } catch (_) {
+      messenger.showSnackBar(SnackBar(content: Text(s.errorUnknown)));
+    }
   }
 
   /// Til tanlash — tanlov qurilmada saqlanadi va API'ga uzatiladi.
@@ -181,9 +262,38 @@ class SettingsScreen extends ConsumerWidget {
             AppCard(
               child: Row(
                 children: <Widget>[
-                  CustomerAvatar(
-                    name: user.name.trim().isEmpty ? '\u2014' : user.name,
-                    size: 52,
+                  GestureDetector(
+                    onTap: () => _changePhoto(context, ref),
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: <Widget>[
+                        UserAvatar(
+                          name: user.name,
+                          imageUrl: user.avatarUrl,
+                          size: 60,
+                        ),
+                        Positioned(
+                          right: -2,
+                          bottom: -2,
+                          child: Container(
+                            padding: const EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              color: AppColors.primary,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: AppColors.card,
+                                width: 2,
+                              ),
+                            ),
+                            child: const Icon(
+                              Icons.photo_camera_rounded,
+                              size: 12,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(width: AppSpacing.md),
                   Expanded(
@@ -210,6 +320,25 @@ class SettingsScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: AppSpacing.lg),
+          ],
+
+          // —— Qarzdorlarga SMS eslatma yoqish/o'chirish
+          if (user != null) ...<Widget>[
+            AppCard(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.md,
+                vertical: AppSpacing.xs,
+              ),
+              child: SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                value: user.smsReminders,
+                activeColor: AppColors.primary,
+                title: Text(s.smsRemindersTitle, style: textTheme.titleSmall),
+                subtitle: Text(s.smsRemindersBody, style: textTheme.bodySmall),
+                onChanged: (bool value) => _setSmsReminders(context, ref, value),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.md),
           ],
 
           // —— Tarif qatori: joriy tarif holati bilan (TZ 35.3)
