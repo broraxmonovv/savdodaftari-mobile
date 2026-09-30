@@ -552,3 +552,8 @@ Sozlamalar → *Eski daftarni ko'chirish*: daftar sahifasi kamera yoki galereyad
 ### 40.2 AI biznes yordamchi (Pro)
 
 Sozlamalar → *AI yordamchi* yoki bosh sahifadagi ✨ tugmasi: chat ko'rinishidagi savol-javob (tayyor savollar: "Bugun qancha foyda qildim?", "Kimlarning qarzi muddati o'tgan?", ...). Javoblar backend `/ai/assistant` orqali foydalanuvchining haqiqiy ma'lumotlariga asoslanadi; yordamchi ma'lumotni o'zgartirmaydi. Pro bo'lmaganlarga Pro taklifi ko'rsatiladi.
+
+### 40.3 Eksport va zaxira (Pro)
+
+- **Excel/PDF eksport:** Hisobot ekranidagi ⬇ tugmasi: tur (Hisobot, Savdolar, Xarajatlar, Qarzlar, Ombor) va format tanlanadi, tanlangan davr uchun fayl backenddan olinib ulashish oynasi ochiladi (saqlash, Telegram, email).
+- **Zaxira nusxa:** Sozlamalar → *Zaxira nusxa*: hozir zaxira yaratish, ro'yxat (sana, hajm, mijoz/savdo/mahsulot soni), **tiklash** (ogohlantirish bilan; backend avval joriy holatning avtomatik zaxirasini oladi) va o'chirish.

@@ -8,6 +8,7 @@ import '../../core/theme/app_dimens.dart';
 import '../../core/widgets/widgets.dart';
 import '../auth/state/auth_providers.dart';
 import '../billing/pro_upsell.dart';
+import 'export_sheet.dart';
 import 'state/reports_providers.dart';
 
 /// TZ 17-bo'lim: hisobot va analitika — Bugun / 7 kun / 30 kun / Custom.
@@ -84,7 +85,16 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
         ref.read(reportsControllerProvider.notifier);
 
     return Scaffold(
-      appBar: AppBar(title: Text(s.navReports)),
+      appBar: AppBar(
+        title: Text(s.navReports),
+        actions: <Widget>[
+          IconButton(
+            tooltip: s.exportTitle,
+            onPressed: () => openExportSheet(context, ref),
+            icon: const Icon(Icons.file_download_outlined),
+          ),
+        ],
+      ),
       body: Column(
         children: <Widget>[
           AppFilterChips(

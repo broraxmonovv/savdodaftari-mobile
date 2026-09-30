@@ -50,3 +50,9 @@ final AutoDisposeFutureProvider<List<AlertItem>> alertsProvider =
     FutureProvider.autoDispose<List<AlertItem>>(
   (Ref ref) => ref.watch(extrasRepositoryProvider).alerts(),
 );
+
+/// Bulut zaxira nusxalari ro'yxati (Pro).
+final AutoDisposeFutureProvider<List<BackupInfo>> backupsProvider =
+    FutureProvider.autoDispose<List<BackupInfo>>(
+  (Ref ref) => ref.watch(extrasRepositoryProvider).backups(),
+);

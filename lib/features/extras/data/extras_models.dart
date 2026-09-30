@@ -412,3 +412,39 @@ class ChatMessage {
 
   bool get isUser => role == 'user';
 }
+
+/// Bulut zaxira nusxasi (`GET /backups`).
+@immutable
+class BackupInfo {
+  const BackupInfo({
+    required this.id,
+    required this.size,
+    required this.source,
+    required this.counts,
+    this.createdAt,
+  });
+
+  factory BackupInfo.fromJson(Map<String, dynamic> json) {
+    final Object? counts = json['counts'];
+    return BackupInfo(
+      id: _num(json['id']).toInt(),
+      size: _num(json['size']).toInt(),
+      source: json['source']?.toString() ?? 'manual',
+      counts: counts is Map
+          ? counts.map((Object? k, Object? v) =>
+              MapEntry<String, int>(k.toString(), _num(v).toInt()))
+          : const <String, int>{},
+      createdAt: DateTime.tryParse(json['created_at']?.toString() ?? ''),
+    );
+  }
+
+  final int id;
+
+  /// Fayl hajmi, bayt.
+  final int size;
+
+  /// manual | auto (tiklashdan oldingi avtomatik zaxira ham `auto`).
+  final String source;
+  final Map<String, int> counts;
+  final DateTime? createdAt;
+}

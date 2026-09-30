@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 
@@ -73,6 +75,54 @@ class ApiClient {
     Map<String, dynamic>? body,
   }) {
     return _send(() => _dio.post<dynamic>(path, data: body));
+  }
+
+  /// Fayl yuklab olish (Excel/PDF eksport): javob baytlari. Xatolik (JSON konvert)
+  /// bo'lsa [ApiException] tashlanadi.
+  Future<Uint8List> getBytes(
+    String path, {
+    Map<String, dynamic>? query,
+    Duration? receiveTimeout,
+  }) async {
+    final Response<List<int>> response;
+    try {
+      response = await _dio.get<List<int>>(
+        path,
+        queryParameters: query,
+        options: Options(
+          responseType: ResponseType.bytes,
+          receiveTimeout: receiveTimeout ?? const Duration(seconds: 120),
+        ),
+      );
+    } on DioException catch (error) {
+      throw _mapDioException(error);
+    }
+
+    final List<int> data = response.data ?? <int>[];
+    final int status = response.statusCode ?? 0;
+
+    if (status >= 400) {
+      Map<String, dynamic> json = <String, dynamic>{};
+      try {
+        final Object? decoded = jsonDecode(utf8.decode(data));
+        if (decoded is Map) {
+          json = decoded.cast<String, dynamic>();
+        }
+      } catch (_) {}
+      final Object? meta = json['meta'];
+      final ApiException exception = ApiException(
+        message: json['message']?.toString() ?? '',
+        code: json['code']?.toString(),
+        statusCode: status,
+        meta: meta is Map ? meta.cast<String, dynamic>() : <String, dynamic>{},
+      );
+      if (exception.isUnauthenticated) {
+        onUnauthenticated?.call();
+      }
+      throw exception;
+    }
+
+    return Uint8List.fromList(data);
   }
 
   /// Fayl yuklash (multipart/form-data): [filePath] — `fileField` nomi bilan.

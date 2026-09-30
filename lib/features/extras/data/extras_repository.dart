@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import '../../../core/network/api_client.dart';
 import '../../../core/network/api_response.dart';
 import 'extras_models.dart';
@@ -178,5 +180,49 @@ class ExtrasRepository {
       },
     );
     return response.dataMap['reply']?.toString() ?? '';
+  }
+
+  /// GET /exports/{type}?format=xlsx|pdf — Excel/PDF fayl baytlari (Pro).
+  Future<Uint8List> exportFile({
+    required String type,
+    required String format,
+    required String from,
+    required String to,
+  }) {
+    return _client.getBytes(
+      '/exports/$type',
+      query: <String, dynamic>{'format': format, 'from': from, 'to': to},
+    );
+  }
+
+  /// GET /backups — zaxira nusxalari (Pro).
+  Future<List<BackupInfo>> backups() async {
+    final ApiResponse response = await _client.get('/backups');
+    final Object? items = response.dataMap['items'];
+    if (items is! List) {
+      return const <BackupInfo>[];
+    }
+    return items
+        .whereType<Map<Object?, Object?>>()
+        .map((Map<Object?, Object?> e) =>
+            BackupInfo.fromJson(e.cast<String, dynamic>()))
+        .toList();
+  }
+
+  /// POST /backups — hozirgi holatdan zaxira yaratadi.
+  Future<void> createBackup() async {
+    await _client.post('/backups');
+  }
+
+  /// POST /backups/{id}/restore — ma'lumotlarni zaxiradagi holatga qaytaradi.
+  Future<void> restoreBackup(int id) async {
+    await _client.post(
+      '/backups/$id/restore',
+      body: <String, dynamic>{'confirm': true},
+    );
+  }
+
+  Future<void> deleteBackup(int id) async {
+    await _client.delete('/backups/$id');
   }
 }

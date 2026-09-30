@@ -412,6 +412,30 @@ class AppStrings {
     required this.assistantQ4,
     required this.assistantQ5,
     required this.assistantProBody,
+    required this.exportTitle,
+    required this.exportFormat,
+    required this.exportTypeReport,
+    required this.exportTypeSales,
+    required this.exportTypeExpenses,
+    required this.exportTypeDebts,
+    required this.exportTypeInventory,
+    required this.exportAction,
+    required this.exportBusy,
+    required this.exportProBody,
+    required this.backupTitle,
+    required this.backupIntro,
+    required this.backupCreate,
+    required this.backupCreated,
+    required this.backupEmpty,
+    required this.backupAuto,
+    required this.backupManual,
+    required this.backupRestore,
+    required this.backupRestoreTitle,
+    required this.backupRestoreWarning,
+    required this.backupRestored,
+    required this.backupDeleteConfirm,
+    required this.backupProBody,
+    required this.backupCountsTemplate,
   });
 
   final String localeCode;
@@ -864,6 +888,36 @@ class AppStrings {
   final String assistantQ4;
   final String assistantQ5;
   final String assistantProBody;
+  final String exportTitle;
+  final String exportFormat;
+  final String exportTypeReport;
+  final String exportTypeSales;
+  final String exportTypeExpenses;
+  final String exportTypeDebts;
+  final String exportTypeInventory;
+  final String exportAction;
+  final String exportBusy;
+  final String exportProBody;
+  final String backupTitle;
+  final String backupIntro;
+  final String backupCreate;
+  final String backupCreated;
+  final String backupEmpty;
+  final String backupAuto;
+  final String backupManual;
+  final String backupRestore;
+  final String backupRestoreTitle;
+  final String backupRestoreWarning;
+  final String backupRestored;
+  final String backupDeleteConfirm;
+  final String backupProBody;
+  final String backupCountsTemplate;
+
+  String backupCountsText(int customers, int sales, int products) =>
+      backupCountsTemplate
+          .replaceAll('{customers}', customers.toString())
+          .replaceAll('{sales}', sales.toString())
+          .replaceAll('{products}', products.toString());
 
   String ocrImportedText(int customers, int debts) => ocrImportedTemplate
       .replaceAll('{customers}', customers.toString())
@@ -1534,6 +1588,30 @@ class AppStrings {
     assistantQ4: "Bu oy o'tgan oyga nisbatan savdo qanday?",
     assistantQ5: "10 dona kam qolgan mahsulotlarni ko'rsat",
     assistantProBody: "AI biznes yordamchi Pro tarifda ishlaydi.",
+    exportTitle: "Eksport",
+    exportFormat: "Format",
+    exportTypeReport: "Hisobot",
+    exportTypeSales: "Savdolar",
+    exportTypeExpenses: "Xarajatlar",
+    exportTypeDebts: "Qarzlar",
+    exportTypeInventory: "Ombor",
+    exportAction: "Yuklab olish va ulashish",
+    exportBusy: "Fayl tayyorlanmoqda…",
+    exportProBody: "Excel/PDF eksport Pro tarifda ishlaydi.",
+    backupTitle: "Zaxira nusxa",
+    backupIntro: "Ma'lumotlaringiz serverda saqlanadi. Kerak bo'lsa zaxiradagi holatga qaytarishingiz mumkin.",
+    backupCreate: "Hozir zaxira yaratish",
+    backupCreated: "Zaxira yaratildi",
+    backupEmpty: "Zaxira nusxalar yo'q",
+    backupAuto: "Avtomatik",
+    backupManual: "Qo'lda",
+    backupRestore: "Tiklash",
+    backupRestoreTitle: "Zaxiradan tiklash",
+    backupRestoreWarning: "Barcha joriy ma'lumotlar (mijoz, qarz, savdo, ombor, xarajat) shu zaxiradagi holatga qaytariladi. Avval joriy holatning avtomatik zaxirasi olinadi.",
+    backupRestored: "Ma'lumotlar tiklandi",
+    backupDeleteConfirm: "Zaxirani o'chirasizmi?",
+    backupProBody: "Bulut zaxira Pro tarifda ishlaydi.",
+    backupCountsTemplate: "Mijoz: {customers} · Savdo: {sales} · Mahsulot: {products}",
   );
 
   static const AppStrings ru = AppStrings(
@@ -1951,6 +2029,30 @@ class AppStrings {
     assistantQ4: "Как продажи в этом месяце по сравнению с прошлым?",
     assistantQ5: "Покажи товары, которых осталось меньше 10",
     assistantProBody: "AI-помощник доступен на тарифе Pro.",
+    exportTitle: "Экспорт",
+    exportFormat: "Формат",
+    exportTypeReport: "Отчёт",
+    exportTypeSales: "Продажи",
+    exportTypeExpenses: "Расходы",
+    exportTypeDebts: "Долги",
+    exportTypeInventory: "Склад",
+    exportAction: "Скачать и поделиться",
+    exportBusy: "Подготовка файла…",
+    exportProBody: "Экспорт в Excel/PDF доступен на тарифе Pro.",
+    backupTitle: "Резервная копия",
+    backupIntro: "Ваши данные хранятся на сервере. При необходимости можно вернуться к состоянию из копии.",
+    backupCreate: "Создать копию сейчас",
+    backupCreated: "Копия создана",
+    backupEmpty: "Резервных копий нет",
+    backupAuto: "Автоматическая",
+    backupManual: "Вручную",
+    backupRestore: "Восстановить",
+    backupRestoreTitle: "Восстановление из копии",
+    backupRestoreWarning: "Все текущие данные (клиенты, долги, продажи, склад, расходы) вернутся к состоянию из этой копии. Сначала будет создана автоматическая копия текущего состояния.",
+    backupRestored: "Данные восстановлены",
+    backupDeleteConfirm: "Удалить копию?",
+    backupProBody: "Облачная копия доступна на тарифе Pro.",
+    backupCountsTemplate: "Клиентов: {customers} · Продаж: {sales} · Товаров: {products}",
   );
 }
 
