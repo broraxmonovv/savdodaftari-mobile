@@ -160,7 +160,7 @@ class _ExpenseFormScreenState extends ConsumerState<ExpenseFormScreen> {
                     shadows: const <BoxShadow>[],
                     child: Row(
                       children: <Widget>[
-                        const Icon(
+                        Icon(
                           Icons.event_rounded,
                           size: 20,
                           color: AppColors.textSecondary,
@@ -172,7 +172,7 @@ class _ExpenseFormScreenState extends ConsumerState<ExpenseFormScreen> {
                             style: textTheme.titleSmall,
                           ),
                         ),
-                        const Icon(
+                        Icon(
                           Icons.chevron_right_rounded,
                           color: AppColors.textSecondary,
                         ),

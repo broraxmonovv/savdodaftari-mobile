@@ -11,13 +11,13 @@ abstract final class AppTypography {
   static TextStyle _style({
     required double size,
     required FontWeight weight,
-    Color color = AppColors.textPrimary,
+    Color? color,
     double height = 1.35,
   }) {
     return GoogleFonts.inter(
       fontSize: size,
       fontWeight: weight,
-      color: color,
+      color: color ?? AppColors.textPrimary,
       height: height,
     );
   }
@@ -60,12 +60,12 @@ abstract final class AppTypography {
   static TextStyle money({
     required double size,
     FontWeight weight = FontWeight.w700,
-    Color color = AppColors.textPrimary,
+    Color? color,
   }) {
     return GoogleFonts.inter(
       fontSize: size,
       fontWeight: weight,
-      color: color,
+      color: color ?? AppColors.textPrimary,
       height: 1.2,
       fontFeatures: const <FontFeature>[FontFeature.tabularFigures()],
     );

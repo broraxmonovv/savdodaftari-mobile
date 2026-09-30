@@ -94,6 +94,7 @@ class AuthRepository {
     String? shopName,
     String? businessType,
     String? locale,
+    String? referralCode,
   }) async {
     final ApiResponse response = await _client.put(
       '/auth/profile',
@@ -103,6 +104,8 @@ class AuthRepository {
         if (businessType != null && businessType.isNotEmpty)
           'business_type': businessType,
         if (locale != null) 'locale': locale,
+        if (referralCode != null && referralCode.trim().isNotEmpty)
+          'referral_code': referralCode.trim(),
       },
     );
 

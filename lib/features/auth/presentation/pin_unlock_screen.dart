@@ -102,7 +102,7 @@ class _PinUnlockScreenState extends ConsumerState<PinUnlockScreen> {
                 height: 64,
                 width: 64,
                 alignment: Alignment.center,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: AppColors.lightGreen,
                   shape: BoxShape.circle,
                 ),

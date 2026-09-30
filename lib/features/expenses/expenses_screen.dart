@@ -191,7 +191,7 @@ class _SummaryCard extends StatelessWidget {
               height: 40,
               width: 40,
               alignment: Alignment.center,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: AppColors.dangerSurface,
                 borderRadius: AppRadius.field,
               ),
@@ -266,7 +266,7 @@ class _ExpenseTile extends StatelessWidget {
               height: 40,
               width: 40,
               alignment: Alignment.center,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: AppColors.warningSurface,
                 borderRadius: AppRadius.field,
               ),

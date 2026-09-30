@@ -148,7 +148,7 @@ class _StockMovementSheetState extends ConsumerState<StockMovementSheet> {
                 child: Container(
                   height: 4,
                   width: 40,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     color: AppColors.border,
                     borderRadius: AppRadius.pill,
                   ),
@@ -321,7 +321,7 @@ class _StockAdjustSheetState extends ConsumerState<StockAdjustSheet> {
                 child: Container(
                   height: 4,
                   width: 40,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     color: AppColors.border,
                     borderRadius: AppRadius.pill,
                   ),

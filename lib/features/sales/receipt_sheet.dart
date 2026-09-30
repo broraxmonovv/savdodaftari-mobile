@@ -56,7 +56,7 @@ class _ReceiptSheet extends StatelessWidget {
                   ),
                   child: Text(
                     receipt.text,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontFamily: 'monospace',
                       fontSize: 13,
                       height: 1.6,

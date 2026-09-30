@@ -5,15 +5,19 @@ import 'app_colors.dart';
 import 'app_dimens.dart';
 import 'app_typography.dart';
 
-/// Material 3 asosidagi yagona tema — oq fon, yashil akcent,
-/// card-based layout, rounded corners, soft shadow.
+/// Material 3 asosidagi yagona tema — yashil akcent, card-based layout,
+/// rounded corners, soft shadow. Yorug' va qorong'u rejimni qo'llaydi:
+/// [AppColors.apply] chaqirilgandan keyin [build] joriy rang sxemasi bilan
+/// yangi [ThemeData] yig'adi.
 abstract final class AppTheme {
-  static ThemeData light() {
+  static ThemeData build() {
+    final bool dark = AppColors.isDark;
+    final Brightness brightness = dark ? Brightness.dark : Brightness.light;
     final TextTheme textTheme = AppTypography.build();
 
     final ColorScheme colorScheme = ColorScheme.fromSeed(
       seedColor: AppColors.primary,
-      brightness: Brightness.light,
+      brightness: brightness,
     ).copyWith(
       primary: AppColors.primary,
       onPrimary: Colors.white,
@@ -36,8 +40,8 @@ abstract final class AppTheme {
       textTheme: textTheme,
       splashColor: AppColors.lightGreen,
       highlightColor: Colors.transparent,
-      iconTheme: const IconThemeData(color: AppColors.textPrimary, size: 22),
-      dividerTheme: const DividerThemeData(
+      iconTheme: IconThemeData(color: AppColors.textPrimary, size: 22),
+      dividerTheme: DividerThemeData(
         color: AppColors.border,
         thickness: 1,
         space: 1,
@@ -51,7 +55,8 @@ abstract final class AppTheme {
         centerTitle: false,
         titleSpacing: AppSpacing.screen,
         titleTextStyle: textTheme.titleLarge,
-        systemOverlayStyle: SystemUiOverlayStyle.dark,
+        systemOverlayStyle:
+            dark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
@@ -63,11 +68,11 @@ abstract final class AppTheme {
         ),
         hintStyle: textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
         errorStyle: textTheme.bodySmall?.copyWith(color: AppColors.danger),
-        border: const OutlineInputBorder(
+        border: OutlineInputBorder(
           borderRadius: AppRadius.field,
           borderSide: BorderSide(color: AppColors.border),
         ),
-        enabledBorder: const OutlineInputBorder(
+        enabledBorder: OutlineInputBorder(
           borderRadius: AppRadius.field,
           borderSide: BorderSide(color: AppColors.border),
         ),
@@ -83,7 +88,7 @@ abstract final class AppTheme {
           borderRadius: AppRadius.field,
           borderSide: BorderSide(color: AppColors.danger, width: 1.6),
         ),
-        disabledBorder: const OutlineInputBorder(
+        disabledBorder: OutlineInputBorder(
           borderRadius: AppRadius.field,
           borderSide: BorderSide(color: AppColors.border),
         ),
@@ -116,12 +121,13 @@ abstract final class AppTheme {
         ),
       ),
       snackBarTheme: SnackBarThemeData(
-        backgroundColor: AppColors.textPrimary,
-        contentTextStyle: textTheme.bodyMedium?.copyWith(color: Colors.white),
+        backgroundColor: dark ? AppColors.border : AppColors.textPrimary,
+        contentTextStyle: textTheme.bodyMedium
+            ?.copyWith(color: dark ? AppColors.textPrimary : Colors.white),
         behavior: SnackBarBehavior.floating,
         shape: const RoundedRectangleBorder(borderRadius: AppRadius.field),
       ),
-      bottomSheetTheme: const BottomSheetThemeData(
+      bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: AppColors.card,
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(borderRadius: AppRadius.sheet),

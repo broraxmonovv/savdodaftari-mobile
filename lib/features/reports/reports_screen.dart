@@ -88,7 +88,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                 shadows: const <BoxShadow>[],
                 child: Row(
                   children: <Widget>[
-                    const Icon(
+                    Icon(
                       Icons.date_range_rounded,
                       size: 20,
                       color: AppColors.textSecondary,
@@ -103,7 +103,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                         style: Theme.of(context).textTheme.titleSmall,
                       ),
                     ),
-                    const Icon(
+                    Icon(
                       Icons.chevron_right_rounded,
                       color: AppColors.textSecondary,
                     ),
@@ -262,12 +262,14 @@ class _AmountRow extends StatelessWidget {
   const _AmountRow({
     required this.label,
     required this.amount,
-    this.color = AppColors.textPrimary,
+    this.color,
   });
 
   final String label;
   final double amount;
-  final Color color;
+
+  /// Berilmasa joriy rejimdagi asosiy matn rangi.
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {

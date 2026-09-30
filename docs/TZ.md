@@ -505,3 +505,19 @@ Pro tarifni faollashtirish to'liq backend API orqali, checkout sahifasiga o'tish
 
 - Eskiz'da SMS jo'natuvchi nom (**sender name**) oldindan ro'yxatdan o'tkazilishi kerak — development boshlanishidan oldin ariza topshirish tavsiya etiladi.
 - Eskiz API'ning kunlik/oylik limiti va narxi loyihaning kutilayotgan foydalanuvchi soniga qarab oldindan hisoblab chiqilishi kerak.
+
+---
+
+## 38. Sozlamalar bo'limi: qo'shimcha imkoniyatlar
+
+| Bo'lim | Tavsif |
+|---|---|
+| **Qorong'u rejim** | Sozlamalarda *Tizim / Yorug' / Qorong'u*; tanlov qurilmada saqlanadi, "Tizim" rejimida qurilma mavzusiga ergashadi. |
+| **Qo'llab-quvvatlash** | Telefon, Telegram, email va ish vaqti (backend `GET /support`, env orqali sozlanadi). |
+| **Qo'llanma videolar** | Video ro'yxati (`GET /guides`); bosilganda YouTube/brauzerda ochiladi. |
+| **Referal (do'st taklif qilish)** | Har bir foydalanuvchida noyob kod va havola (`GET /referral`). Kod ro'yxatdan o'tishda profil ekranida ixtiyoriy kiritiladi. Taklif qilingan foydalanuvchining **har bir** to'lovidan **10%** taklif qilganga bonus sifatida yoziladi; to'lov storno qilinsa bonus qaytariladi. Telegram orqali ulashish. |
+| **Bonuslar balansi** | Joriy balans va tarix (`GET /bonuses`). Bonusni sarflash/yechib olish usuli alohida vazifa. |
+| **Valyuta kurslari** | cbu.uz rasmiy kurslari (USD, EUR, RUB, KZT, GBP, CNY, TRY), kechagi kursga nisbatan o'zgarish. Backend soatiga yangilaydi va keshlaydi, ekran ochiq bo'lganda har 5 daqiqada qayta so'raydi, pastga tortib yangilash mumkin. |
+| **Suzuvchi kalkulyator** | Barcha sahifalarda ekran chetiga yopishib turadi (surish mumkin, eng yaqin chetga yopishadi). Bosilganda to'liq kalkulyator paneli: + − × ÷, %, ±, ⌫, amallar ustuvorligi, natijani oldindan ko'rish. |
+
+**Data model (yangi):** `users.referral_code`, `users.referred_by_id`, `users.bonus_balance`; `bonus_transactions(id, user_id, from_user_id, payment_id, type referral|reversal, amount)`.

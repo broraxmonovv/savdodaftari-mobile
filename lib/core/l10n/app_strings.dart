@@ -281,6 +281,43 @@ class AppStrings {
     required this.planActivatedTemplate,
     required this.bannerStandardTitle,
     required this.bannerStandardBody,
+    required this.themeTitle,
+    required this.themeSystem,
+    required this.themeLight,
+    required this.themeDark,
+    required this.calculatorTitle,
+    required this.calcError,
+    required this.currencyTitle,
+    required this.currencySource,
+    required this.currencyUpdatedTemplate,
+    required this.currencyEmpty,
+    required this.supportTitle,
+    required this.supportBody,
+    required this.supportCall,
+    required this.supportTelegram,
+    required this.supportEmail,
+    required this.supportHours,
+    required this.guidesTitle,
+    required this.guidesEmpty,
+    required this.referralTitle,
+    required this.referralBodyTemplate,
+    required this.referralCodeLabel,
+    required this.referralCopy,
+    required this.referralCopied,
+    required this.referralShare,
+    required this.referralShareTemplate,
+    required this.referralInvited,
+    required this.referralPaying,
+    required this.referralEarned,
+    required this.referralFieldLabel,
+    required this.bonusTitle,
+    required this.bonusBalanceLabel,
+    required this.bonusHistoryTitle,
+    required this.bonusEmpty,
+    required this.bonusFromTemplate,
+    required this.bonusReversal,
+    required this.linkOpenFailed,
+    required this.darkModeTitle,
   });
 
   final String localeCode;
@@ -600,6 +637,58 @@ class AppStrings {
   final String planActivatedTemplate;
   final String bannerStandardTitle;
   final String bannerStandardBody;
+
+  // —— Sozlamalar bo'limlari: mavzu, kalkulyator, kurslar, yordam, referal, bonus
+  final String themeTitle;
+  final String themeSystem;
+  final String themeLight;
+  final String themeDark;
+  final String calculatorTitle;
+  final String calcError;
+  final String currencyTitle;
+  final String currencySource;
+  final String currencyUpdatedTemplate;
+  final String currencyEmpty;
+  final String supportTitle;
+  final String supportBody;
+  final String supportCall;
+  final String supportTelegram;
+  final String supportEmail;
+  final String supportHours;
+  final String guidesTitle;
+  final String guidesEmpty;
+  final String referralTitle;
+  final String referralBodyTemplate;
+  final String referralCodeLabel;
+  final String referralCopy;
+  final String referralCopied;
+  final String referralShare;
+  final String referralShareTemplate;
+  final String referralInvited;
+  final String referralPaying;
+  final String referralEarned;
+  final String referralFieldLabel;
+  final String bonusTitle;
+  final String bonusBalanceLabel;
+  final String bonusHistoryTitle;
+  final String bonusEmpty;
+  final String bonusFromTemplate;
+  final String bonusReversal;
+  final String linkOpenFailed;
+  final String darkModeTitle;
+
+  /// `{time}` o'rniga yangilanish vaqti qo'yiladi.
+  String currencyUpdatedText(String time) =>
+      currencyUpdatedTemplate.replaceAll('{time}', time);
+
+  String referralBodyText(String percent) =>
+      referralBodyTemplate.replaceAll('{percent}', percent);
+
+  String referralShareText(String link, String code) =>
+      referralShareTemplate.replaceAll('{link}', link).replaceAll('{code}', code);
+
+  String bonusFromText(String name) =>
+      bonusFromTemplate.replaceAll('{name}', name);
 
   /// Tarif narxi: `{price}` va `{days}` o'rniga qiymatlar qo'yiladi.
   String planPriceText(String price, int days) => planPriceTemplate
@@ -1092,6 +1181,43 @@ class AppStrings {
     planActivatedTemplate: '{plan} tarifi faollashtirildi!',
     bannerStandardTitle: "Savdo va omborni yoqing",
     bannerStandardBody: "Standart tarif — oyiga atigi 12 000 so'm.",
+    themeTitle: "Mavzu",
+    themeSystem: "Tizim bo'yicha",
+    themeLight: "Yorug'",
+    themeDark: "Qorong'u",
+    calculatorTitle: "Kalkulyator",
+    calcError: "Xato",
+    currencyTitle: "Valyuta kurslari",
+    currencySource: "Manba: Markaziy bank (cbu.uz)",
+    currencyUpdatedTemplate: "Yangilangan: {time}",
+    currencyEmpty: "Kurslarni yuklab bo'lmadi.",
+    supportTitle: "Qo'llab-quvvatlash",
+    supportBody: "Savollaringiz yoki muammo bo'lsa, biz bilan bog'laning.",
+    supportCall: "Qo'ng'iroq qilish",
+    supportTelegram: "Telegram orqali yozish",
+    supportEmail: "Email yuborish",
+    supportHours: "Ish vaqti",
+    guidesTitle: "Qo'llanma videolar",
+    guidesEmpty: "Videolar hozircha yo'q.",
+    referralTitle: "Do'st taklif qilish",
+    referralBodyTemplate: "Do'stingiz sizning havolangiz orqali kirib to'lov qilsa, uning har bir to'lovidan {percent}% bonus olasiz.",
+    referralCodeLabel: "Sizning referal kodingiz",
+    referralCopy: "Nusxa olish",
+    referralCopied: "Nusxa olindi",
+    referralShare: "Telegram orqali ulashish",
+    referralShareTemplate: "BozorPro — bozorchi uchun raqamli daftar. Ro'yxatdan o'ting: {link} (referal kod: {code})",
+    referralInvited: "Taklif qilinganlar",
+    referralPaying: "To'lov qilganlar",
+    referralEarned: "Jami ishlangan bonus",
+    referralFieldLabel: "Referal kod (ixtiyoriy)",
+    bonusTitle: "Bonuslar balansi",
+    bonusBalanceLabel: "Joriy balans",
+    bonusHistoryTitle: "Bonuslar tarixi",
+    bonusEmpty: "Hali bonus yo'q. Do'stlaringizni taklif qiling!",
+    bonusFromTemplate: "{name} to'lovidan",
+    bonusReversal: "Bonus qaytarildi (to'lov bekor qilindi)",
+    linkOpenFailed: "Havolani ochib bo'lmadi.",
+    darkModeTitle: "Qorong'u rejim",
   );
 
   static const AppStrings ru = AppStrings(
@@ -1378,6 +1504,43 @@ class AppStrings {
     planActivatedTemplate: 'Тариф «{plan}» активирован!',
     bannerStandardTitle: 'Подключите продажи и склад',
     bannerStandardBody: 'Тариф «Стандарт» — всего 12 000 сум в месяц.',
+    themeTitle: "Тема",
+    themeSystem: "Как в системе",
+    themeLight: "Светлая",
+    themeDark: "Тёмная",
+    calculatorTitle: "Калькулятор",
+    calcError: "Ошибка",
+    currencyTitle: "Курсы валют",
+    currencySource: "Источник: Центральный банк (cbu.uz)",
+    currencyUpdatedTemplate: "Обновлено: {time}",
+    currencyEmpty: "Не удалось загрузить курсы.",
+    supportTitle: "Поддержка",
+    supportBody: "Если есть вопросы или проблема — свяжитесь с нами.",
+    supportCall: "Позвонить",
+    supportTelegram: "Написать в Telegram",
+    supportEmail: "Отправить email",
+    supportHours: "Время работы",
+    guidesTitle: "Видеоинструкции",
+    guidesEmpty: "Видео пока нет.",
+    referralTitle: "Пригласить друга",
+    referralBodyTemplate: "Если друг зарегистрируется по вашей ссылке и оплатит тариф, вы получите {percent}% бонусом с каждой его оплаты.",
+    referralCodeLabel: "Ваш реферальный код",
+    referralCopy: "Копировать",
+    referralCopied: "Скопировано",
+    referralShare: "Поделиться в Telegram",
+    referralShareTemplate: "BozorPro — цифровая тетрадь для торговцев. Регистрация: {link} (реферальный код: {code})",
+    referralInvited: "Приглашено",
+    referralPaying: "Оплатили",
+    referralEarned: "Всего заработано бонусов",
+    referralFieldLabel: "Реферальный код (необязательно)",
+    bonusTitle: "Бонусный баланс",
+    bonusBalanceLabel: "Текущий баланс",
+    bonusHistoryTitle: "История бонусов",
+    bonusEmpty: "Бонусов пока нет. Приглашайте друзей!",
+    bonusFromTemplate: "С оплаты {name}",
+    bonusReversal: "Бонус возвращён (оплата отменена)",
+    linkOpenFailed: "Не удалось открыть ссылку.",
+    darkModeTitle: "Тёмный режим",
   );
 }
 

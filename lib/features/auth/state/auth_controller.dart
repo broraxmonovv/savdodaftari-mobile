@@ -72,6 +72,7 @@ class AuthController extends StateNotifier<AuthState> {
     String? shopName,
     String? businessType,
     String? locale,
+    String? referralCode,
   }) async {
     final AuthUser? user = await _guard<AuthUser>(
       () => _repository.updateProfile(
@@ -79,6 +80,7 @@ class AuthController extends StateNotifier<AuthState> {
         shopName: shopName,
         businessType: businessType,
         locale: locale,
+        referralCode: referralCode,
       ),
     );
     if (user == null) {

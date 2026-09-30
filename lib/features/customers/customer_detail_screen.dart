@@ -344,7 +344,7 @@ class _Badge extends StatelessWidget {
         horizontal: AppSpacing.sm,
         vertical: 2,
       ),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: AppColors.dangerSurface,
         borderRadius: AppRadius.pill,
       ),

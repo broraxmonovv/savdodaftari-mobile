@@ -195,7 +195,7 @@ class _Header extends ConsumerWidget {
             height: 44,
             width: 44,
             alignment: Alignment.center,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: AppColors.lightGreen,
               shape: BoxShape.circle,
             ),
@@ -253,7 +253,7 @@ class _PlanBanner extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.screen),
       child: AppCard(
-        color: AppColors.darkGreen,
+        color: AppColors.brand,
         shadows: AppShadows.raised,
         onTap: () async {
           await onOpen(const PlansScreen());
@@ -476,7 +476,7 @@ class _TodaySummary extends StatelessWidget {
                 Expanded(
                   child: Text(s.todayTitle, style: textTheme.titleSmall),
                 ),
-                const Icon(
+                Icon(
                   Icons.chevron_right_rounded,
                   color: AppColors.textSecondary,
                   size: 20,

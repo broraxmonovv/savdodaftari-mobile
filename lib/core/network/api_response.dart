@@ -4,6 +4,7 @@ class ApiResponse {
     required this.success,
     required this.message,
     this.data,
+    this.meta = const <String, dynamic>{},
   });
 
   factory ApiResponse.fromJson(Map<String, dynamic> json) {
@@ -11,12 +12,21 @@ class ApiResponse {
       success: json['success'] == true,
       message: json['message']?.toString() ?? '',
       data: json['data'],
+      meta: json['meta'] is Map
+          ? (json['meta'] as Map).cast<String, dynamic>()
+          : const <String, dynamic>{},
     );
   }
 
   final bool success;
   final String message;
   final Object? data;
+
+  /// Sahifalash va qo'shimcha ma'lumot (`meta`), masalan `balance`.
+  final Map<String, dynamic> meta;
+
+  /// `meta.balance` (bonus balansi) — son sifatida.
+  double get balance => double.tryParse(meta['balance']?.toString() ?? '') ?? 0;
 
   /// `data` obyekt bo'lsa map qaytaradi, aks holda bo'sh map.
   Map<String, dynamic> get dataMap {

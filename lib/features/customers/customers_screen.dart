@@ -261,7 +261,7 @@ class CustomerAvatar extends StatelessWidget {
       height: size,
       width: size,
       alignment: Alignment.center,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: AppColors.lightGreen,
         shape: BoxShape.circle,
       ),

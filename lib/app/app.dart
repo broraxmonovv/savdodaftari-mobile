@@ -3,19 +3,86 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/l10n/app_strings.dart';
+import '../core/theme/app_colors.dart';
 import '../core/theme/app_theme.dart';
+import '../features/auth/state/auth_providers.dart';
+import '../features/auth/state/auth_state.dart';
+import '../features/calculator/calculator_overlay.dart';
 import 'locale_provider.dart';
 import 'router.dart';
+import 'theme_provider.dart';
 
-class BozorProApp extends ConsumerWidget {
+class BozorProApp extends ConsumerStatefulWidget {
   const BozorProApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<BozorProApp> createState() => _BozorProAppState();
+}
+
+class _BozorProAppState extends ConsumerState<BozorProApp>
+    with WidgetsBindingObserver {
+  Brightness? _applied;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  /// "Tizim bo'yicha" rejimida qurilma mavzusi o'zgarsa ilova ham o'zgaradi.
+  @override
+  void didChangePlatformBrightness() {
+    if (ref.read(themeModeProvider) == ThemeMode.system && mounted) {
+      setState(() {});
+    }
+  }
+
+  Brightness _effectiveBrightness(ThemeMode mode) => switch (mode) {
+        ThemeMode.light => Brightness.light,
+        ThemeMode.dark => Brightness.dark,
+        ThemeMode.system =>
+          WidgetsBinding.instance.platformDispatcher.platformBrightness,
+      };
+
+  /// `AppColors` statik ranglar ishlatiladi, shuning uchun rejim almashganda
+  /// butun element daraxti qayta quriladi (navigatsiya holati saqlanadi).
+  void _rebuildAll() {
+    void visit(Element element) {
+      element.markNeedsBuild();
+      element.visitChildren(visit);
+    }
+
+    WidgetsBinding.instance.rootElement?.visitChildren(visit);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeMode mode = ref.watch(themeModeProvider);
+    final Brightness brightness = _effectiveBrightness(mode);
+
+    if (_applied != brightness) {
+      final bool first = _applied == null;
+      AppColors.apply(brightness);
+      _applied = brightness;
+      if (!first) {
+        WidgetsBinding.instance.addPostFrameCallback((_) => _rebuildAll());
+      }
+    }
+
+    // Kalkulyator splash tugagach (sessiya holati aniq bo'lgach) ko'rinadi.
+    final bool showCalculator =
+        ref.watch(authControllerProvider).status != AuthStatus.unknown;
+
     return MaterialApp.router(
       title: 'BozorPro',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.light(),
+      theme: AppTheme.build(),
       routerConfig: appRouter,
       // Til sozlamalardan almashtiriladi va qurilmada saqlanadi.
       locale: ref.watch(localeControllerProvider),
@@ -26,6 +93,11 @@ class BozorProApp extends ConsumerWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
+      // Hamma sahifada ekran chetida turuvchi kalkulyator.
+      builder: (BuildContext context, Widget? child) => CalculatorOverlay(
+        enabled: showCalculator,
+        child: child ?? const SizedBox.shrink(),
+      ),
     );
   }
 }

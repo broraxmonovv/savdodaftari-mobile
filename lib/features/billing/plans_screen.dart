@@ -307,11 +307,11 @@ class _CurrentPlanCard extends StatelessWidget {
             height: 44,
             width: 44,
             alignment: Alignment.center,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: AppColors.lightGreen,
               shape: BoxShape.circle,
             ),
-            child: const Icon(
+            child: Icon(
               Icons.workspace_premium_rounded,
               color: AppColors.darkGreen,
             ),

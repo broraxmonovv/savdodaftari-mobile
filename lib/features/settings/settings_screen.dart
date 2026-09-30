@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../app/locale_provider.dart';
 import '../../app/router.dart';
+import '../../app/theme_provider.dart';
 import '../../core/l10n/app_strings.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_dimens.dart';
@@ -14,6 +15,11 @@ import '../auth/state/auth_providers.dart';
 import '../billing/plan_text.dart';
 import '../billing/plans_screen.dart';
 import '../customers/customers_screen.dart' show CustomerAvatar;
+import '../extras/bonuses_screen.dart';
+import '../extras/currencies_screen.dart';
+import '../extras/guides_screen.dart';
+import '../extras/referral_screen.dart';
+import '../extras/support_screen.dart';
 import '../expenses/expenses_screen.dart';
 import '../reports/reports_screen.dart';
 import 'pin_change_screen.dart';
@@ -82,6 +88,49 @@ class SettingsScreen extends ConsumerWidget {
     }
   }
 
+  /// Mavzu tanlash: tizim / yorug' / qorong'u.
+  Future<void> _chooseTheme(BuildContext context, WidgetRef ref) async {
+    final AppStrings s = context.s;
+    final ThemeMode current = ref.read(themeModeProvider);
+
+    final ThemeMode? mode = await showModalBottomSheet<ThemeMode>(
+      context: context,
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                for (final (ThemeMode value, String label, IconData icon)
+                    in <(ThemeMode, String, IconData)>[
+                  (ThemeMode.system, s.themeSystem, Icons.brightness_auto_rounded),
+                  (ThemeMode.light, s.themeLight, Icons.light_mode_rounded),
+                  (ThemeMode.dark, s.themeDark, Icons.dark_mode_rounded),
+                ])
+                  ListTile(
+                    leading: Icon(icon),
+                    title: Text(label),
+                    trailing: value == current
+                        ? const Icon(
+                            Icons.check_rounded,
+                            color: AppColors.primary,
+                          )
+                        : null,
+                    onTap: () => Navigator.of(context).pop(value),
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+
+    if (mode != null && mode != current) {
+      await ref.read(themeModeProvider.notifier).setMode(mode);
+    }
+  }
+
   Future<void> _logout(BuildContext context, WidgetRef ref) async {
     final AppStrings s = context.s;
     final bool confirmed = await ConfirmDialog.show(
@@ -109,6 +158,12 @@ class SettingsScreen extends ConsumerWidget {
     final Locale locale = ref.watch(localeControllerProvider);
     final String languageName =
         locale.languageCode == 'ru' ? s.languageRu : s.languageUz;
+    final ThemeMode themeMode = ref.watch(themeModeProvider);
+    final String themeName = switch (themeMode) {
+      ThemeMode.system => s.themeSystem,
+      ThemeMode.light => s.themeLight,
+      ThemeMode.dark => s.themeDark,
+    };
 
     return Scaffold(
       appBar: AppBar(title: Text(s.navSettings)),
@@ -190,6 +245,55 @@ class SettingsScreen extends ConsumerWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           _MenuItem(
+            icon: Icons.dark_mode_rounded,
+            iconColor: AppColors.textPrimary,
+            iconBackground: AppColors.border,
+            label: s.darkModeTitle,
+            trailingText: themeName,
+            onTap: () => _chooseTheme(context, ref),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          _MenuItem(
+            icon: Icons.currency_exchange_rounded,
+            iconColor: AppColors.success,
+            iconBackground: AppColors.successSurface,
+            label: s.currencyTitle,
+            onTap: () => _push(context, const CurrenciesScreen()),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          _MenuItem(
+            icon: Icons.card_giftcard_rounded,
+            iconColor: AppColors.warning,
+            iconBackground: AppColors.warningSurface,
+            label: s.referralTitle,
+            onTap: () => _push(context, const ReferralScreen()),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          _MenuItem(
+            icon: Icons.account_balance_wallet_rounded,
+            iconColor: AppColors.darkGreen,
+            iconBackground: AppColors.lightGreen,
+            label: s.bonusTitle,
+            onTap: () => _push(context, const BonusesScreen()),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          _MenuItem(
+            icon: Icons.ondemand_video_rounded,
+            iconColor: AppColors.danger,
+            iconBackground: AppColors.dangerSurface,
+            label: s.guidesTitle,
+            onTap: () => _push(context, const GuidesScreen()),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          _MenuItem(
+            icon: Icons.support_agent_rounded,
+            iconColor: AppColors.info,
+            iconBackground: AppColors.infoSurface,
+            label: s.supportTitle,
+            onTap: () => _push(context, const SupportScreen()),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          _MenuItem(
             icon: Icons.pin_rounded,
             iconColor: AppColors.info,
             iconBackground: AppColors.infoSurface,
@@ -257,7 +361,7 @@ class _MenuItem extends StatelessWidget {
             ),
             const SizedBox(width: AppSpacing.xs),
           ],
-          const Icon(
+          Icon(
             Icons.chevron_right_rounded,
             color: AppColors.textSecondary,
           ),

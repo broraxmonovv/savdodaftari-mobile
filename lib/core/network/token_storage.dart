@@ -9,6 +9,7 @@ class TokenStorage {
   static const String _tokenKey = 'auth_token';
   static const String _onboardingKey = 'onboarding_seen';
   static const String _localeKey = 'locale';
+  static const String _themeKey = 'theme_mode';
 
   Future<String?> readToken() => _storage.read(key: _tokenKey);
 
@@ -28,4 +29,10 @@ class TokenStorage {
 
   Future<void> writeLocale(String code) =>
       _storage.write(key: _localeKey, value: code);
+
+  /// `system` | `light` | `dark`
+  Future<String?> readThemeMode() => _storage.read(key: _themeKey);
+
+  Future<void> writeThemeMode(String mode) =>
+      _storage.write(key: _themeKey, value: mode);
 }

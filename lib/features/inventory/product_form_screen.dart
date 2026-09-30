@@ -238,7 +238,7 @@ class _ProductFormScreenState extends ConsumerState<ProductFormScreen> {
                     const SizedBox(height: AppSpacing.md),
                     Container(
                       padding: const EdgeInsets.all(AppSpacing.md),
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         color: AppColors.lightGreen,
                         borderRadius: AppRadius.field,
                       ),

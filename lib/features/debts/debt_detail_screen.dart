@@ -290,7 +290,7 @@ class _DebtDetailScreenState extends ConsumerState<DebtDetailScreen> {
                         height: 36,
                         width: 36,
                         alignment: Alignment.center,
-                        decoration: const BoxDecoration(
+                        decoration: BoxDecoration(
                           color: AppColors.successSurface,
                           shape: BoxShape.circle,
                         ),
@@ -356,7 +356,7 @@ class _Badge extends StatelessWidget {
         horizontal: AppSpacing.sm,
         vertical: 2,
       ),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: AppColors.dangerSurface,
         borderRadius: AppRadius.pill,
       ),

@@ -6,12 +6,12 @@ import '../theme/app_dimens.dart';
 /// Ilovadagi barcha kartalar uchun asos: oq fon, rounded corners,
 /// juda yengil shadow. Card-based layout'ning yagona manbasi.
 class AppCard extends StatelessWidget {
-  const AppCard({
+  AppCard({
     super.key,
     required this.child,
     this.onTap,
     this.padding = const EdgeInsets.all(AppSpacing.lg),
-    this.color = AppColors.card,
+    this.color,
     this.borderColor,
     this.borderRadius = AppRadius.card,
     this.shadows = AppShadows.soft,
@@ -20,7 +20,8 @@ class AppCard extends StatelessWidget {
   final Widget child;
   final VoidCallback? onTap;
   final EdgeInsetsGeometry padding;
-  final Color color;
+  /// Berilmasa joriy rejimdagi karta rangi.
+  final Color? color;
   final Color? borderColor;
   final BorderRadius borderRadius;
   final List<BoxShadow> shadows;
@@ -29,7 +30,7 @@ class AppCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: color,
+        color: color ?? AppColors.card,
         borderRadius: borderRadius,
         boxShadow: shadows,
         border: borderColor == null ? null : Border.all(color: borderColor!),

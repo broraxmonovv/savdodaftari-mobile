@@ -389,7 +389,7 @@ class _SaleFormScreenState extends ConsumerState<SaleFormScreen> {
                     child: Row(
                       children: <Widget>[
                         if (customer == null)
-                          const Icon(
+                          Icon(
                             Icons.person_search_rounded,
                             color: AppColors.textSecondary,
                           )
@@ -410,14 +410,14 @@ class _SaleFormScreenState extends ConsumerState<SaleFormScreen> {
                           IconButton(
                             onPressed: () =>
                                 setState(() => _customer = null),
-                            icon: const Icon(
+                            icon: Icon(
                               Icons.close_rounded,
                               size: 20,
                               color: AppColors.textSecondary,
                             ),
                           )
                         else
-                          const Icon(
+                          Icon(
                             Icons.chevron_right_rounded,
                             color: AppColors.textSecondary,
                           ),
@@ -448,7 +448,7 @@ class _SaleFormScreenState extends ConsumerState<SaleFormScreen> {
                       shadows: const <BoxShadow>[],
                       child: Row(
                         children: <Widget>[
-                          const Icon(
+                          Icon(
                             Icons.event_rounded,
                             size: 20,
                             color: AppColors.textSecondary,
@@ -590,7 +590,7 @@ class _CartLineCard extends StatelessWidget {
               ),
               IconButton(
                 onPressed: onRemove,
-                icon: const Icon(
+                icon: Icon(
                   Icons.delete_outline_rounded,
                   size: 22,
                   color: AppColors.textSecondary,
@@ -804,11 +804,11 @@ class _ProductTile extends StatelessWidget {
             height: 40,
             width: 40,
             alignment: Alignment.center,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: AppColors.lightGreen,
               borderRadius: AppRadius.field,
             ),
-            child: const Icon(
+            child: Icon(
               Icons.inventory_2_outlined,
               size: 20,
               color: AppColors.darkGreen,

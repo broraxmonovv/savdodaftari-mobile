@@ -267,7 +267,7 @@ class _SaleTile extends StatelessWidget {
             height: 40,
             width: 40,
             alignment: Alignment.center,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: AppColors.lightGreen,
               shape: BoxShape.circle,
             ),

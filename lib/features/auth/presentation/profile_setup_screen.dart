@@ -21,6 +21,7 @@ class ProfileSetupScreen extends ConsumerStatefulWidget {
 class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _shopController = TextEditingController();
+  final TextEditingController _referralController = TextEditingController();
   int _businessTypeIndex = 0;
   String? _nameError;
 
@@ -28,6 +29,7 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
   void dispose() {
     _nameController.dispose();
     _shopController.dispose();
+    _referralController.dispose();
     super.dispose();
   }
 
@@ -47,6 +49,7 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
               shopName: _shopController.text.trim(),
               businessType: AppStrings.businessTypeKeys[_businessTypeIndex],
               locale: s.localeCode,
+              referralCode: _referralController.text,
             );
 
     if (!mounted) {
@@ -109,6 +112,13 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
                     controller: _shopController,
                     textInputAction: TextInputAction.done,
                     prefixIcon: Icons.storefront_outlined,
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+                  AppTextField(
+                    label: s.referralFieldLabel,
+                    controller: _referralController,
+                    textInputAction: TextInputAction.done,
+                    prefixIcon: Icons.card_giftcard_rounded,
                   ),
                   const SizedBox(height: AppSpacing.xl),
                   Text(s.businessTypeQuestion, style: textTheme.titleSmall),

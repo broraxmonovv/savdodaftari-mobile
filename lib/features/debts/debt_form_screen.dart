@@ -149,7 +149,7 @@ class _DebtFormScreenState extends ConsumerState<DebtFormScreen> {
                     child: Row(
                       children: <Widget>[
                         if (customer == null)
-                          const Icon(
+                          Icon(
                             Icons.person_search_rounded,
                             color: AppColors.textSecondary,
                           )
@@ -167,7 +167,7 @@ class _DebtFormScreenState extends ConsumerState<DebtFormScreen> {
                           ),
                         ),
                         if (widget.customer == null)
-                          const Icon(
+                          Icon(
                             Icons.chevron_right_rounded,
                             color: AppColors.textSecondary,
                           ),
@@ -208,7 +208,7 @@ class _DebtFormScreenState extends ConsumerState<DebtFormScreen> {
                     shadows: const <BoxShadow>[],
                     child: Row(
                       children: <Widget>[
-                        const Icon(
+                        Icon(
                           Icons.event_rounded,
                           size: 20,
                           color: AppColors.textSecondary,

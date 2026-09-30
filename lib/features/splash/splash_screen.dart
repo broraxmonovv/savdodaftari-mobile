@@ -26,8 +26,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
     // Status bar va navigation bar ranglari
     SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: AppColors.darkGreen,
+      SystemUiOverlayStyle(
+        statusBarColor: AppColors.brand,
         statusBarIconBrightness: Brightness.light,
         systemNavigationBarColor: Colors.black,
         systemNavigationBarIconBrightness: Brightness.light,
@@ -99,7 +99,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     final AppStrings s = context.s;
 
     return Scaffold(
-      backgroundColor: AppColors.darkGreen,
+      backgroundColor: AppColors.brand,
       body: SizedBox.expand(
         child: Stack(
           children: [
