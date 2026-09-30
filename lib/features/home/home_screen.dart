@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -16,6 +18,8 @@ import '../billing/plans_screen.dart';
 import '../debts/debt_form_screen.dart';
 import '../debts/debts_screen.dart';
 import '../expenses/expenses_screen.dart';
+import '../extras/notifications_screen.dart';
+import '../extras/state/extras_providers.dart';
 import '../inventory/inventory_screen.dart';
 import '../sales/sale_form_screen.dart';
 import 'state/home_providers.dart';
@@ -32,12 +36,25 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
+  Timer? _badgeTimer;
+
   @override
   void initState() {
     super.initState();
     Future<void>.microtask(
       () => ref.read(homeControllerProvider.notifier).load(),
     );
+    // Yangi bildirishnomalar belgisi har 2 daqiqada yangilanadi.
+    _badgeTimer = Timer.periodic(
+      const Duration(minutes: 2),
+      (_) => ref.invalidate(announcementsProvider),
+    );
+  }
+
+  @override
+  void dispose() {
+    _badgeTimer?.cancel();
+    super.dispose();
   }
 
   Future<void> _reload() => ref.read(homeControllerProvider.notifier).load();
@@ -179,6 +196,8 @@ class _Header extends ConsumerWidget {
     final TextTheme textTheme = Theme.of(context).textTheme;
     final String today =
         DateFormat('d MMMM, yyyy', s.localeCode).format(DateTime.now());
+    final int unread =
+        ref.watch(announcementsProvider).valueOrNull?.unreadCount ?? 0;
     final String initial =
         userName.trim().isEmpty ? '\u2014' : userName.trim().characters.first;
 
@@ -219,9 +238,20 @@ class _Header extends ConsumerWidget {
             ),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () async {
+              await Navigator.of(context).push<void>(
+                MaterialPageRoute<void>(
+                  builder: (BuildContext _) => const NotificationsScreen(),
+                ),
+              );
+              ref.invalidate(announcementsProvider);
+            },
             tooltip: s.notifications,
-            icon: const Icon(Icons.notifications_none_rounded, size: 26),
+            icon: Badge(
+              isLabelVisible: unread > 0,
+              label: Text(unread > 99 ? '99+' : unread.toString()),
+              child: const Icon(Icons.notifications_none_rounded, size: 26),
+            ),
           ),
         ],
       ),

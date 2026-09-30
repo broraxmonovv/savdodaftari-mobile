@@ -23,6 +23,10 @@ class AuthController extends StateNotifier<AuthState> {
       final AuthUser user = await _repository.me();
       state = AuthState(status: _statusFor(user), user: user);
     } on ApiException catch (error) {
+      if (error.isBlocked) {
+        await accountBlocked(error.blockReason);
+        return;
+      }
       if (error.isUnauthenticated) {
         await _repository.clearSession();
         state = const AuthState(status: AuthStatus.unauthenticated);
@@ -148,11 +152,24 @@ class AuthController extends StateNotifier<AuthState> {
   /// Istalgan so'rovda 401 kelganda chaqiriladi — sessiya lokal tozalanadi
   /// va foydalanuvchi login oqimiga qaytariladi.
   Future<void> sessionExpired() async {
-    if (state.status == AuthStatus.unauthenticated) {
+    if (state.status == AuthStatus.unauthenticated ||
+        state.status == AuthStatus.blocked) {
       return;
     }
     await _repository.clearSession();
     state = const AuthState(status: AuthStatus.unauthenticated);
+  }
+
+  /// Administrator hisobni bloklaganda: sessiya tozalanadi, foydalanuvchi
+  /// bloklanganlik ekraniga yo'naltiriladi.
+  Future<void> accountBlocked(String? reason) async {
+    if (state.status == AuthStatus.blocked) {
+      return;
+    }
+    await _repository.clearSession();
+    if (mounted) {
+      state = AuthState(status: AuthStatus.blocked, blockReason: reason);
+    }
   }
 
   Future<void> logout({bool allDevices = false}) async {

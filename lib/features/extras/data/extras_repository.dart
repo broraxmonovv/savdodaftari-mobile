@@ -73,4 +73,21 @@ class ExtrasRepository {
       },
     );
   }
+
+  /// GET /announcements — admin yuborgan bildirishnomalar.
+  Future<AnnouncementList> announcements() async {
+    final ApiResponse response = await _client.get('/announcements');
+    return AnnouncementList(
+      items: response.dataList.map(Announcement.fromJson).toList(),
+      unreadCount: response.metaNumber('unread_count').toInt(),
+    );
+  }
+
+  Future<void> markAnnouncementRead(int id) async {
+    await _client.post('/announcements/$id/read');
+  }
+
+  Future<void> markAllAnnouncementsRead() async {
+    await _client.post('/announcements/read-all');
+  }
 }

@@ -29,6 +29,7 @@ final StateNotifierProvider<AuthController, AuthState> authControllerProvider =
   // Istalgan so'rovda 401 kelsa sessiya tozalanadi — AppShell holat
   // o'zgarishini kuzatib, foydalanuvchini login oqimiga qaytaradi.
   ref.watch(apiClientProvider).onUnauthenticated = controller.sessionExpired;
+  ref.watch(apiClientProvider).onAccountBlocked = controller.accountBlocked;
 
   return controller;
 });

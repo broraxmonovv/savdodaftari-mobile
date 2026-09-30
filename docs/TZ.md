@@ -526,3 +526,8 @@ Pro tarifni faollashtirish to'liq backend API orqali, checkout sahifasiga o'tish
 
 - **Tarifga to'lash:** *Bonuslar* ekranidagi "Tarifga to'lash" tugmasi yoki *Tariflar* ekranidagi to'lov usuli tanlovida "Bonus balansi bilan to'lash" (balans tarif narxiga yetsa). Tarif darhol faollashadi. Bonus bilan to'langan to'lov taklif qilganga ulush bermaydi.
 - **Kartaga yechib olish:** "Pulni yechib olish" — summa va 16 xonali plastik karta raqami (ixtiyoriy karta egasi). So'rov **adminga yuboriladi**, summa balansdan darhol ushlab qolinadi; so'rovlar ro'yxatida holat ko'rsatiladi: *Kutilmoqda → To'landi* yoki *Rad etildi* (rad etilsa summa balansga qaytadi). Minimal summa backenddan keladi (standart 10 000 so'm).
+
+## 39. Bildirishnomalar va bloklangan hisob
+
+- **Bildirishnomalar:** bosh sahifadagi qo'ng'iroq belgisida o'qilmaganlar soni (har 2 daqiqada yangilanadi); bosilganda ro'yxat (`GET /announcements`), xabar ustiga bosilsa to'liq matn ochiladi va o'qilgan deb belgilanadi, "Hammasini o'qilgan deb belgilash" tugmasi bor. Xabarlar admin paneldan hammaga, tarif bo'yicha yoki bitta foydalanuvchiga yuboriladi.
+- **Bloklangan hisob:** API `403 account_blocked` qaytarsa, sessiya tozalanadi va *"Hisobingiz bloklangan"* ekrani (sabab, qo'llab-quvvatlash kontaktlari — ochiq `/support`) ko'rsatiladi. OTP bilan kirishda bloklangan hisob uchun shu xabar chiqadi.

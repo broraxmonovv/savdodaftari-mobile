@@ -219,3 +219,37 @@ class BonusSummary {
   final double balance;
   final List<BonusEntry> entries;
 }
+
+/// Admin yuborgan bildirishnoma (`GET /announcements`).
+@immutable
+class Announcement {
+  const Announcement({
+    required this.id,
+    required this.title,
+    required this.body,
+    required this.isRead,
+    this.createdAt,
+  });
+
+  factory Announcement.fromJson(Map<String, dynamic> json) => Announcement(
+        id: _num(json['id']).toInt(),
+        title: json['title']?.toString() ?? '',
+        body: json['body']?.toString() ?? '',
+        isRead: json['is_read'] == true,
+        createdAt: DateTime.tryParse(json['created_at']?.toString() ?? ''),
+      );
+
+  final int id;
+  final String title;
+  final String body;
+  final bool isRead;
+  final DateTime? createdAt;
+}
+
+@immutable
+class AnnouncementList {
+  const AnnouncementList({required this.items, required this.unreadCount});
+
+  final List<Announcement> items;
+  final int unreadCount;
+}

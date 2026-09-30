@@ -78,6 +78,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         context.go(AppRoutes.home);
         break;
 
+      case AuthStatus.blocked:
+        context.go(AppRoutes.blocked);
+        break;
+
       case AuthStatus.unknown:
       case AuthStatus.unauthenticated:
         final bool seen =

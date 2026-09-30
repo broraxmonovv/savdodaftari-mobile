@@ -21,6 +21,9 @@ enum AuthStatus {
 
   /// To'liq kirilgan.
   authenticated,
+
+  /// Administrator hisobni bloklagan.
+  blocked,
 }
 
 @immutable
@@ -30,12 +33,16 @@ class AuthState {
     this.user,
     this.isBusy = false,
     this.error,
+    this.blockReason,
   });
 
   final AuthStatus status;
   final AuthUser? user;
   final bool isBusy;
   final ApiException? error;
+
+  /// `status == blocked` bo'lganda bloklash sababi (bo'lmasa null).
+  final String? blockReason;
 
   bool get isSignedIn => status == AuthStatus.authenticated;
 
@@ -51,6 +58,7 @@ class AuthState {
       user: user ?? this.user,
       isBusy: isBusy ?? this.isBusy,
       error: clearError ? null : (error ?? this.error),
+      blockReason: blockReason,
     );
   }
 }

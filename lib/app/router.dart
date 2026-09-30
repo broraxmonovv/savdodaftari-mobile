@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../features/auth/presentation/blocked_screen.dart';
 import '../features/auth/presentation/otp_screen.dart';
 import '../features/auth/presentation/phone_screen.dart';
 import '../features/auth/presentation/pin_create_screen.dart';
@@ -20,6 +21,7 @@ abstract final class AppRoutes {
   static const String pinCreate = '/auth/pin-create';
   static const String pinUnlock = '/auth/pin-unlock';
   static const String home = '/home';
+  static const String blocked = '/blocked';
 }
 
 /// To'liq oqim (TZ 27-bo'lim):
@@ -69,6 +71,11 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.pinUnlock,
       builder: (BuildContext context, GoRouterState state) =>
           const PinUnlockScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.blocked,
+      builder: (BuildContext context, GoRouterState state) =>
+          const BlockedScreen(),
     ),
     GoRoute(
       path: AppRoutes.home,

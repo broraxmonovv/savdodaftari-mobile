@@ -341,6 +341,10 @@ class AppStrings {
     required this.bonusPlanPayment,
     required this.bonusWithdrawal,
     required this.bonusWithdrawalRefund,
+    required this.blockedTitle,
+    required this.blockedBody,
+    required this.blockedReasonLabel,
+    required this.markAllRead,
   });
 
   final String localeCode;
@@ -722,6 +726,10 @@ class AppStrings {
   final String bonusPlanPayment;
   final String bonusWithdrawal;
   final String bonusWithdrawalRefund;
+  final String blockedTitle;
+  final String blockedBody;
+  final String blockedReasonLabel;
+  final String markAllRead;
 
   String withdrawMinText(String amount) =>
       withdrawMinTemplate.replaceAll('{amount}', amount);
@@ -1290,6 +1298,10 @@ class AppStrings {
     bonusPlanPayment: "Tarif to'lovi",
     bonusWithdrawal: "Yechib olish so'rovi",
     bonusWithdrawalRefund: "So'rov rad etildi — summa qaytdi",
+    blockedTitle: "Hisobingiz bloklangan",
+    blockedBody: "Hisobingiz administrator tomonidan bloklandi. Savollaringiz bo'lsa, qo'llab-quvvatlashga murojaat qiling.",
+    blockedReasonLabel: "Sabab",
+    markAllRead: "Hammasini o'qilgan deb belgilash",
   );
 
   static const AppStrings ru = AppStrings(
@@ -1636,6 +1648,10 @@ class AppStrings {
     bonusPlanPayment: "Оплата тарифа",
     bonusWithdrawal: "Заявка на вывод",
     bonusWithdrawalRefund: "Заявка отклонена — сумма возвращена",
+    blockedTitle: "Ваш аккаунт заблокирован",
+    blockedBody: "Ваш аккаунт заблокирован администратором. Если есть вопросы, обратитесь в поддержку.",
+    blockedReasonLabel: "Причина",
+    markAllRead: "Отметить всё прочитанным",
   );
 }
 

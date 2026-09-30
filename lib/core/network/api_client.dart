@@ -51,6 +51,9 @@ class ApiClient {
   /// auth qatlami sessiyani tozalab, login oqimiga qaytaradi.
   void Function()? onUnauthenticated;
 
+  /// Hisob bloklangani haqida javob kelganda (403 `account_blocked`) chaqiriladi.
+  void Function(String? reason)? onAccountBlocked;
+
   /// Sozlamalardan til almashtirilganda chaqiriladi.
   void setLanguage(String languageCode) => _languageCode = languageCode;
 
@@ -122,6 +125,10 @@ class ApiClient {
       // Token bekor bo'lgan — sessiya tugashini global qayta ishlash.
       if (exception.isUnauthenticated) {
         onUnauthenticated?.call();
+      }
+      // Hisob bloklangan — sessiya tozalanib, bloklanganlik ekrani ochiladi.
+      if (exception.isBlocked && hasToken) {
+        onAccountBlocked?.call(exception.blockReason);
       }
       throw exception;
     }

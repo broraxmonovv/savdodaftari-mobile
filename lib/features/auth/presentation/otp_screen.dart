@@ -137,6 +137,8 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
       case AuthStatus.locked:
       case AuthStatus.authenticated:
         context.go(AppRoutes.home);
+      case AuthStatus.blocked:
+        context.go(AppRoutes.blocked);
       case AuthStatus.unknown:
       case AuthStatus.unauthenticated:
         context.go(AppRoutes.phone);

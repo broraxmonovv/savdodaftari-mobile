@@ -62,6 +62,8 @@ class _AppShellState extends ConsumerState<AppShell>
         (AuthState? previous, AuthState next) {
       if (next.status == AuthStatus.unauthenticated) {
         context.go(AppRoutes.phone);
+      } else if (next.status == AuthStatus.blocked) {
+        context.go(AppRoutes.blocked);
       }
     });
 

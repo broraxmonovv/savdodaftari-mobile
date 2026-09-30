@@ -26,6 +26,15 @@ class ApiException implements Exception {
   bool get isUnauthenticated =>
       statusCode == 401 || code == 'unauthenticated';
 
+  /// Administrator hisobni bloklagan (`account_blocked`).
+  bool get isBlocked => code == 'account_blocked';
+
+  /// Bloklash sababi (`meta.reason`), bo'lmasa null.
+  String? get blockReason {
+    final String? value = meta['reason']?.toString();
+    return value == null || value.isEmpty ? null : value;
+  }
+
   /// Noto'g'ri urinishlardan keyin qolgan imkoniyat soni.
   int? get attemptsLeft {
     final Object? value = meta['attempts_left'];

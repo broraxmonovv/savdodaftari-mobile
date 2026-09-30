@@ -38,3 +38,9 @@ final AutoDisposeFutureProvider<WithdrawalList> withdrawalsProvider =
     FutureProvider.autoDispose<WithdrawalList>(
   (Ref ref) => ref.watch(extrasRepositoryProvider).withdrawals(),
 );
+
+/// Bildirishnomalar (bosh sahifadagi qo'ng'iroq belgisi va ro'yxat uchun).
+final AutoDisposeFutureProvider<AnnouncementList> announcementsProvider =
+    FutureProvider.autoDispose<AnnouncementList>(
+  (Ref ref) => ref.watch(extrasRepositoryProvider).announcements(),
+);
