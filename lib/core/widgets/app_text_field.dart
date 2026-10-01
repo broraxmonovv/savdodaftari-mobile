@@ -71,9 +71,28 @@ class AppTextField extends StatelessWidget {
           maxLength: maxLength,
           onChanged: onChanged,
           onSubmitted: onSubmitted,
-          style: textTheme.bodyLarge,
+          // Yozilayotgan matn doim aniq ko'rinadi: rang temaga emas, joriy palitraga bog'liq.
+          style: textTheme.bodyLarge?.copyWith(
+            color: AppColors.textPrimary,
+            fontWeight: FontWeight.w500,
+          ),
           cursorColor: AppColors.primary,
+          cursorWidth: 2,
+          keyboardAppearance:
+              AppColors.isDark ? Brightness.dark : Brightness.light,
+          // Klaviatura ochilganda maydon uning ustida, to'liq ko'rinib turishi uchun zaxira joy.
+          scrollPadding: EdgeInsets.fromLTRB(
+            AppSpacing.screen,
+            AppSpacing.xxl,
+            AppSpacing.screen,
+            MediaQuery.of(context).viewInsets.bottom + 120,
+          ),
           decoration: InputDecoration(
+            filled: true,
+            fillColor: AppColors.card,
+            hintStyle: textTheme.bodyMedium?.copyWith(
+              color: AppColors.textSecondary,
+            ),
             hintText: hint,
             errorText: errorText,
             helperText: helperText,

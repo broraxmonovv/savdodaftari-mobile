@@ -58,7 +58,14 @@ abstract final class AppTheme {
         systemOverlayStyle:
             dark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
       ),
+      textSelectionTheme: TextSelectionThemeData(
+        cursorColor: AppColors.primary,
+        selectionColor: AppColors.primary.withOpacity(0.28),
+        selectionHandleColor: AppColors.primary,
+      ),
       inputDecorationTheme: InputDecorationTheme(
+        labelStyle: textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
+        floatingLabelStyle: textTheme.bodySmall?.copyWith(color: AppColors.primary),
         filled: true,
         fillColor: AppColors.card,
         isDense: false,

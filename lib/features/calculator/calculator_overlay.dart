@@ -49,10 +49,8 @@ class _CalculatorOverlayState extends State<CalculatorOverlay> {
 
   @override
   Widget build(BuildContext context) {
-    if (!widget.enabled) {
-      return widget.child;
-    }
-
+    // Daraxt tuzilishi `enabled` o'zgarganda ham bir xil qoladi (Navigator va undagi kiritish
+    // maydonlari qayta yaratilmaydi, fokus va klaviatura yo'qolmaydi); faqat kalkulyator yashiriladi.
     final MediaQueryData media = MediaQuery.of(context);
     final Size size = media.size;
     final Offset position = _clamp(
@@ -64,7 +62,7 @@ class _CalculatorOverlayState extends State<CalculatorOverlay> {
     return Stack(
       children: <Widget>[
         Positioned.fill(child: widget.child),
-        if (_open)
+        if (widget.enabled && _open)
           Positioned.fill(
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
@@ -72,8 +70,8 @@ class _CalculatorOverlayState extends State<CalculatorOverlay> {
               child: ColoredBox(color: Colors.black.withOpacity(0.35)),
             ),
           ),
-        if (_open) _buildPanel(context, media),
-        if (!_open)
+        if (widget.enabled && _open) _buildPanel(context, media),
+        if (widget.enabled && !_open)
           AnimatedPositioned(
             duration: _dragging
                 ? Duration.zero

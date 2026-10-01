@@ -5,6 +5,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import '../../core/l10n/app_strings.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_dimens.dart';
+import 'scan_beep.dart';
 
 /// Kamera orqali barcode (EAN/UPC/Code128/QR) skanerlaydi va topilgan kodni
 /// `Navigator.pop(code)` bilan qaytaradi. Bekor qilinsa null.
@@ -44,6 +45,12 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
   bool _torchOn = false;
 
   @override
+  void initState() {
+    super.initState();
+    ScanBeep.warmUp();
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     super.dispose();
@@ -57,7 +64,8 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
       final String? value = barcode.rawValue;
       if (value != null && value.trim().isNotEmpty) {
         _handled = true;
-        HapticFeedback.mediumImpact();
+        // Kod o'qilishi bilan skanerdek "tit" ovozi va tebranish.
+        ScanBeep.play();
         Navigator.of(context).pop(value.trim());
         return;
       }

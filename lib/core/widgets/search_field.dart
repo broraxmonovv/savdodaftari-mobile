@@ -40,11 +40,15 @@ class SearchField extends StatelessWidget {
             child: TextField(
               controller: controller,
               onChanged: onChanged,
-              style: textTheme.bodyMedium,
+              style: textTheme.bodyMedium?.copyWith(color: AppColors.textPrimary),
               cursorColor: AppColors.primary,
+              scrollPadding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom + 120,
+              ),
               textAlignVertical: TextAlignVertical.center,
               decoration: InputDecoration(
                 hintText: hint,
+                hintStyle: textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
                 filled: false,
                 isDense: true,
                 border: InputBorder.none,

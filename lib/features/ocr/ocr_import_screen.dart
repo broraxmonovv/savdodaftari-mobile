@@ -309,6 +309,8 @@ class _OcrImportScreenState extends ConsumerState<OcrImportScreen> {
                           child: TextField(
                             controller: row.name,
                             onChanged: (_) => setState(() {}),
+                            style: TextStyle(color: AppColors.textPrimary),
+                            cursorColor: AppColors.primary,
                             decoration: const InputDecoration(isDense: true),
                           ),
                         ),
@@ -319,6 +321,8 @@ class _OcrImportScreenState extends ConsumerState<OcrImportScreen> {
                       padding: const EdgeInsets.only(left: 12),
                       child: TextField(
                         controller: row.amount,
+                        style: TextStyle(color: AppColors.textPrimary),
+                        cursorColor: AppColors.primary,
                         keyboardType: TextInputType.number,
                         inputFormatters: <TextInputFormatter>[
                           MoneyTextInputFormatter(),
