@@ -203,7 +203,7 @@ class _Header extends ConsumerWidget {
     final AppStrings s = context.s;
     final TextTheme textTheme = Theme.of(context).textTheme;
     final String today =
-        DateFormat('d MMMM, yyyy', s.localeCode).format(DateTime.now());
+        s.dyn(DateFormat('d MMMM, yyyy', s.localeCode).format(DateTime.now()));
     final int unread =
         ref.watch(announcementsProvider).valueOrNull?.unreadCount ?? 0;
 

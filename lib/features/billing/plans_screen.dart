@@ -299,8 +299,8 @@ class _PlansScreenState extends ConsumerState<PlansScreen>
               data.trialDays,
               data.expiresAt == null
                   ? '—'
-                  : DateFormat('d MMMM yyyy', s.localeCode)
-                      .format(data.expiresAt!.toLocal()),
+                  : s.dyn(DateFormat('d MMMM yyyy', s.localeCode)
+                      .format(data.expiresAt!.toLocal())),
             ),
           ),
         ],
@@ -436,7 +436,7 @@ class _CurrentPlanCard extends StatelessWidget {
                 if (plan != UserPlan.free && expiresAt != null)
                   Text(
                     '${s.proExpiresLabel}: '
-                    '${DateFormat('d MMMM yyyy', s.localeCode).format(expiresAt!.toLocal())}',
+                    '${s.dyn(DateFormat('d MMMM yyyy', s.localeCode).format(expiresAt!.toLocal()))}',
                     style: textTheme.labelSmall,
                   ),
               ],

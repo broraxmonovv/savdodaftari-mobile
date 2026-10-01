@@ -124,7 +124,7 @@ class SettingsScreen extends ConsumerWidget {
   /// Til tanlash — tanlov qurilmada saqlanadi va API'ga uzatiladi.
   Future<void> _chooseLanguage(BuildContext context, WidgetRef ref) async {
     final AppStrings s = context.s;
-    final String current = ref.read(localeControllerProvider).languageCode;
+    final String current = AppStrings.keyOf(ref.read(localeControllerProvider));
 
     final String? code = await showModalBottomSheet<String>(
       context: context,
@@ -138,6 +138,7 @@ class SettingsScreen extends ConsumerWidget {
                 for (final (String value, String label)
                     in <(String, String)>[
                   ('uz', s.languageUz),
+                  ('uz_cyrl', s.languageUzCyrl),
                   ('ru', s.languageRu),
                 ])
                   ListTile(
@@ -168,7 +169,7 @@ class SettingsScreen extends ConsumerWidget {
               name: user.name,
               shopName: user.shopName,
               businessType: user.businessType,
-              locale: code,
+              locale: AppStrings.apiLanguage(code),
             );
       }
     }
@@ -243,8 +244,11 @@ class SettingsScreen extends ConsumerWidget {
     final TextTheme textTheme = Theme.of(context).textTheme;
     final AuthUser? user = ref.watch(authControllerProvider).user;
     final Locale locale = ref.watch(localeControllerProvider);
-    final String languageName =
-        locale.languageCode == 'ru' ? s.languageRu : s.languageUz;
+    final String languageName = switch (AppStrings.keyOf(locale)) {
+      'ru' => s.languageRu,
+      'uz_cyrl' => s.languageUzCyrl,
+      _ => s.languageUz,
+    };
     final ThemeMode themeMode = ref.watch(themeModeProvider);
     final String themeName = switch (themeMode) {
       ThemeMode.system => s.themeSystem,

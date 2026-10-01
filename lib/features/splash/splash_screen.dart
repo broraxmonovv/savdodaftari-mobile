@@ -109,10 +109,18 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
         if (!mounted) return;
 
+        // Birinchi ochilishda (til hali tanlanmagan va onboarding ko'rilmagan) avval til tanlanadi.
+        final String? savedLocale =
+            await ref.read(tokenStorageProvider).readLocale();
+
+        if (!mounted) return;
+
         context.go(
           seen
               ? AppRoutes.phone
-              : AppRoutes.onboarding,
+              : (savedLocale == null
+                  ? AppRoutes.language
+                  : AppRoutes.onboarding),
         );
         break;
     }

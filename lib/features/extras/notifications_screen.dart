@@ -27,8 +27,8 @@ class NotificationsScreen extends ConsumerWidget {
     await showDialog<void>(
       context: context,
       builder: (BuildContext dialogContext) => AlertDialog(
-        title: Text(item.title),
-        content: SingleChildScrollView(child: Text(item.body)),
+        title: Text(context.s.dyn(item.title)),
+        content: SingleChildScrollView(child: Text(context.s.dyn(item.body))),
         actions: <Widget>[
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(),
@@ -176,14 +176,14 @@ class _AnnouncementTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  item.title,
+                  context.s.dyn(item.title),
                   style: textTheme.titleSmall?.copyWith(
                     fontWeight: item.isRead ? FontWeight.w500 : FontWeight.w700,
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  item.body,
+                  context.s.dyn(item.body),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: textTheme.bodySmall,

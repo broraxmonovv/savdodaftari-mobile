@@ -80,16 +80,20 @@ class _SavdoUpAppState extends ConsumerState<SavdoUpApp>
     final bool showCalculator =
         ref.watch(authControllerProvider).status == AuthStatus.authenticated;
 
+    final Locale selected = ref.watch(localeControllerProvider);
+    final String localeKey = AppStrings.keyOf(selected);
+
     return MaterialApp.router(
       title: 'Savdo Up',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.build(),
       routerConfig: appRouter,
       // Til sozlamalardan almashtiriladi va qurilmada saqlanadi.
-      locale: ref.watch(localeControllerProvider),
+      // Material vidjetlari uchun oddiy `uz`/`ru` locale; kirill matnlari AppStringsDelegate(key) orqali.
+      locale: Locale(selected.languageCode),
       supportedLocales: AppStrings.supportedLocales,
-      localizationsDelegates: const <LocalizationsDelegate<Object>>[
-        AppStringsDelegate(),
+      localizationsDelegates: <LocalizationsDelegate<Object>>[
+        AppStringsDelegate(key: localeKey),
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,

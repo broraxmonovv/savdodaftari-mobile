@@ -19,5 +19,6 @@ String apiErrorText(AppStrings s, Object error) {
       error.code == 'invalid_response') {
     return s.errorUnknown;
   }
-  return message;
+  // Kirill tilida server (lotin) xabari kirillga o'tkaziladi.
+  return s.dyn(message);
 }

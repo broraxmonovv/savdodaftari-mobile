@@ -67,7 +67,7 @@ class GuidesScreen extends ConsumerWidget {
                     const SizedBox(width: AppSpacing.md),
                     Expanded(
                       child: Text(
-                        video.title,
+                        context.s.dyn(video.title),
                         style: Theme.of(context).textTheme.titleSmall,
                       ),
                     ),

@@ -7,6 +7,7 @@ import '../features/auth/presentation/phone_screen.dart';
 import '../features/auth/presentation/pin_create_screen.dart';
 import '../features/auth/presentation/pin_unlock_screen.dart';
 import '../features/auth/presentation/profile_setup_screen.dart';
+import '../features/language/language_screen.dart';
 import '../features/onboarding/onboarding_screen.dart';
 import '../features/shell/app_shell.dart';
 import '../features/splash/splash_screen.dart';
@@ -14,6 +15,7 @@ import '../features/auth/data/auth_models.dart';
 
 abstract final class AppRoutes {
   static const String splash = '/';
+  static const String language = '/language';
   static const String onboarding = '/onboarding';
   static const String phone = '/auth/phone';
   static const String otp = '/auth/otp';
@@ -25,7 +27,7 @@ abstract final class AppRoutes {
 }
 
 /// To'liq oqim (TZ 27-bo'lim):
-/// - Birinchi kirish: Splash -> Onboarding -> Telefon -> OTP -> Profil -> PIN -> Home
+/// - Birinchi kirish: Splash -> Til tanlash -> Onboarding -> Telefon -> OTP -> Profil -> PIN -> Home
 /// - Qaytgan foydalanuvchi: Splash -> PIN unlock -> Home
 final GoRouter appRouter = GoRouter(
   initialLocation: AppRoutes.splash,
@@ -34,6 +36,11 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.splash,
       builder: (BuildContext context, GoRouterState state) =>
           const SplashScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.language,
+      builder: (BuildContext context, GoRouterState state) =>
+          const LanguageScreen(),
     ),
     GoRoute(
       path: AppRoutes.onboarding,
