@@ -8,6 +8,7 @@ import '../../core/l10n/app_strings.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_dimens.dart';
 import '../../core/widgets/widgets.dart';
+import '../auth/state/app_lock_guard.dart';
 import '../extras/data/extras_models.dart';
 import '../extras/state/extras_providers.dart';
 
@@ -120,6 +121,7 @@ class _AdsCarouselViewState extends ConsumerState<AdsCarouselView> {
 
     bool opened = false;
     if (uri != null && (uri.scheme == 'http' || uri.scheme == 'https')) {
+      AppLockGuard.suspendFor(const Duration(minutes: 3));
       try {
         opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
       } catch (_) {}

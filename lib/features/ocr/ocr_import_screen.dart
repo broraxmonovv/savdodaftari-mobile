@@ -11,6 +11,7 @@ import '../../core/theme/app_dimens.dart';
 import '../../core/utils/money.dart';
 import '../../core/widgets/widgets.dart';
 import '../auth/data/auth_models.dart';
+import '../auth/state/app_lock_guard.dart';
 import '../auth/state/auth_providers.dart';
 import '../billing/pro_upsell.dart';
 import '../extras/data/extras_models.dart';
@@ -100,10 +101,12 @@ class _OcrImportScreenState extends ConsumerState<OcrImportScreen> {
 
   Future<void> _pick(ImageSource source) async {
     final AppStrings s = context.s;
-    final XFile? file = await _picker.pickImage(
-      source: source,
-      maxWidth: 2200,
-      imageQuality: 85,
+    final XFile? file = await AppLockGuard.run(
+      () => _picker.pickImage(
+        source: source,
+        maxWidth: 2200,
+        imageQuality: 85,
+      ),
     );
     if (file == null || !mounted) {
       return;

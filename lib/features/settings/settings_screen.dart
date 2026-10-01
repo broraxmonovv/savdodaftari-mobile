@@ -14,6 +14,7 @@ import '../../core/theme/app_dimens.dart';
 import '../../core/utils/phone.dart';
 import '../../core/widgets/widgets.dart';
 import '../auth/data/auth_models.dart';
+import '../auth/state/app_lock_guard.dart';
 import '../auth/state/auth_controller.dart';
 import '../auth/state/auth_providers.dart';
 import '../billing/plan_text.dart';
@@ -103,11 +104,13 @@ class SettingsScreen extends ConsumerWidget {
         await auth.deleteAvatar();
         return;
       }
-      final XFile? file = await ImagePicker().pickImage(
-        source: action == 'camera' ? ImageSource.camera : ImageSource.gallery,
-        maxWidth: 800,
-        maxHeight: 800,
-        imageQuality: 85,
+      final XFile? file = await AppLockGuard.run(
+        () => ImagePicker().pickImage(
+          source: action == 'camera' ? ImageSource.camera : ImageSource.gallery,
+          maxWidth: 800,
+          maxHeight: 800,
+          imageQuality: 85,
+        ),
       );
       if (file == null) {
         return;

@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../app/router.dart';
 import '../../core/l10n/app_strings.dart';
+import '../auth/state/app_lock_guard.dart';
+import '../auth/state/auth_controller.dart';
 import '../auth/state/auth_providers.dart';
 import '../auth/state/auth_state.dart';
 import '../billing/plan_gate.dart';
@@ -29,6 +31,7 @@ class AppShell extends ConsumerStatefulWidget {
 class _AppShellState extends ConsumerState<AppShell>
     with WidgetsBindingObserver {
   int _index = 0;
+  DateTime? _pausedAt;
 
   @override
   void initState() {
@@ -52,15 +55,30 @@ class _AppShellState extends ConsumerState<AppShell>
     super.dispose();
   }
 
-  /// TZ 23: ilova fonga o'tganda sessiya bloklanadi — qaytganda PIN so'raladi.
+  /// TZ 23: ilova uzoq fonda turgandan keyin qaytganda PIN so'raladi. Kamera, galereya, ulashish
+  /// va to'lov sahifasi kabi tashqi ekranlar ochilganda (yoki fonda qisqa turilganda) so'ralmaydi.
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
-      ref.read(authControllerProvider.notifier).lock();
+      _pausedAt ??= DateTime.now();
       return;
     }
-    if (state == AppLifecycleState.resumed &&
-        ref.read(authControllerProvider).status == AuthStatus.locked) {
+    if (state != AppLifecycleState.resumed) {
+      return;
+    }
+
+    final DateTime? pausedAt = _pausedAt;
+    _pausedAt = null;
+    final AuthController auth = ref.read(authControllerProvider.notifier);
+
+    if (pausedAt != null &&
+        !AppLockGuard.suspended &&
+        DateTime.now().difference(pausedAt).inSeconds >=
+            AppLockGuard.graceSeconds) {
+      auth.lock();
+    }
+
+    if (ref.read(authControllerProvider).status == AuthStatus.locked) {
       context.go(AppRoutes.pinUnlock);
     }
   }

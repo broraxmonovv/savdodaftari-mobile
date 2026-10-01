@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/l10n/app_strings.dart';
+import '../auth/state/app_lock_guard.dart';
 import '../../core/network/api_error_text.dart';
 import '../../core/network/api_exception.dart';
 import '../../core/theme/app_colors.dart';
@@ -174,6 +175,8 @@ class _PlansScreenState extends ConsumerState<PlansScreen>
         return;
       }
 
+      // To'lov sahifasidan qaytganda PIN so'ralmasin (to'lov bir necha daqiqa olishi mumkin).
+      AppLockGuard.suspendFor(const Duration(minutes: 10));
       final bool opened = await launchUrl(
         Uri.parse(url),
         mode: LaunchMode.externalApplication,

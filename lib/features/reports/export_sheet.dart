@@ -6,6 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../core/l10n/app_strings.dart';
+import '../auth/state/app_lock_guard.dart';
 import '../../core/network/api_error_text.dart';
 import '../../core/network/api_exception.dart';
 import '../../core/theme/app_dimens.dart';
@@ -98,16 +99,16 @@ class _ExportSheetState extends ConsumerState<_ExportSheet> {
       if (!mounted) {
         return;
       }
-      await Share.shareXFiles(
-        <XFile>[
-          XFile(
-            path,
-            mimeType: _format == 'pdf'
-                ? 'application/pdf'
-                : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-          ),
-        ],
-      );
+      await AppLockGuard.run(() => Share.shareXFiles(
+            <XFile>[
+              XFile(
+                path,
+                mimeType: _format == 'pdf'
+                    ? 'application/pdf'
+                    : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+              ),
+            ],
+          ));
       if (mounted) {
         Navigator.of(context).pop();
       }
@@ -148,7 +149,8 @@ class _ExportSheetState extends ConsumerState<_ExportSheet> {
                   ChoiceChip(
                     label: Text(_label(s, type)),
                     selected: _type == type,
-                    onSelected: _busy ? null : (_) => setState(() => _type = type),
+                    onSelected:
+                        _busy ? null : (_) => setState(() => _type = type),
                   ),
               ],
             ),
@@ -174,7 +176,8 @@ class _ExportSheetState extends ConsumerState<_ExportSheet> {
             ),
             if (_error != null) ...<Widget>[
               const SizedBox(height: AppSpacing.md),
-              Text(_error!, style: textTheme.bodySmall?.copyWith(color: Colors.red)),
+              Text(_error!,
+                  style: textTheme.bodySmall?.copyWith(color: Colors.red)),
             ],
             const SizedBox(height: AppSpacing.xl),
             AppButton(
