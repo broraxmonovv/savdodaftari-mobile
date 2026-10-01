@@ -59,7 +59,7 @@ class AdsCarouselView extends ConsumerStatefulWidget {
   const AdsCarouselView({super.key, required this.banners});
 
   /// Banner rasmi nisbati (tavsiya: 1200×500).
-  static const double aspectRatio = 2.4;
+  static const double aspectRatio = 2.75;
 
   final List<AdBanner> banners;
 
@@ -136,7 +136,8 @@ class _AdsCarouselViewState extends ConsumerState<AdsCarouselView> {
     return Column(
       children: <Widget>[
         AspectRatio(
-          aspectRatio: AdsCarouselView.aspectRatio * 0.92,
+          // Sahifa kengligi = ekran, karta kengligi = 92% - chetlar: karta nisbati banner rasmiga teng bo'lsin
+          aspectRatio: AdsCarouselView.aspectRatio / 0.93,
           child: PageView.builder(
             controller: _controller,
             itemCount: banners.length,

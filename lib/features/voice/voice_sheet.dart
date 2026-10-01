@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:speech_to_text/speech_recognition_error.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
@@ -96,11 +97,14 @@ class _VoiceSheetState extends ConsumerState<VoiceSheet> {
             setState(() => _listening = false);
           }
         },
-        onError: (Object _) {
+        onError: (SpeechRecognitionError error) {
           if (mounted) {
+            final bool language = error.errorMsg.contains('language');
             setState(() {
               _listening = false;
-              _error = context.s.voiceUnavailable;
+              _error = language
+                  ? context.s.voiceLangUnavailable
+                  : context.s.voiceUnavailable;
             });
           }
         },
@@ -115,17 +119,33 @@ class _VoiceSheetState extends ConsumerState<VoiceSheet> {
     }
   }
 
-  /// Ilova tiliga mos tanish tili (uz_UZ / ru_RU); topilmasa qurilma standarti.
-  Future<String?> _pickLocale(String languageCode) async {
+  /// Tanlangan til uchun tanish locale'i. Qurilma ro'yxatida bo'lsa o'sha (`uz_UZ`, `uz-UZ`, `ru_RU` ...),
+  /// bo'lmasa ham aniq locale beriladi: aks holda tizim standarti (ko'pincha inglizcha) ishlatilib,
+  /// o'zbekcha gap inglizcha matnga aylanib qoladi.
+  Future<String> _pickLocale(String languageCode) async {
+    final String fallback = languageCode == 'ru' ? 'ru_RU' : 'uz_UZ';
     try {
       final List<LocaleName> locales = await _speech.locales();
-      for (final LocaleName locale in locales) {
-        if (locale.localeId.toLowerCase().startsWith(languageCode)) {
-          return locale.localeId;
+      final List<LocaleName> matches = locales
+          .where(
+            (LocaleName it) => it.localeId
+                .toLowerCase()
+                .replaceAll('-', '_')
+                .startsWith('${languageCode}_'),
+          )
+          .toList();
+      if (matches.isNotEmpty) {
+        // O'zbekiston/Rossiya variantini afzal ko'ramiz
+        for (final LocaleName it in matches) {
+          if (it.localeId.toLowerCase().replaceAll('-', '_') ==
+              fallback.toLowerCase()) {
+            return it.localeId;
+          }
         }
+        return matches.first.localeId;
       }
     } catch (_) {}
-    return null;
+    return fallback;
   }
 
   Future<void> _toggleListening() async {

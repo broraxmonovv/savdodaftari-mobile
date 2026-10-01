@@ -17,6 +17,7 @@ class AppStrings {
     required this.onboardingBody2,
     required this.onboardingTitle3,
     required this.onboardingBody3,
+    required this.voiceLangUnavailable,
     required this.openLinkFailed,
     required this.profilePhotoTitle,
     required this.photoFromGallery,
@@ -481,6 +482,7 @@ class AppStrings {
   final String onboardingBody2;
   final String onboardingTitle3;
   final String onboardingBody3;
+  final String voiceLangUnavailable;
   final String openLinkFailed;
   final String profilePhotoTitle;
   final String photoFromGallery;
@@ -1268,6 +1270,7 @@ class AppStrings {
     photoSaved: 'Profil rasmi yangilandi',
     smsRemindersTitle: 'Qarzdorlarga SMS eslatma',
     smsRemindersBody: "Muddati o'tgan va ertaga tugaydigan qarzlar bo'yicha mijozlarga avtomatik SMS yuboriladi.",
+    voiceLangUnavailable: "Telefoningizda bu til uchun ovozli kiritish yo'q. Sozlamalar → Google → Ovoz → Tillar bo'limidan tilni yuklab oling yoki buyruqni yozib yuboring.",
     appName: 'Savdo Up',
     slogan: "Daftaringiz endi telefoningizda!",
     onboardingTitle1: "Qog'oz daftarni unuting",
@@ -1761,6 +1764,7 @@ class AppStrings {
     photoSaved: 'Фото профиля обновлено',
     smsRemindersTitle: 'SMS-напоминания должникам',
     smsRemindersBody: 'Клиентам автоматически отправляется SMS о просроченных долгах и о сроке, истекающем завтра.',
+    voiceLangUnavailable: 'На телефоне нет голосового ввода для этого языка. Загрузите язык в Настройки → Google → Голос → Языки или введите команду текстом.',
     appName: 'Savdo Up',
     slogan: 'Ваша тетрадь теперь в телефоне!',
     onboardingTitle1: 'Забудьте о бумажной тетради',

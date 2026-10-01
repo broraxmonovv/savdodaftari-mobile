@@ -49,8 +49,8 @@ class SupportScreen extends ConsumerWidget {
                 icon: Icons.send_rounded,
                 color: AppColors.info,
                 title: s.supportTelegram,
-                subtitle: data.telegram,
-                onTap: () => openLink(context, Uri.parse(data.telegram)),
+                subtitle: telegramHandle(data.telegram),
+                onTap: () => openLink(context, Uri.parse(telegramUrl(data.telegram))),
               ),
             ],
             if (data.email.isNotEmpty) ...<Widget>[
@@ -134,4 +134,29 @@ class _ContactTile extends StatelessWidget {
       ),
     );
   }
+}
+
+/// `@savdoup_support_bot` yoki `https://t.me/savdoup_support_bot` -> ochiladigan havola.
+String telegramUrl(String value) {
+  final String v = value.trim();
+  if (v.startsWith('@')) {
+    return 'https://t.me/${v.substring(1)}';
+  }
+  if (v.startsWith('http')) {
+    return v;
+  }
+  return 'https://t.me/$v';
+}
+
+/// Ekranda ko'rsatish uchun: `@savdoup_support_bot`.
+String telegramHandle(String value) {
+  final String v = value.trim();
+  if (v.startsWith('@')) {
+    return v;
+  }
+  final Uri? uri = Uri.tryParse(v);
+  final String last = (uri != null && uri.pathSegments.isNotEmpty)
+      ? uri.pathSegments.last
+      : v;
+  return '@$last';
 }
