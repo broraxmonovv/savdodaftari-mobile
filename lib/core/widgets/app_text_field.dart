@@ -100,7 +100,10 @@ class AppTextField extends StatelessWidget {
             prefixIcon: prefixIcon == null
                 ? null
                 : Icon(prefixIcon, color: AppColors.textSecondary, size: 20),
-            suffixIcon: suffix,
+            // Qo'shimcha vidjet (so'm, birlik ...) maydonni to'ldirib yubormasligi uchun o'z kengligiga siqiladi.
+            suffixIcon: suffix == null
+                ? null
+                : Align(widthFactor: 1, heightFactor: 1, child: suffix),
           ),
         ),
       ],

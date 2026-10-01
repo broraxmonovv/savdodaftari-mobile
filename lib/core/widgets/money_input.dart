@@ -47,7 +47,10 @@ class MoneyInput extends StatelessWidget {
       onChanged: (String value) => onChanged?.call(Money.parse(value)),
       suffix: Padding(
         padding: const EdgeInsets.only(right: AppSpacing.lg, left: AppSpacing.sm),
+        // widthFactor: 1: valyuta belgisi faqat o'z kengligini oladi. Aks holda Center butun maydonni
+        // egallab, yozilgan summa uchun joy qoldirmaydi.
         child: Center(
+          widthFactor: 1,
           child: Text(
             Money.currency,
             style: textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
