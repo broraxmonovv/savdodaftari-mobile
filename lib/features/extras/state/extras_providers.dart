@@ -17,6 +17,8 @@ final AutoDisposeFutureProvider<CurrencyRates> currencyRatesProvider =
 /// Bosh sahifadagi reklama bannerlari (xatolikda bo'sh ro'yxat — karusel yashirinadi).
 final AutoDisposeFutureProvider<List<AdBanner>> bannersProvider =
     FutureProvider.autoDispose<List<AdBanner>>((Ref ref) async {
+  // Bosh sahifaga qaytganda ro'yxat qayta yuklanmasin (yangilash faqat pull-to-refresh'da)
+  ref.keepAlive();
   try {
     return await ref.watch(extrasRepositoryProvider).banners();
   } catch (_) {

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -146,7 +147,8 @@ class _AdsCarouselViewState extends ConsumerState<AdsCarouselView> {
             onPageChanged: (int value) => setState(() => _index = value),
             itemBuilder: (BuildContext context, int i) => Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: _BannerCard(banner: banners[i], onTap: () => _open(banners[i])),
+              child: _BannerCard(
+                  banner: banners[i], onTap: () => _open(banners[i])),
             ),
           ),
         ),
@@ -197,26 +199,19 @@ class _BannerCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(18),
               boxShadow: AppShadows.soft,
             ),
-            child: Image.network(
-              banner.imageUrl,
+            // Rasm diskda keshlanadi (qayta ochilganda darhol chiqadi) va ekran kengligiga mos
+            // o'lchamda xotiraga yuklanadi — katta rasm ham ilovani sekinlashtirmaydi.
+            child: CachedNetworkImage(
+              imageUrl: banner.imageUrl,
               fit: BoxFit.cover,
               width: double.infinity,
               height: double.infinity,
-              loadingBuilder: (
-                BuildContext context,
-                Widget child,
-                ImageChunkEvent? progress,
-              ) =>
-                  progress == null
-                      ? child
-                      : const SkeletonShimmer(
-                          child: SkeletonBox(
-                            height: double.infinity,
-                            radius: 18,
-                          ),
-                        ),
-              errorBuilder: (BuildContext _, Object __, StackTrace? ___) =>
-                  Container(
+              memCacheWidth: 1100,
+              fadeInDuration: const Duration(milliseconds: 180),
+              placeholder: (BuildContext _, String __) => const SkeletonShimmer(
+                child: SkeletonBox(height: double.infinity, radius: 18),
+              ),
+              errorWidget: (BuildContext _, String __, Object ___) => Container(
                 color: AppColors.lightGreen,
                 alignment: Alignment.center,
                 padding: const EdgeInsets.all(AppSpacing.lg),
