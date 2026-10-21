@@ -20,6 +20,26 @@ class AppStrings {
     required this.onboardingBody2,
     required this.onboardingTitle3,
     required this.onboardingBody3,
+    required this.trendTitle,
+    required this.trendWeekly,
+    required this.trendMonthly,
+    required this.trendAll,
+    required this.trendMetricSales,
+    required this.trendMetricProfit,
+    required this.trendMetricExpenses,
+    required this.trendTotal,
+    required this.trendAverage,
+    required this.trendBest,
+    required this.trendEmpty,
+    required this.trendHint,
+    required this.trendGroupDay,
+    required this.trendGroupWeek,
+    required this.trendGroupMonth,
+    required this.moneyMillionShort,
+    required this.moneyThousandShort,
+    required this.currencyShort,
+    required this.trendUp,
+    required this.trendDown,
     required this.languageUzCyrl,
     required this.languageChooseTitle,
     required this.languageChooseSubtitle,
@@ -492,6 +512,26 @@ class AppStrings {
   final String onboardingBody2;
   final String onboardingTitle3;
   final String onboardingBody3;
+  final String trendTitle;
+  final String trendWeekly;
+  final String trendMonthly;
+  final String trendAll;
+  final String trendMetricSales;
+  final String trendMetricProfit;
+  final String trendMetricExpenses;
+  final String trendTotal;
+  final String trendAverage;
+  final String trendBest;
+  final String trendEmpty;
+  final String trendHint;
+  final String trendGroupDay;
+  final String trendGroupWeek;
+  final String trendGroupMonth;
+  final String moneyMillionShort;
+  final String moneyThousandShort;
+  final String currencyShort;
+  final String trendUp;
+  final String trendDown;
   final String languageUzCyrl;
   final String languageChooseTitle;
   final String languageChooseSubtitle;
@@ -1268,6 +1308,26 @@ class AppStrings {
       localeCode: localeCode,
       localeKey: key,
       appName: appName,
+      trendTitle: f(trendTitle),
+      trendWeekly: f(trendWeekly),
+      trendMonthly: f(trendMonthly),
+      trendAll: f(trendAll),
+      trendMetricSales: f(trendMetricSales),
+      trendMetricProfit: f(trendMetricProfit),
+      trendMetricExpenses: f(trendMetricExpenses),
+      trendTotal: f(trendTotal),
+      trendAverage: f(trendAverage),
+      trendBest: f(trendBest),
+      trendEmpty: f(trendEmpty),
+      trendHint: f(trendHint),
+      trendGroupDay: f(trendGroupDay),
+      trendGroupWeek: f(trendGroupWeek),
+      trendGroupMonth: f(trendGroupMonth),
+      moneyMillionShort: f(moneyMillionShort),
+      moneyThousandShort: f(moneyThousandShort),
+      currencyShort: f(currencyShort),
+      trendUp: f(trendUp),
+      trendDown: f(trendDown),
       slogan: f(slogan),
       onboardingTitle1: f(onboardingTitle1),
       onboardingBody1: f(onboardingBody1),
@@ -1796,6 +1856,26 @@ class AppStrings {
     languageChooseTitle: 'Tilni tanlang',
     languageChooseSubtitle: "Ilovadan qaysi tilda foydalanmoqchisiz? Keyinroq Sozlamalardan o'zgartirish mumkin.",
     languageContinue: 'Davom etish',
+    trendTitle: 'Savdo dinamikasi',
+    trendWeekly: 'Haftalik',
+    trendMonthly: 'Oylik',
+    trendAll: 'Butun davr',
+    trendMetricSales: 'Savdo',
+    trendMetricProfit: 'Sof foyda',
+    trendMetricExpenses: 'Xarajat',
+    trendTotal: 'Jami',
+    trendAverage: "O'rtacha",
+    trendBest: 'Eng yaxshi',
+    trendEmpty: "Bu davrda ma'lumot yo'q",
+    trendHint: "Ustunga bosing — qiymatni ko'rasiz. Sariq chiziq — tendensiya.",
+    trendGroupDay: "Kunlar bo'yicha",
+    trendGroupWeek: "Haftalar bo'yicha",
+    trendGroupMonth: "Oylar bo'yicha",
+    moneyMillionShort: 'mln',
+    moneyThousandShort: 'ming',
+    currencyShort: "so'm",
+    trendUp: "o'sish",
+    trendDown: 'pasayish',
     appName: 'Savdo Up',
     slogan: "Daftaringiz endi telefoningizda!",
     onboardingTitle1: "Qog'oz daftarni unuting",
@@ -2295,6 +2375,26 @@ class AppStrings {
     languageChooseTitle: 'Выберите язык',
     languageChooseSubtitle: 'На каком языке вы хотите пользоваться приложением? Позже язык можно изменить в Настройках.',
     languageContinue: 'Продолжить',
+    trendTitle: 'Динамика продаж',
+    trendWeekly: 'Неделя',
+    trendMonthly: 'Месяц',
+    trendAll: 'Всё время',
+    trendMetricSales: 'Продажи',
+    trendMetricProfit: 'Чистая прибыль',
+    trendMetricExpenses: 'Расходы',
+    trendTotal: 'Итого',
+    trendAverage: 'В среднем',
+    trendBest: 'Лучший',
+    trendEmpty: 'Нет данных за этот период',
+    trendHint: 'Нажмите на столбец, чтобы увидеть значение. Жёлтая линия — тенденция.',
+    trendGroupDay: 'По дням',
+    trendGroupWeek: 'По неделям',
+    trendGroupMonth: 'По месяцам',
+    moneyMillionShort: 'млн',
+    moneyThousandShort: 'тыс',
+    currencyShort: 'сум',
+    trendUp: 'рост',
+    trendDown: 'снижение',
     appName: 'Savdo Up',
     slogan: 'Ваша тетрадь теперь в телефоне!',
     onboardingTitle1: 'Забудьте о бумажной тетради',

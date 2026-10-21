@@ -9,6 +9,8 @@ import '../../core/widgets/widgets.dart';
 import '../auth/state/auth_providers.dart';
 import '../billing/pro_upsell.dart';
 import 'export_sheet.dart';
+import 'state/trend_providers.dart';
+import 'trend_section.dart';
 import 'state/reports_providers.dart';
 
 /// TZ 17-bo'lim: hisobot va analitika — Bugun / 7 kun / 30 kun / Custom.
@@ -171,7 +173,10 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen>
 
     return RefreshIndicator(
       color: AppColors.primary,
-      onRefresh: refreshWrap(notifier.load),
+      onRefresh: refreshWrap(() async {
+        ref.invalidate(trendProvider);
+        await notifier.load();
+      }),
       child: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.fromLTRB(
@@ -225,6 +230,10 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen>
               ),
             ],
           ),
+          const SizedBox(height: AppSpacing.md),
+
+          // —— Savdo dinamikasi diagrammasi: haftalik / oylik / butun davr
+          const TrendSection(),
           const SizedBox(height: AppSpacing.md),
 
           // —— To'lov taqsimoti: naqd / karta / qarzga (TZ 17 "Bugun")
